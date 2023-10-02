@@ -24,6 +24,9 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'authFilter' => \App\Filters\AuthFilter::class,
+        'authApiFilter' => \App\Filters\AuthApiFilter::class
+
     ];
 
     /**
@@ -36,7 +39,18 @@ class Filters extends BaseConfig
     public array $globals = [
         'before' => [
             // 'honeypot',
-            // 'csrf',
+            'csrf',
+            'authFilter' => ['except' => [
+                
+                'api/*',
+            ]],
+            'authApiFilter' => ['except' => [
+                'admin/*',
+                'api/v1/admin/login',
+                'api/v1/admin/logout',
+                'api/v1/get-jwt-token',
+                'api/v1/get-csrf-token'
+            ]]
             // 'invalidchars',
         ],
         'after' => [
@@ -66,5 +80,7 @@ class Filters extends BaseConfig
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
-    public array $filters = [];
+    public array $filters = [
+       
+    ];
 }

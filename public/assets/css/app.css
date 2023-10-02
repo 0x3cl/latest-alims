@@ -1,0 +1,511 @@
+@import url('default.css');
+
+#sidebar {
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0 4px 4px 0 rgba(60,64,67,.3), 0 8px 12px 6px rgba(60,64,67,.15);
+    transition: all ease 0.3s;
+}
+
+#sidebar.active {
+    width: 80px;
+}
+
+#sidebar.active .icon-name {
+    display: none;
+}
+
+.scrollable {
+    max-height: 80vh;
+    overflow-x: hidden !important;
+    overflow-y: auto;
+}
+
+.logo-sidebar {
+    font-size: 20px;
+    font-weight: 600;
+    transition: all ease 0.3s;
+}
+
+.logo-sidebar.active {
+    font-size: 10px !important;
+}
+
+.search-bar input {
+    border-color: #3eb489;
+    color: #fff !important;
+}
+
+.sidebar-content div {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#sidebar ul li {
+    margin-left: 20px;
+}
+
+#sidebar ul li .active {
+    background-color: #3eb489;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    color: #fff;
+}
+
+#sidebar ul li a {
+    font-size: 14px;
+    font-weight: 600 !important;
+    height: 60px;
+    padding-left: 20px;
+    white-space: nowrap;
+}
+
+#sidebar .dropdown-content ul li a {
+    height: 35px;
+}
+
+#sidebar .nav-link {
+    font-weight: 700;
+    color: #858585;
+}
+
+#sidebar .icon {
+    font-size: 20px;
+}
+
+#sidebar .icon-name {
+    transition: all ease 0.3s;
+    margin-top: 2.2px;
+}
+
+#sidebar .dropdown-content ul {
+    margin-left: 10px !important;
+    transition: all ease 0.4s !important;
+}
+
+#sidebar .dropdown-content ul li {
+    margin-left: 10px !important;
+}
+
+#sidebar .dropdown-content ul li {
+    line-height: 1.2rem;
+}
+
+#sidebar .dropdown-content .nav-link {
+    font-size: 14px;
+}
+
+#content {
+    width: calc(100% - 280px);
+    position: relative;
+    float: right;
+    right: 0;
+    color: #fff;
+    transition: all ease 0.3s;
+}
+
+#content.active {
+    width: calc(100% - 80px);
+}
+
+#content .site-header .banner-overlay {
+    width: 100%;
+    height: inherit;
+    background-color: #363636;
+    opacity: 0.5;
+    position: absolute;
+    left: 0;
+    z-index: 9;
+}
+
+#content .site-header .banner-container {
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    left: 0;
+}
+
+#content .site-header .banner-image,
+#content .site-header .banner-image-others  {
+    width: 100%;
+    height: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#content .site-header .banner-image img,
+#content .site-header .banner-image-others img {
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+}
+
+#content .site-header .hamburger-navbar-brand {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+}
+
+#content .site-header .hamburger-wrapper {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+#content .site-header .hamburger-wrapper .hamburger {
+    width: 25px;
+    height: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+#content .site-header .hamburger-wrapper .hamburger::before,
+#content .site-header .hamburger-wrapper .hamburger::after {
+    content: '';
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    
+    position: absolute;
+}
+
+#content .site-header .hamburger-wrapper .hamburger::before {
+    transform: translateY(-8px);
+}
+
+#content .site-header .hamburger-wrapper .hamburger::after {
+    transform: translateY(8px);
+}
+
+.hamburger-wrapper.active .hamburger {
+    width: 0px !important;
+}
+
+.hamburger-wrapper.active .hamburger::before {
+    transform: rotate(45deg) !important;
+}
+
+.hamburger-wrapper.active .hamburger::after {
+    transform: rotate(-45deg) !important;
+}
+
+#content .site-header .badge {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    font-size: 10px;
+    width: auto;
+    height: inherit;
+    border-radius: 50%;
+    background-color: #3eb489;
+}
+
+#content .site-header {
+    width: 100%;
+    height: 300px;
+    background-color: #363636;
+}
+
+#content .site-header .navbar {
+    z-index: 99;
+}
+
+#content .site-header #navbar-profile {
+    min-width: 100px;
+}
+
+#content .site-header .navbar i {
+    font-size: 22px;
+}
+
+#content .site-header .dropdown-toggle::after {
+    color: #fff;
+    top: 5px;
+    margin-left: 10px;
+}
+
+#content .profile {
+    cursor: pointer;
+}
+
+#content .profile div:nth-child(1) {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+}
+
+#content .profile div:nth-child(2) {
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+}
+
+#content .profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3eb489;
+    padding: 2px;
+}
+
+#content .dropdown .dropdown-menu {
+    width: max-content;
+}
+
+#content .dropdown .dropdown-menu[data-bs-popper] {
+    right: 0 !important;
+    left: auto;
+}
+
+#content .text-banner div {
+    font-size: 12px;
+    font-weight: 700;
+    padding-left: 20px;
+}
+
+#content .text-banner h3 {
+    border-left: 6px solid #3eb489;
+    padding-left: 15px;
+}
+
+#dashboard {
+    position: relative;
+    color: #363636;
+    top: -50px;
+}
+
+#dashboard .card {
+    border-radius: 10px;
+}
+
+#dashboard .card .label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bio div {
+    font-size: 14px;
+}
+
+.profile-container {
+    width: 170px;
+    height: 170px;
+    background-color: #fff;
+    bottom: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 999;
+}
+
+.profile-container .action-overlay {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+.view-profile {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.profile-info {
+    min-width: 250px;
+    position: relative;;
+    top: 30px;
+    margin: 40px 0 0 20px;
+    color: #000;
+}
+
+.profile-info h1 {
+    font-weight: 700;
+    text-transform: capitalize;
+    margin: 0 !important;
+}
+
+.profile-info p {
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    text-transform: uppercase;
+    gap: 3px;
+    margin: 0 !important;
+}
+
+.other-admins {
+    cursor: pointer;
+}
+
+.other-profiles {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.other-profiles h6,
+.other-profiles p {
+    margin: 0 !important;
+    font-weight: 600;
+}
+
+.other-profiles p {
+    font-size: 12px;
+    margin-top: 2px !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.profile-image img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.discover-container {
+    width: auto !important;
+    height: inherit !important;
+    display: flex !important;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-snap-type: x mandatory;
+}
+
+.discover-content {
+    display: flex !important;
+    gap: 20px;
+}
+
+.discover-content .card {
+    width: 300px !important;
+    scroll-snap-align: center;
+
+}
+
+.discover-profile img {
+    width: 100px;
+    height: 100px;
+    border: 5px solid #363636;
+    border-radius: 50%;
+}
+
+.discover-info h5 {
+    margin: 0 ;
+}
+
+.discover-info small {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.discover-info .bio {
+    text-align: justify !important;
+    font-size: 12px;
+}
+
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+    overflow-x: auto;
+    background-color: #fff;
+
+}
+
+
+/* SMALL SCREENS RESPONSIVE CSS */
+
+@media(min-width: 0px) and (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        width: 70%;
+        transition: all ease 0.3s;
+        z-index: 9999;
+        transform: translateX(-100%);
+    }
+
+    .logo-sidebar.active {
+        font-size: 20px !important;
+    }
+
+    #sidebar.active {
+        width: 70%;
+
+        transform: translateX(0%);
+    }
+
+    #sidebar.active .icon-name {
+        display: block;
+    }
+
+    .navbar-dark .navbar-brand {
+        width: fit-content;
+        text-align: center;
+    }
+
+    #content .site-header .hamburger-wrapper {
+        position: fixed;
+        top: 16px;
+        right: 20px;
+        margin: 0 !important;
+    }
+
+    #content .site-header .hamburger-wrapper.anim {
+        background-color: #363636;
+    }
+
+    #content .site-header .hamburger-navbar-brand {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .nav-ul {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #content {
+        width: 100%;
+        left: 0;
+        transition: all ease 0.3s;
+    }
+
+    #content.active {
+        width: 100%;
+        transition: all ease 0.3s;
+    }
+
+    #content .site-header {
+        height: 400px;
+    }
+
+    .profile-info {
+        top: 0px;
+        margin: 10px 0 0 0;
+    }
+
+    .banner-actions {
+        bottom: 50px;
+    }
+
+    .jq-toast-wrap.top-right {
+        right: 10px;
+    }
+
+}

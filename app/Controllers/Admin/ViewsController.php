@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\AdminModel;
 
 class ViewsController extends BaseController
 {
@@ -23,7 +24,261 @@ class ViewsController extends BaseController
         ];
 
         return $this->renderView($page);
-        
+    }
+
+    public function dashboard() {
+        $page = [
+            'view' => 'dashboard',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Dashboard | Admin',
+                'active' => 'dashboard',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function discover() {
+        $page = [
+            'view' => 'discover',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Discover | Admin',
+                'active' => 'discover',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function students() {
+        $page = [
+            'view' => 'students',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Students | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function instructors() {
+        $page = [
+            'view' => 'instructors',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Instructors | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function admins() {
+        $page = [
+            'view' => 'admin',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Administrators | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function enroll_students() {
+        $page = [
+            'view' => 'enroll-students',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Enrolled Students | Admin',
+                'active' => 'enroll',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function enroll_instructors() {
+        $page = [
+            'view' => 'enroll-instructors',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Enrolled Instructors | Admin',
+                'active' => 'enroll',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function courses() {
+        $page = [
+            'view' => 'courses',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Courses | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function subjects() {
+        $page = [
+            'view' => 'subjects',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Subjects | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function sections() {
+        $page = [
+            'view' => 'sections',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Sections | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function years() {
+        $page = [
+            'view' => 'years',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'All Years | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function smtp() {
+        $page = [
+            'view' => 'smtp',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'SMTP | System',
+                'active' => 'system',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function reports() {
+        $page = [
+            'view' => 'reports',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Reports | System',
+                'active' => 'system',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function backup() {
+        $page = [
+            'view' => 'backup',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Backup | System',
+                'active' => 'system',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+     public function me() {
+        $page = [
+            'view' => 'me',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'My Profile | Settings',
+                'active' => 'settings',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function passwords() {
+        $page = [
+            'view' => 'change-password',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'Change Password | Settings',
+                'active' => 'settings',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+    
+    
+
+    public function getCurrentUser() {
+        $user_session = session()->get('user_session');
+        $uid = $user_session['id'];
+        $model = new AdminModel;
+        $model->select('
+            id, firstname, lastname, contact, address, province, 
+            city, birthday, status, gender, email, username, role,
+            avatar, banner, bio, fb_link, ig_link, twi_link
+        ');
+        $data = $model->find($uid);
+        return $data;
     }
 
     public function renderView($page) {
