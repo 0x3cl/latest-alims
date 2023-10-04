@@ -92,6 +92,7 @@ form .section-tle h5 {
 
 form input, form select {
     height: 45px;
+    padding: 10px !important;
     cursor: pointer !important;
 }
 

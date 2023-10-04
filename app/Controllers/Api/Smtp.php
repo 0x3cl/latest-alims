@@ -38,4 +38,51 @@ class Smtp extends BaseController
         }
         return $this->respond($response, $response['status']);    
     }
+
+    public function update() {
+        $rules = [
+            'server' => ['required'],
+            'port' => ['required', 'integer'],
+            'username' => ['required'],
+            'password' => ['required'],
+        ];
+        
+        if(!$this->validate($rules)) {
+            $response = [
+                'status' => 500,
+                'message' => $this->validator->getErrors(),
+            ];
+
+            return $this->respond($response);
+        } else {
+
+            $data = [
+                'server' => $this->request->getPost('server'),
+                'port' => $this->request->getPost('port'),
+                'username' => $this->request->getPost('username'),
+                'password' => $this->request->getPost('password'),
+                'date_updated' => get_timestamp()
+            ];
+
+            try {
+                if($this->model->where('id', 1)->set($data)->update()) {
+                    $response = [
+                        'status' => 200,
+                        'message' => 'smtp updated'
+                    ];
+
+                    return $this->respond($response);
+                }
+            } catch (\Exception $e) {
+                $response = [
+                    'status' => 500,
+                    'message' => 'error: ' . strtolower($e->getMessage())
+                ];
+
+                return $this->respond($response);
+            }
+
+        }
+    }
+
 }

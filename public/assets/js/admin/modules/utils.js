@@ -1,5 +1,5 @@
 import {getCsrfToken} from './dataUtils.js';
-import {datatablesData} from './datatables.js';
+import {callAll} from './datatables.js';
 
 export async function generateCSRFToken() {
     const response = await getCsrfToken();
@@ -7,6 +7,25 @@ export async function generateCSRFToken() {
         const token = response.token;
         $('input[name="csrf_token"]').val(token);
     }
+}
+
+export function generateRandomCode() {
+    const length = Math.floor(Math.random() * 2) + 6;
+    let code = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomType = Math.floor(Math.random() * 3); 
+  
+      if (randomType === 0) {
+        code += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+      } else if (randomType === 1) {
+        code += String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+      } else {
+        code += Math.floor(Math.random() * 10); 
+      }
+    }
+  
+    return code;
 }
 
 export function accountStatus(status) {
@@ -42,7 +61,50 @@ export function userRole(role) {
     }
 }
 
-export function reloadCardData() {
+export function reloadTableContent() {
     $( "#card-data" ).load(window.location.href + " #card-data" );
-    datatablesData();
+    callAll();
+}
+
+export function multiSelectTable() {
+    $('#multi-select-all').on("change", function() {
+        if($(this).is(':checked')) {
+            $('.multi-select-single').prop('checked', true);
+        } else {
+            $('.multi-select-single').prop('checked', false);
+        }
+    });
+}
+
+export function get_date() {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString('en-US', { month: 'long' }) + ' ' +
+                ('0' + currentDate.getDate()).slice(-2) + ', ' +
+                currentDate.getFullYear();
+    return formattedDate;
+}
+
+
+export function toastMessage(icon, message) {
+    $.toast({
+        heading: "System Message",
+        text: `${message}`,
+        showHideTransition: "fade",
+        icon: `${icon}`,
+        position: "top-right",
+        allowToastClose: true,
+        hideAfter: 3500,
+        stack: 5,
+        loaderBg: `${icon === "error" ? "red" : "green"}`
+      });
+      
+}
+
+export function isEmpty(data) {
+    if (data === undefined || data === null) {
+        return 'Not yet updated';
+    }
+
+    const trimmedData = data.trim();
+    return trimmedData === '' ? 'Not yet updated' : trimmedData;
 }

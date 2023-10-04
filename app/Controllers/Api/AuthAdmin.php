@@ -56,6 +56,7 @@ class AuthAdmin extends BaseController
                     $session = [
                         'id' => $user_id,
                         'username' => $username,
+                        'role' => $data[0]->role,
                         'token' => $token
                     ];
                     session()->set(['user_session' => $session]);

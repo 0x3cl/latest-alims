@@ -68,3 +68,10 @@
 <?php 
     include(APPPATH . '/Views/Admin/templates/modals.php');
 ?>
+
+<script type="module">
+import { studentTable } from "/assets/js/admin/modules/datatables.js";
+import {controls} from '/assets/js/admin/modules/controls.js';
+studentTable();
+controls(studentTable);
+</script>

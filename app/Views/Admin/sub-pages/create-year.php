@@ -1,21 +1,21 @@
 <div class="wrapper">
     <!-- sidebar -->
     <?php 
-        include(APPPATH . 'Modules/Admin/Views/templates/sidebar.php');
+        include(APPPATH . 'Views/Admin/templates/sidebar.php');
     ?>
 
     <div id="content">
         <div class="site-header px-3">
             <!-- navbar -->
             <?php 
-                include(APPPATH . 'Modules/Admin/Views/templates/navbar.php');
+                include(APPPATH . 'Views/Admin/templates/navbar.php');
             ?>
             <div class="container">
                 <div class="mt-5">
                     <div class="text-banner">
                         <h3>Add Years</h3>
                         <?php 
-                            include(APPPATH . 'Modules/Admin/Views/templates/text-banner.php');
+                            include(APPPATH . 'Views/Admin/templates/text-banner.php');
                         ?>
                     </div>
                 </div>
@@ -26,17 +26,12 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-end gap-2">
                         <a href="/admin/years/add/single" class="btn btn-outline-primary float-end d-flex align-items-center"><i class='bx bx-plus'></i></a>
-                        <a href="/admin/years/add/bulk" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
+                        <a href="/admin/bulk/upload/years" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
                         <a href="/admin/years" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
                     </div>
                     <div class="card-body">
-                        <form action="/api/single/add/year" method="post">
+                        <form id="create-year" method="post">
                             <div class="row mt-4">
-                                <?php 
-                                     if (!empty($response)) {
-                                        echo show_alert($response);
-                                    }
-                                ?>
                                 <?= csrf_field() ?>
                                 <div class="section-tle mb-3">
                                     <h5>Year Information</h5>
@@ -44,11 +39,10 @@
                                 </div>
                                 <div class="col-12 col-md-12 mb-3">
                                     <label>Name <span class="text-danger">*</span> </label>
-                                    <input type="text" name="name" id="name" class="form-control <?php echo (!empty($response["message"]["name"]) ? 'is-invalid' : '') ?>" placeholder="eg. First Year" value="<?php echo (!empty($response) && isset($response["fields"]["name"]) ? $response["fields"]["name"] : ''); ?>">
-                                    <?php echo (!empty($response["message"]["name"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["name"]).'</small>' : '') ?>
+                                    <input type="text" name="name" id="name" class="form-control <?php echo (!empty($response["message"]["name"]) ? 'is-invalid' : '') ?>" placeholder="eg. First Year">
                                 </div>
                             </div>
-                            <button class="btn btn-primary mt-3 float-end">Proceed</button>
+                            <button class="btn btn-primary mt-3 float-end" id="btn-proceed">Proceed</button>
                         </form>
                     </div>
                 </div>
@@ -56,3 +50,8 @@
         </div>
     </div>
 </div>
+
+<script type="module">
+    import { controls } from '/assets/js/admin/modules/controls.js';
+    controls();
+</script>

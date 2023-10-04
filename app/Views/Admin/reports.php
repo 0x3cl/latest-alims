@@ -35,7 +35,7 @@
                                 }
                             ?>
                             <div class="section-tle mb-3">
-                                <h5>Generation Config</h5>
+                                <h5>Generation Settings</h5>
                                 <small class="text-muted">All <span class="text-danger">*</span> are required</small>
                             </div>
                             <div class="col-12 col-md-12 mb-3">
@@ -58,3 +58,10 @@
 <?php 
     include(APPPATH . 'Views/Admin/templates/modals.php');
 ?>
+
+<script type="module">
+    import { reportDom } from '/assets/js/admin/modules/reports.js';
+
+    reportDom();
+                                
+</script>

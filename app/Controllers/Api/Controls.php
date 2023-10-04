@@ -5,6 +5,8 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use CodeIgniter\API\ResponseTrait;
 use App\Models\UserModel;
+use App\Models\StudentModel;
+use App\Models\InstructorModel;
 use App\Models\AdminModel;
 use App\Models\EnrolledModel;   
 use App\Models\CourseModel;
@@ -241,16 +243,21 @@ class Controls extends BaseController
             $isExists = $user_model->where('id', $id)
             ->countAllResults();
 
+            $role = $user_model->where('id', $id)->find()[0]['role'];
+            $user_type_model = $role == 1 ? new InstructorModel() : ($role == 2 ? new StudentModel() : '');
+
             if($isExists > 0) {
                 $user_model->where('id', $id)
                 ->delete();
                 $enroll_model->where('user_id', $id)
                 ->delete();
+                $user_type_model->where('user_id', $id);
 
                 $affected_user = $user_model->affectedRows();
                 $affected_enroll = $enroll_model->affectedRows();
+                $affected_user_type = $user_type_model->affectedRows();
 
-                if($affected_user > 0 || $affected_enroll > 0) {
+                if($affected_user > 0 || $affected_enroll > 0 || $affected_user_type > 0) {
                     $response[] = [
                         'status' => 200,
                         'message' => 'user account #' .$id. ' deleted'

@@ -39,18 +39,18 @@ class Filters extends BaseConfig
     public array $globals = [
         'before' => [
             // 'honeypot',
-            'csrf',
+            // 'csrf',
             'authFilter' => ['except' => [
-                
+                'admin/login',
                 'api/*',
             ]],
-            'authApiFilter' => ['except' => [
-                'admin/*',
-                'api/v1/admin/login',
-                'api/v1/admin/logout',
-                'api/v1/get-jwt-token',
-                'api/v1/get-csrf-token'
-            ]]
+            // 'authApiFilter' => ['except' => [
+            //     'admin/*',
+            //     'api/v1/admin/login',
+            //     'api/v1/admin/logout',
+            //     'api/v1/get-jwt-token',
+            //     'api/v1/get-csrf-token'
+            // ]]
             // 'invalidchars',
         ],
         'after' => [

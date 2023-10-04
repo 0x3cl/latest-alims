@@ -23,11 +23,11 @@
         </div>
         <div id="dashboard" class="mx-2">
             <div class="container">
-                <div class="card">
+                <div class="card" id="card-data">
                     <div class="card-header d-flex justify-content-end gap-2">
-                        <a href="javascript:void(0)" class="btn btn-outline-secondary" id="control-enable-admin"><i class='bx bx-show'></i></a>
-                        <a href="javascript:void(0)" class="btn btn-outline-secondary" id="control-disable-admin"><i class='bx bx-hide'></i></a>
-                        <a href="javascript:void(0)" class="btn btn-outline-danger" id="control-delete-admin"><i class='bx bx-trash'></i></a>
+                        <a href="javascript:void(0)" class="btn btn-outline-secondary" id="control" data-action="enable" data-type="admin"><i class='bx bx-show'></i></a>
+                        <a href="javascript:void(0)" class="btn btn-outline-secondary" id="control" data-action="disable" data-type="admin"><i class='bx bx-hide'></i></a>
+                        <a href="javascript:void(0)" class="btn btn-outline-danger" id="control" data-action="delete" data-type="admin"><i class='bx bx-trash'></i></a>
                         <a href="/admin/account/administrators/add/single" class="btn btn-outline-primary float-end"><i class='bx bx-add-to-queue'></i></a>
                     </div>
                     <div class="card-body">
@@ -38,6 +38,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
+                            <?= csrf_field(); ?>
                             <table class="table nowrap w-100" id="admin-table">
                                 <thead>
                                     <tr>
@@ -65,3 +66,10 @@
 <?php 
     include(APPPATH . 'Views/Admin/templates/modals.php');
 ?>
+
+<script type="module">
+import { adminTable } from "/assets/js/admin/modules/datatables.js";
+import {controls} from '/assets/js/admin/modules/controls.js';
+adminTable();
+controls(adminTable);
+</script>

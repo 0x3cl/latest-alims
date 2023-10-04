@@ -1,21 +1,21 @@
 <div class="wrapper">
     <!-- sidebar -->
     <?php 
-        include(APPPATH . 'Modules/Admin/Views/templates/sidebar.php');
+        include(APPPATH . 'Views/Admin/templates/sidebar.php');
     ?>
 
     <div id="content">
         <div class="site-header px-3">
             <!-- navbar -->
             <?php 
-                include(APPPATH . 'Modules/Admin/Views/templates/navbar.php');
+                include(APPPATH . 'Views/Admin/templates/navbar.php');
             ?>
             <div class="container">
                 <div class="mt-5">
                     <div class="text-banner">
                         <h3>Update Year</h3>
                         <?php 
-                            include(APPPATH . 'Modules/Admin/Views/templates/text-banner.php');
+                            include(APPPATH . 'Views/Admin/templates/text-banner.php');
                         ?>
                     </div>
                 </div>

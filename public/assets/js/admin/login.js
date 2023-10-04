@@ -30,7 +30,7 @@ $(document).ready(function() {
                         icon: 'error',
                         title: 'Ooops..',
                         text: response.message,
-                      });
+                    });
                 } else {
                     console.log(response)
                     window.location.href = '/admin/dashboard'

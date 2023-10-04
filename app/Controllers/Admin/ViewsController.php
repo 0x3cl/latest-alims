@@ -7,11 +7,6 @@ use App\Models\AdminModel;
 
 class ViewsController extends BaseController
 {
-    public function index()
-    {
-        
-    }
-
     public function login() {
         $page = [
             'view' => 'login',
@@ -56,6 +51,21 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function create_bulk() {
+        $page = [
+            'view' => 'create-bulk',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Instructor Account | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
     public function students() {
         $page = [
             'view' => 'students',
@@ -63,6 +73,21 @@ class ViewsController extends BaseController
             'isSubPage' => false,
             'data' => [
                 'title' => 'All Students | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function create_students() {
+        $page = [
+            'view' => 'create-student',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Student Account | Admin',
                 'active' => 'accounts',
                 'data' => $this->getCurrentUser()
             ]
@@ -86,6 +111,21 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function create_instructors() {
+        $page = [
+            'view' => 'create-instructor',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Instructor Account | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
     public function admins() {
         $page = [
             'view' => 'admin',
@@ -93,6 +133,21 @@ class ViewsController extends BaseController
             'isSubPage' => false,
             'data' => [
                 'title' => 'All Administrators | Admin',
+                'active' => 'accounts',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function create_administrators() {
+        $page = [
+            'view' => 'create-admin',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Admin Account | Admin',
                 'active' => 'accounts',
                 'data' => $this->getCurrentUser()
             ]
@@ -131,6 +186,21 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function create_enroll_user() {
+        $page = [
+            'view' => 'create-enroll-users',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Enroll User | Admin',
+                'active' => 'enroll',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
     public function courses() {
         $page = [
             'view' => 'courses',
@@ -138,6 +208,21 @@ class ViewsController extends BaseController
             'isSubPage' => false,
             'data' => [
                 'title' => 'All Courses | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function create_course() {
+        $page = [
+            'view' => 'create-course',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Course | Admin',
                 'active' => 'class_course',
                 'data' => $this->getCurrentUser()
             ]
@@ -161,6 +246,21 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function create_subject() {
+        $page = [
+            'view' => 'create-subject',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Subject | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
     public function sections() {
         $page = [
             'view' => 'sections',
@@ -176,6 +276,21 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function create_section() {
+        $page = [
+            'view' => 'create-section',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Section | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
     public function years() {
         $page = [
             'view' => 'years',
@@ -183,6 +298,21 @@ class ViewsController extends BaseController
             'isSubPage' => false,
             'data' => [
                 'title' => 'All Years | Admin',
+                'active' => 'class_course',
+                'data' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function create_year() {
+        $page = [
+            'view' => 'create-year',
+            'dir' => 'Admin',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Create Year | Admin',
                 'active' => 'class_course',
                 'data' => $this->getCurrentUser()
             ]

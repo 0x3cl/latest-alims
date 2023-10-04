@@ -16,11 +16,21 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
     $routes->get('discover', 'ViewsController::discover');
 
 
+    $routes->get('bulk/upload/(:any)', 'ViewsController::create_bulk');
+
+
     // ACCOUNT GROUP ROUTES
     $routes->group('account', function($routes) {
         $routes->get('students', 'ViewsController::students');
+        $routes->get('students/add/single', 'ViewsController::create_students');
         $routes->get('instructors', 'ViewsController::instructors');
+        $routes->get('instructors/add/single', 'ViewsController::create_instructors');
+
         $routes->get('administrators', 'ViewsController::admins');
+        $routes->get('administrators/add/single', 'ViewsController::create_administrators');
+
+        $routes->get('enroll/user/single/(:num)', 'ViewsController::create_enroll_user');
+
     });
 
     // ENROLL GROUP ROUTES
@@ -29,10 +39,26 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
         $routes->get('instructors', 'ViewsController::enroll_instructors');
     });
 
-    $routes->get('courses', 'ViewsController::courses');
-    $routes->get('subjects', 'ViewsController::subjects');
-    $routes->get('sections', 'ViewsController::sections');
-    $routes->get('years', 'ViewsController::years');
+    $routes->group('courses', function($routes) {
+        $routes->get('/', 'ViewsController::courses');
+        $routes->get('add/single', 'ViewsController::create_course');
+    });
+
+    $routes->group('subjects', function($routes) {
+        $routes->get('/', 'ViewsController::subjects');
+        $routes->get('add/single', 'ViewsController::create_subject');
+    });
+
+    $routes->group('sections', function($routes) {
+        $routes->get('/', 'ViewsController::sections');
+        $routes->get('add/single', 'ViewsController::create_section');
+    });
+
+    $routes->group('years', function($routes) {
+        $routes->get('/', 'ViewsController::years');
+        $routes->get('add/single', 'ViewsController::create_year');
+    });
+
 
     // SETTINGS GROUP ROUTES
     $routes->group('system', function($routes) {
@@ -52,6 +78,15 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
 
 });
 
+// INSTRUCTOR ROUTES
+
+$routes->group('instructor', ['namespace' => '\App\Controllers\Instructor'], function($routes) {
+    $routes->get('/', 'ViewsController::index');
+    $routes->get('login', 'ViewsController::login');
+    $routes->get('dashboard', 'ViewsController::dashboard');
+    $routes->get('discover', 'ViewsController::discover');
+});
+
 // API ROUTES
 
 $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($routes) {
@@ -63,6 +98,8 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
     // API ROUTES FOR USERS
     $routes->group('users', function($routes) {
         $routes->get('/', 'Users::getUsers');
+        $routes->get('my', 'Users::getMyData');
+        $routes->get('my/admins', 'Users::getOtherAdmins');
         $routes->get('(:num)', 'Users::getUsers/$1');
         $routes->get('students', 'Users::getStudents');
         $routes->get('students/(:num)', 'Users::getStudents/$1');
@@ -87,11 +124,11 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
     $routes->get('subjects', 'Subjects::getSubjects');
     $routes->get('subjects/(:num)', 'Subjects::getSubjects/$1');
 
-    $routes->get('years', 'Year::getYears');
-    $routes->get('years/(:num)', 'Year::getYears/$1');
+    $routes->get('years', 'Years::getYears');
+    $routes->get('years/(:num)', 'Years::getYears/$1');
 
-    $routes->get('sections', 'Section::getSections');
-    $routes->get('sections/(:num)', 'Section::getSections/$1');
+    $routes->get('sections', 'Sections::getSections');
+    $routes->get('sections/(:num)', 'Sections::getSections/$1');
     
     $routes->get('smtp', 'Smtp::getSmtp');
 
@@ -103,5 +140,64 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
         $routes->post('disable/(:any)', 'Controls::disable/$1');
         $routes->post('delete/(:any)', 'Controls::delete/$1');
     });
+
+    $routes->group('users', function($routes) {
+        $routes->get('identify/(:num)', 'Users::getUserRole/$1');
+        $routes->post('create/(:any)', 'Users::create_user/$1');
+        $routes->post('update/(:any)/(:num)', 'Users::update_user/$1/$2');
+        $routes->post('enroll/(:num)', 'Users::enroll_user/$1');
+        $routes->post('enroll/update/(:num)', 'Users::update_enroll_user/$1');
+    });
+
+    $routes->group('courses', function($routes) {
+        $routes->post('create', 'Courses::create');
+        $routes->post('update/(:num)', 'Courses::update/$1');
+    });
+
+    $routes->group('subjects', function($routes) {
+        $routes->post('create', 'Subjects::create');
+        $routes->post('update/(:num)', 'Subjects::update/$1');
+    });
+
+    $routes->group('sections', function($routes) {
+        $routes->post('create', 'Sections::create');
+        $routes->post('update/(:num)', 'Sections::update/$1');
+    });
+
+    $routes->group('years', function($routes) {
+        $routes->post('create', 'Years::create');
+        $routes->post('update/(:num)', 'Years::update/$1');
+    });
+
+    $routes->group('smtp', function($routes) {
+        $routes->post('update', 'Smtp::update');
+    });
+
+    $routes->group('my', function($routes) {
+        $routes->post('info', 'Profile::update_info');
+        $routes->post('bio', 'Profile::update_bio');
+        $routes->post('avatar', 'Profile::update_avatar');
+        $routes->post('banner', 'Profile::update_banner');
+        $routes->post('password', 'Profile::update_password');
+    });
+
+
+    // PARSING FILE FOR BULK UPLOAD
+
+    $routes->group('bulk', function($routes) {
+        $routes->post('parse/file', 'Bulk\ParseFile::index');
+        $routes->post('parse/file/upload', 'Bulk\UploadFile::index');
+    });
+
+    // GENERATE REPORT
+
+    $routes->group('generate', function($routes) {
+        $routes->post('report', 'Reports::index');
+    });
+
+    // INSTRUCTORS API
+
+    $routes->post('user/login', 'AuthUser::login');
+    $routes->get('user/logout', 'AuthUser::logout');
 
 });

@@ -10,21 +10,21 @@
 <div class="wrapper">
     <!-- sidebar -->
     <?php 
-        include(APPPATH . 'Modules/Admin/Views/templates/sidebar.php');
+        include(APPPATH . 'Views/Admin/templates/sidebar.php');
     ?>
 
     <div id="content">
         <div class="site-header px-3">
             <!-- navbar -->
             <?php 
-                include(APPPATH . 'Modules/Admin/Views/templates/navbar.php');
+                include(APPPATH . 'Views/Admin/templates/navbar.php');
             ?>
             <div class="container">
                 <div class="mt-5">
                     <div class="text-banner">
-                        <h3>Add <?php echo ucwords($parsing["target"]); ?></h3>
+                        <h3>Add Bulk Data</h3>
                         <?php 
-                            include(APPPATH . 'Modules/Admin/Views/templates/text-banner.php');
+                            include(APPPATH . 'Views/Admin/templates/text-banner.php');
                         ?>
                     </div>
                 </div>
@@ -33,11 +33,14 @@
         <div id="dashboard" class="mx-2">
             <div class="container">
                 <div class="card">
+                    <?php 
+                        $uri = request()->uri->getSegments();
+                        $type = end($uri);
+                        echo csrf_field();
+                    ?>
                     <div class="card-header">
                         <div class="d-flex gap-2">
-                            <a href="/<?php echo $path ?>/add/single" class="btn btn-outline-primary float-end d-flex align-items-center"><i class='bx bx-plus'></i></a>
-                            <a href="/<?php echo $path ?>/add/bulk" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
-                            <a href="/<?php echo $path ?>" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
+                            <a href="<?= previous_url() ?>" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -48,7 +51,7 @@
                             </div>
                             <div class="droparea">
                                 <input type="file" name="bulk_file" id="bulk_file" class="form-control">
-                                <input type="hidden" name="target" id="target" value="<?php echo $parsing["target"] ?>">
+                                <input type="hidden" name="type" id="type" value="<?= $type ?>">
                             </div>
                             <hr>
                             <div class="section-tle mt-3 mb-3">
@@ -71,3 +74,8 @@
         </div>
     </div>
 </div>
+
+<script type="module">
+import { parseBulk } from "/assets/js/admin/modules/parseBulk.js";
+parseBulk();
+</script>

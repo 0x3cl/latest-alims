@@ -1,0 +1,8 @@
+username,email,password,firstname,lastname,contact,address,province,city,birthday,gender
+student4,test4@example.com,student123,Sarah,Williams,8765432109,"321 Pine St",Laguna,"Santa Rosa",2002-04-04,female
+student5,test5@example.com,student123,Michael,Brown,3456789012,"654 Maple St","Metro Manila",Makati,1998-05-05,male
+student6,test6@example.com,student123,Lisa,Miller,7654321098,"987 Cedar St",Batangas,"Batangas City",2003-06-06,female
+student7,test7@example.com,student123,David,Davis,4567890123,"210 Walnut St","Metro Manila",Caloocan,1997-07-07,male
+student8,test8@example.com,student123,Amy,Anderson,6543210987,"543 Birch St","Metro Manila",Parañaque,2004-08-08,female
+student9,test9@example.com,student123,James,Wilson,5678901234,"876 Ash St",Cavite,Dasmarinas,1996-09-09,male
+student10,test10@example.com,student123,Emily,Thomas,4321098765,"1098 Oakwood St",Rizal,Antipolo,2005-10-10,female
