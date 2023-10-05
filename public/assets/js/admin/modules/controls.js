@@ -1,5 +1,7 @@
 import {getJWTtoken} from './dataUtils.js';
-import {generateCSRFToken, generateRandomCode, reloadTableContent, multiSelectTable, toastMessage} from './utils.js';
+import {generateCSRFToken, generateRandomCode, 
+        reloadTableContent, multiSelectTable, 
+        toastMessage, clearFields} from './utils.js';
 import {deleteModal } from './modal.js';
 
 export async function controls(table) {
@@ -32,7 +34,15 @@ export async function controls(table) {
                                 xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
                                 xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
                             }, success: function(response) {
-                                console.log(response);
+                                response.forEach((res, index) => {
+                                    setTimeout(() => {
+                                        if(res.status == 200) {
+                                            toastMessage('success', res.message);
+                                        } else {
+                                            toastMessage('error', res.message);
+                                        }
+                                    }, index * 800)
+                                });
                             }
                         }).done(function() {
                             generateCSRFToken();
@@ -60,7 +70,15 @@ export async function controls(table) {
                         xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
                         xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
                     }, success: function(response) {
-                        console.log(response);
+                        response.forEach((res, index) => {
+                            setTimeout(() => {
+                                if(res.status == 200) {
+                                    toastMessage('success', res.message);
+                                } else {
+                                    toastMessage('error', res.message);
+                                }
+                            }, index * 800)
+                        });
                     }
                 }).done(function() {
                     generateCSRFToken();
@@ -119,22 +137,18 @@ export async function controls(table) {
                 xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
                 xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
             }, success: function(response) {
+                console.log(response);
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
             $('#btn-proceed').attr('disabled', false);
-            $('input, select').val('');
+            clearFields();
             generateCSRFToken();
         });
         
@@ -176,19 +190,14 @@ export async function controls(table) {
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
             $('#btn-proceed').attr('disabled', false);
-            $('input, select').val('')
+            clearFields();
             generateCSRFToken();
         });
     });
@@ -216,19 +225,14 @@ export async function controls(table) {
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
             $('#btn-proceed').attr('disabled', false);
-            $('input, select').val('');
+            clearFields();;
             generateCSRFToken();
         });
         
@@ -264,19 +268,14 @@ export async function controls(table) {
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
             $('#btn-proceed').attr('disabled', false);
-            $('input, select').val('');
+            clearFields();;
             generateCSRFToken();
         });
         
@@ -303,19 +302,14 @@ export async function controls(table) {
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
             $('#btn-proceed').attr('disabled', false);
-            $('input, select').val('')
+            clearFields();
             generateCSRFToken();
         });
         
@@ -376,14 +370,9 @@ export async function controls(table) {
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
@@ -416,14 +405,9 @@ export async function controls(table) {
                 if(response.status == 200) {
                     toastMessage('success', response.message);
                 } else {
-                    const err = response.message;
-                    if(typeof err == 'object') {
-                        for(const key in err) {
-                            toastMessage('error', err[key]);
-                        }
-                    } else if(typeof err == 'string') {
-                        toastMessage('error', err);
-                    }
+                    let err = response.message;
+                    err = Object.values(err);
+                    toastMessage('error', err[0]); 
                 }
             }
         }).done(function(){
@@ -431,8 +415,7 @@ export async function controls(table) {
             $('input').val('');
             generateCSRFToken();
         });
-    })
-
+    });
 
     function getAllSectedID() {
         const single = $('.multi-select-single');        

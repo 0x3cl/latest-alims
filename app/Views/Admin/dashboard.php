@@ -13,7 +13,7 @@
             <div class="container">
                 <div class="mt-5">  
                     <div class="text-banner">
-                        <h3>Welcome Back, <?php echo ucwords($data['firstname'] . ' ' . $data['lastname']); ?></h3>
+                        <h3>Welcome Back, <?php echo ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']); ?></h3>
                         <?php 
                             include(APPPATH . '/Views/Admin/templates/text-banner.php');
                         ?>

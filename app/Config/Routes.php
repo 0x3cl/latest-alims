@@ -13,10 +13,8 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
     $routes->get('/', 'ViewsController::index');
     $routes->get('login', 'ViewsController::login');
     $routes->get('dashboard', 'ViewsController::dashboard');
-    $routes->get('discover', 'ViewsController::discover');
 
-
-    $routes->get('bulk/upload/(:any)', 'ViewsController::create_bulk');
+    $routes->get('bulk/upload', 'ViewsController::create_bulk');
 
 
     // ACCOUNT GROUP ROUTES
@@ -25,6 +23,8 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
         $routes->get('students/add/single', 'ViewsController::create_students');
         $routes->get('instructors', 'ViewsController::instructors');
         $routes->get('instructors/add/single', 'ViewsController::create_instructors');
+
+        $routes->get('update/user/single/(:num)', 'ViewsController::update_user/$1');
 
         $routes->get('administrators', 'ViewsController::admins');
         $routes->get('administrators/add/single', 'ViewsController::create_administrators');
@@ -66,6 +66,12 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
         $routes->get('filemanager', 'ViewsController::filemanager');
         $routes->get('reports', 'ViewsController::reports');
         $routes->get('backups', 'ViewsController::backup');
+
+        $routes->group('backups', function($routes) {
+            $routes->get('/', 'ViewsController::backup');
+            $routes->get('(:any)(:any)/download', 'BackUpController::download/$1');
+            $routes->post('(:any)/customize/download', 'BackUpController::download/$1');
+        });
     });
 
     // SETTINGS GROUP ROUTES

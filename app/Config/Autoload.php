@@ -99,6 +99,10 @@ class Autoload extends AutoloadConfig
      * @phpstan-var list<string>
      */
     public $helpers = [
-        'formatter_helper'
+        'formatter_helper',
+        'file',
+        'filesystem',
+        'directory',
+        'cookie'
     ];
 }

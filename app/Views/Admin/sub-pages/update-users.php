@@ -13,7 +13,7 @@
             <div class="container">
                 <div class="mt-5">
                     <div class="text-banner">
-                        <h3>Update <?php echo user_role($user[0]->role) ?> Account</h3>
+                        <h3>Update <?php echo ucwords(user_role($requested_data['role'])) ?> Account</h3>
                         <?php 
                             include(APPPATH . 'Views/Admin/templates/text-banner.php');
                         ?>
@@ -25,80 +25,71 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header d-flex justify-content-end gap-2">
-                        <a href="/admin/account/<?php echo strtolower(user_role($user[0]->role).'s') ?>/add/single" class="btn btn-outline-primary float-end d-flex align-items-center"><i class='bx bx-plus'></i></a>
-                        <a href="/admin/account/<?php echo strtolower(user_role($user[0]->role).'s') ?>/update/bulk" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
-                        <a href="/admin/account/<?php echo strtolower(user_role($user[0]->role).'s') ?>/" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
+                        <a href="/admin/account/<?= user_role($requested_data['role']) . 's' . '/add/single' ?>" class="btn btn-outline-primary float-end d-flex align-items-center"><i class='bx bx-plus'></i></a>
+                        <a href="/admin/bulk/upload" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
+                        <a href="/admin/account/<?= user_role($requested_data['role']) . 's' ?>" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
                     </div>
                     <div class="card-body">
-                        <form action="/api/single/update/user/<?php echo strtolower(user_role($user[0]->role).'s')?>/<?php echo $user[0]->user_id ?>" method="post">
+                        <form id="update-users" method="post">
                             <div class="row mt-4">
-                                <?php 
-                                     if (!empty($response)) {
-                                        echo show_alert($response);
-                                    }
-                                ?>
-                                <?= csrf_field() ?>
+                                <?= csrf_field(); ?>
                                 <div class="section-tle mb-3">
                                     <h5>Personal Information</h5>
                                     <small class="text-muted">All <span class="text-danger">*</span> are required</small>
                                 </div>
                                 <div class="col-12 col-md-12 mb-3">
                                     <label>Username <span class="text-danger">*</span> </label>
-                                    <input type="text" name="username" id="username" class="form-control" placeholder="Username" value="<?php echo strtoupper($user[0]->username) ?>" disabled>
-                                    <?php echo (!empty($response["message"]["username"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["username"]).'</small>' : '') ?>
+                                    <input type="text" name="username" id="username" class="form-control" placeholder="Username" value="<?= strtoupper($requested_data['username']) ?>" disabled>
+                                </div>
+                                <div class="col-12 col-md-12 mb-3">
+                                    <label>Role <span class="text-danger">*</span> </label>
+                                    <input type="text" name="role" id="role" class="form-control" placeholder="Username" value="<?= strtoupper(user_role($requested_data['role'])) ?>" disabled>
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label>Firstname <span class="text-danger">*</span> </label>
-                                    <input type="text" name="firstname" id="firstname" class="form-control <?php echo (!empty($response["message"]["firstname"]) ? 'is-invalid' : '') ?>" placeholder="eg. Carl" value="<?php echo ucwords($user[0]->firstname); ?>">
-                                    <?php echo (!empty($response["message"]["firstname"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["firstname"]).'</small>' : '') ?>
+                                    <input type="text" name="firstname" id="firstname" class="form-control" placeholder="eg. Carl" value="<?= ucwords($requested_data['firstname']) ?>">
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label>Last Name <span class="text-danger">*</span> </label>
-                                    <input type="text" name="lastname" id="lastname" class="form-control <?php echo (!empty($response["message"]["firstname"]) ? 'is-invalid' : '') ?>" placeholder="eg. Llemos" value="<?php echo ucwords($user[0]->lastname); ?>">
-                                    <?php echo (!empty($response["message"]["lastname"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["lastname"]).'</small>' : '') ?>
+                                    <input type="text" name="lastname" id="lastname" class="form-control" placeholder="eg. Llemos" value="<?= ucwords($requested_data['lastname']) ?>">
                                 </div>
                                 <div class="col-12 col-md-12 mb-3">
                                     <label>Email <span class="text-danger">*</span> </label>
-                                    <input type="text" name="email" id="email" class="form-control <?php echo (!empty($response["message"]["email"]) ? 'is-invalid' : '') ?>" placeholder="carlllemos@example.com" value="<?php echo $user[0]->email?>">
-                                    <?php echo (!empty($response["message"]["email"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["email"]).'</small>' : '') ?>
+                                    <input type="text" name="email" id="email" class="form-control" placeholder="carlllemos@example.com" value="<?= $requested_data['email'] ?>">
                                 </div>
                                 <div class="col-12 col-md-4 mb-3">
                                     <label>Contact <span class="text-danger">*</span> </label>
-                                    <input type="text" name="contact" id="contact" class="form-control <?php echo (!empty($response["message"]["contact"]) ? 'is-invalid' : '') ?>" placeholder="(09)" value="<?php echo $user[0]->contact?>">
-                                    <?php echo (!empty($response["message"]["contact"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["contact"]).'</small>' : '') ?>
+                                    <input type="text" name="contact" id="contact" class="form-control" placeholder="(09)" value="<?= $requested_data['contact'] ?>">
                                 </div>
                                 <div class="col-12 col-md-8 mb-3">
                                     <label>Address <span class="text-danger">*</span> </label>
-                                    <input type="text" name="address" id="address" class="form-control <?php echo (!empty($response["message"]["address"]) ? 'is-invalid' : '') ?>" placeholder="Building, Block, Lot, Barangay" value="<?php echo $user[0]->address?>">
-                                    <?php echo (!empty($response["message"]["address"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["address"]).'</small>' : '') ?>
+                                    <input type="text" name="address" id="address" class="form-control" placeholder="Building, Block, Lot, Barangay" value="<?= ucwords($requested_data['address']) ?>">
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
-                                    <label>District/Province</label>
-                                    <select name="state" id="state" class="form-control <?php echo (!empty($response["message"]["state"]) ? 'is-invalid' : '') ?>">
+                                    <label>District/Province <span class="text-danger">*</span> </label></label>
+                                    <select name="state" id="state" class="form-control">
                                         <option value="">Choose</option>
+                                        <option value="<?= ucwords($requested_data['province']) ?>" selected><?=  ucwords($requested_data['province']) ?></option>
                                     </select>
-                                    <?php echo (!empty($response["message"]["state"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["state"]).'</small>' : '') ?>
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
-                                    <label>City/Municipality</label>
-                                    <select name="city" id="city" class="form-control <?php echo (!empty($response["message"]["city"]) ? 'is-invalid' : '') ?>">
+                                    <label>City/Municipality <span class="text-danger">*</span> </label></label>
+                                    <select name="city" id="city" class="form-control">
                                         <option value="">Select District / Province</option>
+                                        <option value="<?= ucwords($requested_data['city']) ?>" selected><?= ucwords($requested_data['city']) ?></option>
                                     </select>
-                                    <?php echo (!empty($response["message"]["city"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["city"]).'</small>' : '') ?>
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label>Birthday <span class="text-danger">*</span> </label>
-                                    <input type="date" name="birthday" id="birthday"  min="1995-01-01" max="2005-12-31" class="form-control <?php echo (!empty($response["message"]["birthday"]) ? 'is-invalid' : '') ?>" placeholder="Birthday" value="<?php echo $user[0]->birthday ?>">
-                                    <?php echo (!empty($response["message"]["birthday"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["birthday"]).'</small>' : '') ?>
+                                    <input type="date" name="birthday" id="birthday" min="1995-01-01" max="2005-12-31" class="form-control" placeholder="Birthday" value="<?= $requested_data['birthday'] ?>">
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label>Gender <span class="text-danger">*</span> </label>
-                                    <select name="gender" id="gender" class="form-control <?php echo (!empty($response["message"]["gender"]) ? 'is-invalid' : '') ?>">
+                                    <select name="gender" id="gender" class="form-control">
                                         <option value="">Choose</option>
-                                        <option value="male" <?php echo (strtolower($user[0]->gender) === 'male' ? 'selected' : '')?>>Male</option>
-                                        <option value="female <?php echo (strtolower($user[0]->gender) === 'female' ? 'selected' : '')?>">Female</option>
+                                        <option value="male" <?= $requested_data['gender'] === 'male' ? 'selected' : '' ?>>Male</option>
+                                        <option value="female" <?= $requested_data['gender'] === 'female' ? 'selected' : '' ?>>Female</option>
                                     </select>
-                                    <?php echo (!empty($response["message"]["gender"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["gender"]).'</small>' : '') ?>
                                 </div>
                             </div>
                             <button class="btn btn-primary mt-3 float-end">Proceed</button>
@@ -109,27 +100,66 @@
         </div>
     </div>
 </div>
-<script>
-    const username = '<?php echo $user[0]->username; ?>'
+
+
+<script type="module">
+import{address} from '/assets/js/admin/modules/address.js';
+import {generateCSRFToken, toastMessage} from '/assets/js/admin/modules/utils.js';
+import {getJWTtoken} from '/assets/js/admin/modules/dataUtils.js';
+
+address();
+
+const response = await getJWTtoken();
+const jwt_token = response.token;
+let role;
+
+
+$('#update-users').on('submit', function(e) {
+    e.preventDefault();
+    
+    const firstname = DOMPurify.sanitize($('#firstname').val().trim());
+    const lastname = DOMPurify.sanitize($('#lastname').val().trim());
+    const email = DOMPurify.sanitize($('#email').val().trim());
+    const contact = DOMPurify.sanitize($('#contact').val().trim());
+    const address = DOMPurify.sanitize($('#address').val().trim());
+    const state = DOMPurify.sanitize($('#state').val().trim());
+    const city = DOMPurify.sanitize($('#city').val().trim());
+    const birthday = DOMPurify.sanitize($('#birthday').val().trim());
+    const gender = DOMPurify.sanitize($('#gender').val().trim());
+    const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
+
+    $.ajax({
+        url: `/api/v1/users/update/<?= user_role($requested_data['role']) . '/' . $requested_data['id'] ?>`,
+        method: 'POST',
+        dataType: 'json',
+        data: {
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            contact: contact,
+            address: address,
+            state: state,
+            city: city,
+            birthday: birthday,
+            gender: gender,
+        }, beforeSend: function(xhr) {
+            $('#btn-proceed').attr('disabled', true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+        }, success: function(response) {
+            if(response.status == 200) {
+                toastMessage('success', response.message); 
+            } else {
+                let err = response.message;
+                err = Object.values(err);
+                toastMessage('error', err[0]); 
+            }
+        }
+    }).done(function(){
+        $('#btn-proceed').attr('disabled', false);
+        generateCSRFToken();
+    });
+});
+
+
 </script>
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Deletion</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>To proceed, please type <code style="font-size: inherit;"><?php echo $user[0]->username; ?></code></p>
-                <div class="input-group">
-                    <span class="input-group-text"><code>Open3LMS/delete/</code></span>
-                    <input type="hidden" name="user_id" id="user_id" value="<?php echo $user[0]->id; ?>">
-                    <input type="text" name="code" id="code" class="form-control">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="process-delete">Continue</button>
-            </div>
-        </div>
-    </div>
-</div>

@@ -133,8 +133,6 @@
         }
     });
 
-   
-
     coursesData().then((response) => {
         const data = response.data;
         $('select#course').html(DOMPurify.sanitize(

@@ -34,8 +34,6 @@
             <div class="container">
                 <div class="card">
                     <?php 
-                        $uri = request()->uri->getSegments();
-                        $type = end($uri);
                         echo csrf_field();
                     ?>
                     <div class="card-header">
@@ -49,9 +47,20 @@
                                 <h5>Import Bulk Data</h5>
                                 <small class="text-muted">Only accepts .csv .xlsx .xls .json file formats</small>
                             </div>
+                            <div class="bulk-type">
+                                <select name="type" id="type" class="form-control mb-2">
+                                    <option value="">Choose Type</option>
+                                    <option value="students">Students</option>
+                                    <option value="instructors">Instructors</option>
+                                    <option value="administrators">Students</option>
+                                    <option value="courses">Courses</option>
+                                    <option value="subjects">Subjects</option>
+                                    <option value="sections">Sections</option>
+                                    <option value="years">Years</option>
+                                </select>
+                            </div>
                             <div class="droparea">
                                 <input type="file" name="bulk_file" id="bulk_file" class="form-control">
-                                <input type="hidden" name="type" id="type" value="<?= $type ?>">
                             </div>
                             <hr>
                             <div class="section-tle mt-3 mb-3">

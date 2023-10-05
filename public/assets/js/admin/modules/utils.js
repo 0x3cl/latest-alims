@@ -64,6 +64,9 @@ export function userRole(role) {
 export function reloadTableContent() {
     $( "#card-data" ).load(window.location.href + " #card-data" );
     callAll();
+    setTimeout(function() {
+        multiSelectTable();
+    }, 500);
 }
 
 export function multiSelectTable() {
@@ -85,18 +88,18 @@ export function get_date() {
 }
 
 
-export function toastMessage(icon, message) {
+export function toastMessage(status, message) {
     $.toast({
         heading: "System Message",
         text: `${message}`,
         showHideTransition: "fade",
-        icon: `${icon}`,
+        icon: `${status}`,
         position: "top-right",
         allowToastClose: true,
         hideAfter: 3500,
         stack: 5,
-        loaderBg: `${icon === "error" ? "red" : "green"}`
-      });
+        loaderBg: `${status === "error" ? "red" : "green"}`
+    });   
       
 }
 
@@ -107,4 +110,8 @@ export function isEmpty(data) {
 
     const trimmedData = data.trim();
     return trimmedData === '' ? 'Not yet updated' : trimmedData;
+}
+
+export function clearFields() {
+    $('input, select').val('');
 }

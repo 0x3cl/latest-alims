@@ -51,16 +51,6 @@
                                                         </a>
                                                     </div>
                                                     <div class="d-flex dropdown-sm-text">
-                                                        <a href="backups/database/admin_roles/download" class="nav-link text-dark">
-                                                            Admin Roles Table
-                                                        </a>
-                                                    </div>
-                                                    <div class="d-flex dropdown-sm-text">
-                                                        <a href="backups/database/user_roles/download" class="nav-link text-dark">
-                                                            User Roles Table
-                                                        </a>
-                                                    </div>
-                                                    <div class="d-flex dropdown-sm-text">
                                                         <a href="backups/database/admins/download" class="nav-link text-dark">
                                                             Admin Table
                                                         </a>
@@ -128,10 +118,11 @@
                                                 </button>
                                                 <div class="dropdown-menu mt-3 p-2">
                                                     <?php 
-                                                        if(empty($logs)) {
+
+                                                        if(empty($requested_data['logs'])) {
 
                                                         } else {
-                                                            foreach($logs as $log) {
+                                                            foreach($requested_data['logs'] as $log) {
                                                                 echo '
                                                                 <div class="d-flex dropdown-sm-text">
                                                                     <a href="backups/logs/'.$log.'/download" class="nav-link text-dark">
@@ -164,7 +155,7 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Customize Table Download</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="/admin/settings/backups/database/customize/download" method="post">
+            <form action="/admin/system/backups/database/customize/download" method="post">
                 <div class="modal-body">
                     <div class="row">
                         <?= csrf_field() ?>

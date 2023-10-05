@@ -1,5 +1,5 @@
 import {getJWTtoken} from './dataUtils.js';
-import {generateCSRFToken, toastMessage} from './utils.js';
+import {generateCSRFToken, toastMessage, clearFields} from './utils.js';
 
 export async function parseBulk() {
 
@@ -70,7 +70,7 @@ export async function parseBulk() {
                 }
             }
         }).done(function() {
-            $('#bulk_file').val('');
+            clearFields();
             generateCSRFToken();
         });
 

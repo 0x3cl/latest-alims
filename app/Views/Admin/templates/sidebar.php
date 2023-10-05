@@ -17,14 +17,6 @@
                         <span class="icon-name">Dashboard</span>
                     </a>
                 </li>
-                <li class="list-unstyled-item">
-                    <a href="/admin/discover" class="nav-link d-flex align-items-center gap-2 <?php echo ($active === 'discover') ? 'active' : ''; ?>">
-                        <div class="icon">
-                            <i class='bx bx-search' ></i>
-                        </div>
-                        <span class="icon-name">Discover</span>
-                    </a>
-                </li>
                 <li class="list-unstyled-item">      
                     <a href="javascript:void(0)" class="nav-link d-flex align-items-center gap-2 <?php echo ($active === 'accounts') ? 'active' : ''; ?>" id="sidebar-menu-link">
                         <div class="icon">
@@ -130,14 +122,6 @@
                                     <span class="icon-name">Years</span>
                                 </a>
                             </li>
-                            <li class="list-unstyled-item">
-                                <a href="/admin/categories" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
-                                    <div class="icon">
-                                        <i class='bx bxs-category' ></i>
-                                    </div>
-                                    <span class="icon-name">Categories</span>
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </li>
@@ -202,30 +186,6 @@
                     </a>
                     <div class="dropdown-content" id="pages-dropdown">
                         <ul class="list-unstyled collapse">
-                            <li class="list-ustyled-item">
-                                <a href="/admin/system/widgets" class="nav-link d-flex align-items-center gap-2">
-                                    <div class="icon">
-                                        <i class='bx bxs-widget'></i>
-                                    </div>
-                                    <span class="icon-name">Widgets</span>
-                                </a>
-                            </li>
-                            <li class="list-unstyled-item">
-                                <a href="/admin/system/themes" class="nav-link d-flex align-items-center gap-2">
-                                    <div class="icon">
-                                        <i class='bx bx-minus-back'></i>
-                                    </div>
-                                    <span class="icon-name">Themes</span>
-                                </a>
-                            </li>
-                            <li class="list-unstyled-item">
-                                <a href="/admin/system/computations" class="nav-link d-flex align-items-center gap-2">
-                                    <div class="icon">
-                                        <i class='bx bx-calculator'></i>
-                                    </div>
-                                    <span class="icon-name">Computations</span>
-                                </a>
-                            </li>
                             <li class="list-unstyled-item">
                                 <a href="/admin/system/smtp" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">

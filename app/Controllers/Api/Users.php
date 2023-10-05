@@ -430,70 +430,91 @@ class Users extends BaseController
             case 'student':
             case 'instructor':
                 return $this->updateUser($type, $id);
-            case 'admin':
+            case 'administrator':
                 return $this->updateAdmin($id);
         }
     }
 
     public function updateUser($type, $id) {
 
-        $firstname = $this->request->getPost('firstname');
-        $lastname = $this->request->getPost('lastname');
-        $email = $this->request->getPost('email');
-        $contact = $this->request->getPost('contact');
-        $address = $this->request->getPost('address');
-        $province = $this->request->getPost('state');
-        $city = $this->request->getPost('city');
-        $birthday = $this->request->getPost('birthday');
-        $gender = $this->request->getPost('gender');
-
-        $user_data = [
-            'email' => strtolower($email),
-            'date_updated' => get_timestamp()
+        $rules = [
+            'firstname' => ['rules' => 'required'],
+            'lastname' => ['rules' => 'required'],
+            'email' => ['rules' => 'required|valid_email'],
+            'contact' => ['rules' => 'required|min_length[11]|max_length[11]'],
+            'address' => ['rules' => 'required'],
+            'state' => ['rules' => 'required'],
+            'city' => ['rules' => 'required'],
+            'birthday' => ['rules' => 'required'],
+            'gender' => ['rules' => 'required'],
         ];
 
-        $info_data = [
-            'firstname' => strtolower($firstname),
-            'lastname' => strtolower($lastname),
-            'contact' => $contact,
-            'address' => strtolower($address),
-            'province' => strtolower($province),
-            'city' => strtolower($city),
-            'birthday' => $birthday,
-            'gender' => strtolower($gender),
-        ];
+        if(!$this->validate($rules)) {
+            $response = [
+                'status' => 500,
+                'message' => $this->validator->getErrors()
+            ];
 
-        try {
-            
-            $find = $this->user_model->where(['id' => $id])->countAllResults();
+            return $this->respond($response);
+        } else {
+            $firstname = $this->request->getPost('firstname');
+            $lastname = $this->request->getPost('lastname');
+            $email = $this->request->getPost('email');
+            $contact = $this->request->getPost('contact');
+            $address = $this->request->getPost('address');
+            $province = $this->request->getPost('state');
+            $city = $this->request->getPost('city');
+            $birthday = $this->request->getPost('birthday');
+            $gender = $this->request->getPost('gender');
 
-            if($find > 0) {
-                $find_data = $this->user_model->find($id);
-                $role = $find_data['role'];
-                $model = $role == 1 ? $this->instructor_model : ($role == 2 ? $this->student_model : '');
+            $user_data = [
+                'email' => strtolower($email),
+                'date_updated' => get_timestamp()
+            ];
+
+            $info_data = [
+                'firstname' => strtolower($firstname),
+                'lastname' => strtolower($lastname),
+                'contact' => $contact,
+                'address' => strtolower($address),
+                'province' => strtolower($province),
+                'city' => strtolower($city),
+                'birthday' => $birthday,
+                'gender' => strtolower($gender),
+            ];
+
+            try {
                 
-                if($this->user_model->where('id', $id)->set($user_data)->update()
-                    && $model->where('user_id', $id)->set($info_data)->update()) {
+                $find = $this->user_model->where(['id' => $id])->countAllResults();
+
+                if($find > 0) {
+                    $find_data = $this->user_model->find($id);
+                    $role = $find_data['role'];
+                    $model = $role == 1 ? $this->instructor_model : ($role == 2 ? $this->student_model : '');
+                    
+                    if($this->user_model->where('id', $id)->set($user_data)->update()
+                        && $model->where('user_id', $id)->set($info_data)->update()) {
+                        $response = [
+                            'status' => 200,
+                            'message' => $type . ' account #' .$id. ' updated' 
+                        ];
+                        return $this->respond($response);
+                    }
+
+                } else {
                     $response = [
-                        'status' => 200,
-                        'message' => $type . ' account #' .$id. ' updated' 
+                        'status' => 404,
+                        'message' => $type . ' account #' .$id. ' does not exists' 
                     ];
                     return $this->respond($response);
                 }
-
-            } else {
+            } catch (\Exception $e) {
                 $response = [
-                    'status' => 404,
-                    'message' => $type . ' account #' .$id. ' does not exists' 
-                ];
+                    'status' => 500,
+                    'message' => 'error: ' . strtolower($e->getMessage())
+                ];   
                 return $this->respond($response);
             }
-        } catch (\Exception $e) {
-            $response = [
-                'status' => 500,
-                'message' => 'error: ' . strtolower($e->getMessage())
-            ];   
-            return $this->respond($response);
         }
     }
 

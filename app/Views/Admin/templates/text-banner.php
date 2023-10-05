@@ -1,3 +1,3 @@
-<div>#<?php echo $data['id'] . ' [+] ' .$data['username'];  ?></div>
-<div><?php echo strtoupper(user_role($data['role'])); ?></div>
-<div><?php echo $data['email']; ?></div>
+<div>#<?php echo $current_userdata['id'] . ' [+] ' .$current_userdata['username'];  ?></div>
+<div><?php echo strtoupper(user_role($current_userdata['role'])); ?></div>
+<div><?php echo $current_userdata['email']; ?></div>

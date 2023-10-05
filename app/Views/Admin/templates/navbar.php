@@ -9,7 +9,7 @@
             </div>
         </div>
         <ul class="list-unstyled nav d-flex gap-4 align-items-center nav-ul">
-            <li class="nav-item position-relative d-none d-sm-flex">
+            <!-- <li class="nav-item position-relative d-none d-sm-flex">
                 <div class="dropdown">
                     <a class="nav-link active" data-bs-toggle="dropdown">
                         <i class='bx bx-chat'></i>
@@ -52,17 +52,17 @@
                         </div>
                     </div>
                 </div>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <div class="dropdown">
                     <div class="profile" data-bs-toggle="dropdown">
                         <div class="d-flex align-items-center gap-2" id="navbar-profile">
                             <div>
-                                <img src="<?= base_url('./uploads/avatar/'.$data['avatar']) ?>" id="img-profile">
+                                <img src="<?= base_url('./uploads/avatar/'.$current_userdata['avatar']) ?>" id="img-profile">
                             </div>
                             <div>
-                                <div class="dropdown-toggle"><?= ucwords($data['firstname'] . ' ' . $data['lastname']) ?></div>
-                                <div>#<?= $data['id'] ?></div>
+                                <div class="dropdown-toggle"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></div>
+                                <div>#<?= $current_userdata['id'] ?></div>
                             </div>
                         </div>
                     </div>

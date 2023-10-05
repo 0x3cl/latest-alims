@@ -26,7 +26,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-end gap-2">
                         <a href="/admin/account/administrators/add/single" class="btn btn-outline-primary float-end d-flex align-items-center"><i class='bx bx-plus'></i></a>
-                        <a href="/admin/bulk/upload/administrators" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
+                        <a href="/admin/bulk/upload" class="btn btn-outline-secondary float-end d-flex align-items-center"><i class='bx bx-file'></i></a>
                         <a href="/admin/account/administrators" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
                     </div>
                     <div class="card-body">
@@ -85,3 +85,8 @@
         </div>
     </div>
 </div>
+
+<script type="module">
+import {controls} from '/assets/js/admin/modules/controls.js';
+controls();
+</script>

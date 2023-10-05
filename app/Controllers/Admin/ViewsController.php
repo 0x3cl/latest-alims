@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\UserModel;
 use App\Models\AdminModel;
 
 class ViewsController extends BaseController
@@ -29,22 +30,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Dashboard | Admin',
                 'active' => 'dashboard',
-                'data' => $this->getCurrentUser()
-            ]
-        ];
-
-        return $this->renderView($page);
-    }
-
-    public function discover() {
-        $page = [
-            'view' => 'discover',
-            'dir' => 'Admin',
-            'isSubPage' => false,
-            'data' => [
-                'title' => 'Discover | Admin',
-                'active' => 'discover',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -59,7 +45,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Instructor Account | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -74,7 +60,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Students | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -89,7 +75,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Student Account | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -104,7 +90,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Instructors | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -119,14 +105,52 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Instructor Account | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
         return $this->renderView($page);
     }
 
+    public function update_user($id) {
+
+        if($this->isUserExists('user', $id)) {
+            $page = [
+                'view' => 'update-users',
+                'dir' => 'Admin',
+                'isSubPage' => true,
+                'data' => [
+                    'title' => 'Update User Accounts | Admin',
+                    'active' => 'accounts',
+                    'current_userdata' => $this->getCurrentUser(),
+                    'requested_data' => $this->getUserByID('user', $id)
+                ]
+            ];
+    
+            return $this->renderView($page);
+        } else {
+            $page = [
+                'view' => 'unauthorized',
+                'dir' => 'Admin',
+                'isSubPage' => false,
+                'data' => [
+                    'title' => 'User Notice | Admin',
+                    'active' => '',
+                    'current_userdata' => $this->getCurrentUser(),
+                    'error' => [
+                        'code' => 404,
+                        'message' => 'not found'
+                    ]
+                ]
+            ];
+    
+            return $this->renderView($page);
+        }
+        
+    }
+
     public function admins() {
+
         $page = [
             'view' => 'admin',
             'dir' => 'Admin',
@@ -134,7 +158,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Administrators | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -149,7 +173,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Admin Account | Admin',
                 'active' => 'accounts',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -164,7 +188,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Enrolled Students | Admin',
                 'active' => 'enroll',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -179,7 +203,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Enrolled Instructors | Admin',
                 'active' => 'enroll',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -194,7 +218,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Enroll User | Admin',
                 'active' => 'enroll',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -209,7 +233,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Courses | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -224,7 +248,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Course | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -239,7 +263,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Subjects | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -254,7 +278,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Subject | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -269,7 +293,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Sections | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -284,7 +308,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Section | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -299,7 +323,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'All Years | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -314,7 +338,29 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Create Year | Admin',
                 'active' => 'class_course',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function filemanager() {
+
+        $filemanagerController = new FileManagerController();
+
+        $page = [
+            'view' => 'filemanager',
+            'dir' => 'Admin',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'SMTP | System',
+                'active' => 'system',
+                'current_userdata' => $this->getCurrentUser(),
+                'requested_data' => [
+                    'current_path' => $current_path = request()->getGet('open'),
+                    'display' => $filemanagerController->openFolder()
+                ]
             ]
         ];
 
@@ -327,9 +373,9 @@ class ViewsController extends BaseController
             'dir' => 'Admin',
             'isSubPage' => false,
             'data' => [
-                'title' => 'SMTP | System',
+                'title' => 'File Manager | System',
                 'active' => 'system',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -344,7 +390,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Reports | System',
                 'active' => 'system',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -352,6 +398,15 @@ class ViewsController extends BaseController
     }
 
     public function backup() {
+
+        $path = ROOTPATH . '/public/uploads/logs/administrators';
+        $logs = scandir($path);
+        $logs = array_filter($logs, function($item) {
+            return $item !== '.' && $item !== '..';
+        });
+
+        rsort($logs);
+
         $page = [
             'view' => 'backup',
             'dir' => 'Admin',
@@ -359,7 +414,10 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Backup | System',
                 'active' => 'system',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser(),
+                'requested_data' => [
+                    'logs' =>  $logs
+                ]
             ]
         ];
 
@@ -374,7 +432,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'My Profile | Settings',
                 'active' => 'settings',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -389,26 +447,89 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Change Password | Settings',
                 'active' => 'settings',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
         return $this->renderView($page);
     }
     
+    public function getUserByID($role, $id) {
+
+        if($role === $role) {
+            $model = new UserModel();
+        } else if($role === 'admin') {
+            $model = new AdminModel();
+        }
+
+        $user_table = $this->getUserTable($id);
+
+        try {
+            $model->select('
+                users.id, firstname, lastname, contact, address, province, 
+                city, birthday, status, gender, email, username, role,
+                avatar, banner, bio, fb_link, ig_link, twi_link
+            ');
+            $model->join($user_table, 'users.id = '. $user_table . '.user_id');
+            $data = $model->find($id);
+            return $data;
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+    }
     
+    public function getUserTable($id) {
+        $model = new UserModel();
+        try {
+            $result = $model->find($id)['role'];
+            
+            if($result == 1) {
+                return 'instructors';
+            } else if($result == 2) {
+                return 'students';
+            }
+
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+    }
+
+    public function isUserExists($role, $id) {
+        
+        if($role === 'user') {
+            $model = new UserModel();
+        } else if($role === 'admin') {
+            $model = new AdminModel();
+        }
+        
+        try {
+            $result = $model->where('id', $id)->countAllResults();
+            if($result > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+    }
 
     public function getCurrentUser() {
         $user_session = session()->get('user_session');
         $uid = $user_session['id'];
         $model = new AdminModel;
-        $model->select('
-            id, firstname, lastname, contact, address, province, 
-            city, birthday, status, gender, email, username, role,
-            avatar, banner, bio, fb_link, ig_link, twi_link
-        ');
-        $data = $model->find($uid);
-        return $data;
+        try {
+            $model->select('
+                id, firstname, lastname, contact, address, province, 
+                city, birthday, status, gender, email, username, role,
+                avatar, banner, bio, fb_link, ig_link, twi_link
+            ');
+            $data = $model->find($uid);
+            return $data;
+        } catch(\Exception $e) {
+            print_r($e->getMessage());
+        }
     }
 
     public function renderView($page) {
