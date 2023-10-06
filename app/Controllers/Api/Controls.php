@@ -66,6 +66,8 @@ class Controls extends BaseController
             case 'year':
                 return $this->delete_year($ids);
                 break;
+            case 'enroll':
+                return $this->delete_enroll($ids);
             default:
                 return 'exxx';
         }

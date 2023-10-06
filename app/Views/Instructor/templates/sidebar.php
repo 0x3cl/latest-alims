@@ -10,19 +10,11 @@
         <div class="scrollable">
             <ul class="list-unstyled">
                 <li class="list-unstyled-item">
-                    <a href="/admin/dashboard" class="nav-link d-flex align-items-center gap-2 <?php echo ($active === 'dashboard') ? 'active' : ''; ?>">
+                    <a href="/instructor/dashboard" class="nav-link d-flex align-items-center gap-2 <?php echo ($active === 'dashboard') ? 'active' : ''; ?>">
                         <div class="icon">
                             <i class='bx bxs-dashboard' ></i>
                         </div>
                         <span class="icon-name">Dashboard</span>
-                    </a>
-                </li>
-                <li class="list-unstyled-item">
-                    <a href="/admin/discover" class="nav-link d-flex align-items-center gap-2 <?php echo ($active === 'discover') ? 'active' : ''; ?>">
-                        <div class="icon">
-                            <i class='bx bx-search' ></i>
-                        </div>
-                        <span class="icon-name">Discover</span>
                     </a>
                 </li>
                 <li class="list-unstyled-item">      
@@ -30,32 +22,16 @@
                         <div class="icon">
                             <i class='bx bxs-user-account'></i>
                         </div>
-                        <span class="icon-name dropdown-toggle">Accounts</span>
+                        <span class="icon-name dropdown-toggle">Courses</span>
                     </a>                      
                     <div class="dropdown-content" id="account-dropdown">
                         <ul class="list-unstyled collapse">
                             <li class="list-ustyled-item">
-                                <a href="/admin/account/students" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/account/students" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-group bx-flip-horizontal' ></i>
                                     </div>
                                     <span class="icon-name">Students</span>
-                                </a>
-                            </li>
-                            <li class="list-unstyled-item">
-                                <a href="/admin/account/instructors" class="nav-link d-flex align-items-center gap-2">
-                                    <div class="icon">
-                                        <i class='bx bx-group' ></i>
-                                    </div>
-                                    <span class="icon-name">Instructors</span>
-                                </a>
-                            </li>
-                            <li class="list-unstyled-item">
-                                <a href="/admin/account/administrators" class="nav-link d-flex align-items-center gap-2">
-                                    <div class="icon">
-                                        <i class='bx bxs-group'></i>      
-                                    </div>
-                                    <span class="icon-name">Admins</span>
                                 </a>
                             </li>
                         </ul>
@@ -66,24 +42,16 @@
                         <div class="icon">
                             <i class='bx bx-user-check'></i>
                         </div>
-                        <span class="icon-name dropdown-toggle">Enroll</span>
+                        <span class="icon-name dropdown-toggle">Subjects</span>
                     </a>        
                     <div class="dropdown-content" id="enroll-dropdown">
                         <ul class="list-unstyled collapse">
                             <li class="list-ustyled-item">
-                                <a href="/admin/enroll/students" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/enroll/students" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-group bx-flip-horizontal' ></i>
                                     </div>
                                     <span class="icon-name">Students</span>
-                                </a>
-                            </li>
-                            <li class="list-unstyled-item">
-                                <a href="/admin/enroll/instructors" class="nav-link d-flex align-items-center gap-2">
-                                    <div class="icon">
-                                        <i class='bx bx-group' ></i>
-                                    </div>
-                                    <span class="icon-name">Instructors</span>
                                 </a>
                             </li>
                         </ul>
@@ -99,7 +67,7 @@
                     <div class="dropdown-content" id="account-dropdown">
                         <ul class="list-unstyled collapse">
                             <li class="list-unstyled-item">
-                                <a href="/admin/courses" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/instructor/courses" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bxs-graduation'></i>
                                     </div>
@@ -107,7 +75,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/subjects" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/instructor/subjects" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bx-book-content'></i>  
                                     </div>
@@ -115,7 +83,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/sections" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/instructor/sections" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bx-intersect'></i>
                                     </div>
@@ -123,7 +91,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/years" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/instructor/years" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bx-calendar-plus'></i>
                                     </div>
@@ -131,7 +99,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/categories" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/instructor/categories" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bxs-category' ></i>
                                     </div>
@@ -151,7 +119,7 @@
                     <div class="dropdown-content" id="pages-dropdown">
                         <ul class="list-unstyled collapse">
                             <li class="list-ustyled-item">
-                                <a href="/admin/page/home" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/page/home" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-home-alt'></i>
                                     </div>
@@ -159,7 +127,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/page/about" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/page/about" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-info-square'></i>
                                     </div>
@@ -167,7 +135,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/page/features" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/page/features" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-check'></i>
                                     </div>
@@ -175,7 +143,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/page/testimonials" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/page/testimonials" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-user-voice'></i>
                                     </div>
@@ -183,7 +151,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/page/contacts" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/page/contacts" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bxs-contact'></i>
                                     </div>
@@ -203,7 +171,7 @@
                     <div class="dropdown-content" id="pages-dropdown">
                         <ul class="list-unstyled collapse">
                             <li class="list-ustyled-item">
-                                <a href="/admin/system/widgets" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/widgets" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bxs-widget'></i>
                                     </div>
@@ -211,7 +179,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/system/themes" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/themes" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-minus-back'></i>
                                     </div>
@@ -219,7 +187,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/system/computations" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/computations" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-calculator'></i>
                                     </div>
@@ -227,7 +195,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/system/smtp" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/smtp" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-mail-send'></i>
                                     </div>
@@ -235,7 +203,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/system/filemanager" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/filemanager" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-folder'></i>
                                     </div>
@@ -243,7 +211,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/system/reports" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/reports" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-file'></i>
                                     </div>
@@ -251,7 +219,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/system/backups" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/system/backups" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bx-folder-open'></i>
                                     </div>
@@ -271,7 +239,7 @@
                     <div class="dropdown-content">
                         <ul class="list-unstyled collapse">
                             <li class="list-unstyled-item">
-                                <a href="/admin/settings/me" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/instructor/settings/me" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bx-user'></i>
                                     </div>
@@ -279,7 +247,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/admin/settings/passwords" class="nav-link d-flex align-items-center gap-2">
+                                <a href="/instructor/settings/passwords" class="nav-link d-flex align-items-center gap-2">
                                     <div class="icon">
                                         <i class='bx bxs-key'></i>
                                     </div>
@@ -287,7 +255,7 @@
                                 </a>
                             </li>
                             <li class="list-unstyled-item">
-                                <a href="/api/v1/admin/logout" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
+                                <a href="/api/v1/instructor/logout" class="nav-link d-flex align-items-center gap-2" id="sidebar-menu-link">
                                     <div class="icon">
                                         <i class='bx bx-exit bx-flip-horizontal' ></i>
                                     </div>

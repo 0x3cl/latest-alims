@@ -26,20 +26,28 @@ class AuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $user_session = session()->get('user_session');
-        $uri = $request->getPath();
-        $response = service('response');
+        $uri = $request->uri;
+        $request_path = $uri->getPath();
+        $request_segments = $uri->getSegments();
 
-        if ($uri !== 'admin/login') {
-            if ($user_session === null || empty($user_session)) {
-                $response = service('response');
-                $response->setJSON([
-                    'status' => 401,
-                    'error' => 'you must login first',
-                ]);
-                $response->setStatusCode(401);
-                return $response;
+        $allowedRootUri = ['admin', 'student', 'instructor'];
+
+        if(in_array($request_segments[0], $allowedRootUri)) {
+            if ($request_path !== '/' . $request_segments[0] . '/login') {
+                if ($user_session === null || empty($user_session)) {
+                    $response = service('response');
+                    $response->setJSON([
+                        'status' => 401,
+                        'error' => 'you must login first',
+                    ]);
+                    $response->setStatusCode(401);
+                    return $response;
+                }
             }
         }
+
+
+        
     }
 
     /**

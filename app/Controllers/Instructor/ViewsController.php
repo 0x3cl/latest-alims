@@ -3,7 +3,7 @@
 namespace App\Controllers\Instructor;
 
 use App\Controllers\BaseController;
-use App\Models\InstructorModel;
+use App\Models\UserModel;
 
 class ViewsController extends BaseController
 {
@@ -30,7 +30,7 @@ class ViewsController extends BaseController
             'data' => [
                 'title' => 'Dashboard | Admin',
                 'active' => 'dashboard',
-                'data' => $this->getCurrentUser()
+                'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
@@ -40,12 +40,14 @@ class ViewsController extends BaseController
     public function getCurrentUser() {
         $user_session = session()->get('user_session');
         $uid = $user_session['id'];
-        $model = new InstructorModel;
+        $model = new UserModel;;
         $model->select('
-            id, firstname, lastname, contact, address, province, 
-            city, birthday, status, gender, email, username, role,
-            avatar, banner, bio, fb_link, ig_link, twi_link
+            users.id, users.email, users.username, users.role, instructors.firstname, instructors.lastname, 
+            instructors.contact, instructors.address, instructors.province, 
+            instructors.city, instructors.birthday, instructors.status, instructors.gender, 
+            instructors.avatar, instructors.banner, instructors.bio, instructors.fb_link, instructors.ig_link, instructors.twi_link
         ');
+        $model->join('instructors', 'users.id = instructors.user_id');
         $data = $model->find($uid);
         return $data;
     }

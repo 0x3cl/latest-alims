@@ -40,10 +40,10 @@ class Filters extends BaseConfig
         'before' => [
             // 'honeypot',
             // 'csrf',
-            'authFilter' => ['except' => [
-                'admin/login',
-                'api/*',
-            ]],
+            // 'authFilter' => ['except' => [
+            //     'admin/login',
+            //     'api/*',
+            // ]],
             // 'authApiFilter' => ['except' => [
             //     'admin/*',
             //     'api/v1/admin/login',
@@ -81,6 +81,16 @@ class Filters extends BaseConfig
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
     public array $filters = [
-       
+       'authFilter' => [
+            'before' => [
+                'admin/*',
+                'instructor/*'
+            ],
+            'except' => [
+                'admin/login',
+                'instructor/login',
+                'student/login'
+            ],
+        ]
     ];
 }

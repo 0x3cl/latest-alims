@@ -5,9 +5,23 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\AdminModel;
+use App\Models\EnrolledModel;
+use App\Models\CourseModel;
+use App\Models\SubjectModel;
+use App\Models\SectionModel;
+use App\Models\YearModel;
 
 class ViewsController extends BaseController
 {
+
+    public function index() {
+        if(session()->has('user_session')) {
+            return redirect()->to('/admin/dashboard');
+        } else {
+            return redirect()->to('/admin/login');
+        }
+    }
+
     public function login() {
         $page = [
             'view' => 'login',
@@ -210,19 +224,102 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
-    public function create_enroll_user() {
-        $page = [
-            'view' => 'create-enroll-users',
-            'dir' => 'Admin',
-            'isSubPage' => true,
-            'data' => [
-                'title' => 'Enroll User | Admin',
-                'active' => 'enroll',
-                'current_userdata' => $this->getCurrentUser()
-            ]
-        ];
+    public function create_enroll_user($id) {
+        if($this->isUserExists('user', $id)) {
+            $page = [
+                'view' => 'create-enroll-users',
+                'dir' => 'Admin',
+                'isSubPage' => true,
+                'data' => [
+                    'title' => 'Enroll User | Admin',
+                    'active' => 'enroll',
+                    'current_userdata' => $this->getCurrentUser(),
+                    'requested_data' => $this->getUserByID('user', $id)
+                ]
+            ];
+    
+            return $this->renderView($page);
+        } else {
+            $page = [
+                'view' => 'unauthorized',
+                'dir' => 'Admin',
+                'isSubPage' => false,
+                'data' => [
+                    'title' => 'User Notice | Admin',
+                    'active' => '',
+                    'current_userdata' => $this->getCurrentUser(),
+                    'error' => [
+                        'code' => 404,
+                        'message' => 'not found'
+                    ]
+                ]
+            ];
+    
+            return $this->renderView($page);
+        }
+    }
 
-        return $this->renderView($page);
+    public function update_enroll_user($id) {
+
+        try {
+            $model = new EnrolledModel;
+            $result = $model->where('id', $id)->countAllResults();
+            
+            if($result > 0 ) {
+               
+                $model->select('
+                    enroll.id,
+                    users.username, users.email,
+                    IF(users.role = 1, instructors.firstname, students.firstname) as firstname,
+                    IF(users.role = 1, instructors.lastname, students.lastname) as lastname,
+                    courses.id as course_id, courses.name as course_name,
+                    sections.id as section_id, sections.name as section_name,
+                    years.id as year_id, years.name as year_name
+                ');
+
+                $model->join('courses', 'enroll.course_id = courses.id');
+                $model->join('sections', 'enroll.section = sections.id');
+                $model->join('users', 'enroll.user_id = users.id');
+                $model->join('years', 'enroll.year = years.id');
+                $model->join('instructors', 'enroll.user_id = instructors.user_id', 'LEFT');
+                $model->join('students', 'enroll.user_id = students.user_id', 'LEFT');
+
+                $data = $model->find($id);
+                $page = [
+                    'view' => 'update-enroll-user',
+                    'dir' => 'Admin',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Update Section | Admin',
+                        'active' => 'class_course',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => $data
+                    ]
+                ];
+        
+                return $this->renderView($page);
+
+            } else {
+                $page = [
+                    'view' => 'unauthorized',
+                    'dir' => 'Admin',
+                    'isSubPage' => false,
+                    'data' => [
+                        'title' => 'User Notice | Admin',
+                        'active' => '',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'error' => [
+                            'code' => 404,
+                            'message' => 'not found'
+                        ]
+                    ]
+                ];
+        
+                return $this->renderView($page);
+            }
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
     }
 
     public function courses() {
@@ -255,6 +352,57 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function update_course($id) {
+
+        try {
+            $model = new CourseModel;
+
+            $result = $model->where('id', $id)->countAllResults();
+            
+            if($result > 0 ) {
+                $data = $model->find($id);
+                $page = [
+                    'view' => 'update-course',
+                    'dir' => 'Admin',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Update Course | Admin',
+                        'active' => 'class_course',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => $data
+                    ]
+                ];
+        
+                return $this->renderView($page);
+
+            } else {
+                $page = [
+                    'view' => 'unauthorized',
+                    'dir' => 'Admin',
+                    'isSubPage' => false,
+                    'data' => [
+                        'title' => 'User Notice | Admin',
+                        'active' => '',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'error' => [
+                            'code' => 404,
+                            'message' => 'not found'
+                        ]
+                    ]
+                ];
+        
+                return $this->renderView($page);
+            }
+
+           
+
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+        
+    }
+
     public function subjects() {
         $page = [
             'view' => 'subjects',
@@ -283,6 +431,65 @@ class ViewsController extends BaseController
         ];
 
         return $this->renderView($page);
+    }
+
+    public function update_subject($id) {
+
+        try {
+            $model = new SubjectModel;
+
+            $result = $model->where('id', $id)->countAllResults();
+            
+            if($result > 0 ) {
+                 $model->select('subjects.id, subjects.code as subject_code, subjects.name as subject_name, subjects.description as subject_description, 
+                            courses.id as course_id, courses.name as course_name, sections.id as section_id,
+                            sections.name as section_name, years.id as year_id, years.name as year_name');
+                $model->join('courses', 'subjects.course = courses.id');
+                $model->join('sections', 'subjects.section = sections.id');
+                $model->join('years', 'subjects.year = years.id');
+
+                $data = $model->where('subjects.id', $id)->find()[0];
+                
+                $page = [
+                    'view' => 'update-subject',
+                    'dir' => 'Admin',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Update Subject | Admin',
+                        'active' => 'class_course',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => $data
+                    ]
+                ];
+        
+                return $this->renderView($page);
+
+            } else {
+                $page = [
+                    'view' => 'unauthorized',
+                    'dir' => 'Admin',
+                    'isSubPage' => false,
+                    'data' => [
+                        'title' => 'User Notice | Admin',
+                        'active' => '',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'error' => [
+                            'code' => 404,
+                            'message' => 'not found'
+                        ]
+                    ]
+                ];
+        
+                return $this->renderView($page);
+            }
+
+           
+
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+        
     }
 
     public function sections() {
@@ -315,6 +522,57 @@ class ViewsController extends BaseController
         return $this->renderView($page);
     }
 
+    public function update_section($id) {
+
+        try {
+            $model = new SectionModel;
+
+            $result = $model->where('id', $id)->countAllResults();
+            
+            if($result > 0 ) {
+                $data = $model->find($id);
+                $page = [
+                    'view' => 'update-section',
+                    'dir' => 'Admin',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Update Section | Admin',
+                        'active' => 'class_course',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => $data
+                    ]
+                ];
+        
+                return $this->renderView($page);
+
+            } else {
+                $page = [
+                    'view' => 'unauthorized',
+                    'dir' => 'Admin',
+                    'isSubPage' => false,
+                    'data' => [
+                        'title' => 'User Notice | Admin',
+                        'active' => '',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'error' => [
+                            'code' => 404,
+                            'message' => 'not found'
+                        ]
+                    ]
+                ];
+        
+                return $this->renderView($page);
+            }
+
+           
+
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+        
+    }
+
     public function years() {
         $page = [
             'view' => 'years',
@@ -344,6 +602,56 @@ class ViewsController extends BaseController
 
         return $this->renderView($page);
     }
+
+    public function update_year($id) {
+
+        try {
+            $model = new YearModel;
+
+            $result = $model->where('id', $id)->countAllResults();
+            
+            if($result > 0 ) {
+                $data = $model->find($id);
+                $page = [
+                    'view' => 'update-year',
+                    'dir' => 'Admin',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Update Year | Admin',
+                        'active' => 'class_course',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => $data
+                    ]
+                ];
+        
+                return $this->renderView($page);
+
+            } else {
+                $page = [
+                    'view' => 'unauthorized',
+                    'dir' => 'Admin',
+                    'isSubPage' => false,
+                    'data' => [
+                        'title' => 'User Notice | Admin',
+                        'active' => '',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'error' => [
+                            'code' => 404,
+                            'message' => 'not found'
+                        ]
+                    ]
+                ];
+        
+                return $this->renderView($page);
+            }
+
+           
+
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+        }
+    }
+
 
     public function filemanager() {
 
@@ -466,7 +774,7 @@ class ViewsController extends BaseController
 
         try {
             $model->select('
-                users.id, firstname, lastname, contact, address, province, 
+                users.id, is_enrolled, firstname, lastname, contact, address, province, 
                 city, birthday, status, gender, email, username, role,
                 avatar, banner, bio, fb_link, ig_link, twi_link
             ');

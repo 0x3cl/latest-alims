@@ -159,7 +159,6 @@ export async function controls(table) {
         e.preventDefault();
         
         const type = DOMPurify.sanitize($(this).data('type'));
-
         const firstname = DOMPurify.sanitize($('#firstname').val().trim());
         const lastname = DOMPurify.sanitize($('#lastname').val().trim());
         const email = DOMPurify.sanitize($('#email').val().trim());

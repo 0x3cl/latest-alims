@@ -30,13 +30,8 @@
                         <a href="/admin/courses" class="btn btn-outline-danger ms-auto d-flex align-items-center"><i class='bx bxs-left-arrow-alt'></i></a>
                     </div>
                     <div class="card-body">
-                        <form action="/api/single/update/course/<?php echo $course[0]->id; ?>" method="post">
+                        <form id="update-course" method="post">
                             <div class="row mt-4">
-                                <?php 
-                                     if (!empty($response)) {
-                                        echo show_alert($response);
-                                    }
-                                ?>
                                 <?= csrf_field() ?>
                                 <div class="section-tle mb-3">
                                     <h5>Course Information</h5>
@@ -44,13 +39,11 @@
                                 </div>
                                 <div class="col-12 col-md-12 mb-3">
                                     <label>Code <span class="text-danger">*</span> </label>
-                                    <input type="text" name="code" id="code" class="form-control <?php echo (!empty($response["message"]["code"]) ? 'is-invalid' : '') ?>" placeholder="eg. BSIT" value="<?php echo strtoupper($course[0]->code) ?>">
-                                    <?php echo (!empty($response["message"]["code"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["code"]).'</small>' : '') ?>
+                                    <input type="text" name="code" id="code" class="form-control <?php echo (!empty($response["message"]["code"]) ? 'is-invalid' : '') ?>" placeholder="eg. BSIT" value="<?= strtoupper($requested_data['code']) ?>">
                                 </div>
                                 <div class="col-12 col-md-12 mb-3">
                                     <label>Name <span class="text-danger">*</span> </label>
-                                    <input type="text" name="name" id="name" class="form-control <?php echo (!empty($response["message"]["name"]) ? 'is-invalid' : '') ?>" placeholder="eg. Bachelor of Science in Information Technology" value="<?php echo ucwords($course[0]->name) ?>">
-                                    <?php echo (!empty($response["message"]["name"]) ? '<small class="invalid-feedback">'.ucfirst($response["message"]["name"]).'</small>' : '') ?>
+                                    <input type="text" name="name" id="name" class="form-control <?php echo (!empty($response["message"]["name"]) ? 'is-invalid' : '') ?>" placeholder="eg. Bachelor of Science in Information Technology" value="<?= ucwords($requested_data['name']) ?>">
                                 </div>
                             </div>
                             <button class="btn btn-primary mt-3 float-end">Proceed</button>
@@ -61,3 +54,44 @@
         </div>
     </div>
 </div>
+
+<script type="module">
+import {generateCSRFToken, toastMessage} from '/assets/js/admin/modules/utils.js';
+import {getJWTtoken} from '/assets/js/admin/modules/dataUtils.js';
+
+
+const response = await getJWTtoken();
+const jwt_token = response.token;
+
+$('#update-course').on('submit', function(e) {
+    e.preventDefault();
+    const code = DOMPurify.sanitize($('#code').val().trim());
+    const name = DOMPurify.sanitize($('#name').val().trim());
+    const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
+    $.ajax({
+        url: `/api/v1/courses/update/<?= $requested_data['id'] ?>`,
+        method: 'POST',
+        dataType: 'json',
+        data: {
+            code: code,
+            name: name,
+        }, beforeSend: function(xhr) {
+            $('#btn-proceed').attr('disabled', true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+        }, success: function(response) {
+            console.log(response);
+            if(response.status == 200) {
+                toastMessage('success', response.message); 
+            } else {
+                let err = response.message;
+                err = Object.values(err);
+                toastMessage('error', err[0]); 
+            }
+        }
+    }).done(function(){
+        $('#btn-proceed').attr('disabled', false);
+        generateCSRFToken();
+    });
+});
+</script>

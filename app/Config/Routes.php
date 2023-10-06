@@ -29,7 +29,8 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
         $routes->get('administrators', 'ViewsController::admins');
         $routes->get('administrators/add/single', 'ViewsController::create_administrators');
 
-        $routes->get('enroll/user/single/(:num)', 'ViewsController::create_enroll_user');
+        $routes->get('enroll/user/single/(:num)', 'ViewsController::create_enroll_user/$1');
+        $routes->get('enroll/update/single/(:num)', 'ViewsController::update_enroll_user/$1');
 
     });
 
@@ -42,21 +43,25 @@ $routes->group('admin', ['namespace' => '\App\Controllers\Admin'], function($rou
     $routes->group('courses', function($routes) {
         $routes->get('/', 'ViewsController::courses');
         $routes->get('add/single', 'ViewsController::create_course');
+        $routes->get('update/single/(:num)', 'ViewsController::update_course/$1');
     });
 
     $routes->group('subjects', function($routes) {
         $routes->get('/', 'ViewsController::subjects');
         $routes->get('add/single', 'ViewsController::create_subject');
+        $routes->get('update/single/(:num)', 'ViewsController::update_subject/$1');
     });
 
     $routes->group('sections', function($routes) {
         $routes->get('/', 'ViewsController::sections');
         $routes->get('add/single', 'ViewsController::create_section');
+        $routes->get('update/single/(:num)', 'ViewsController::update_section/$1');
     });
 
     $routes->group('years', function($routes) {
         $routes->get('/', 'ViewsController::years');
         $routes->get('add/single', 'ViewsController::create_year');
+        $routes->get('update/single/(:num)', 'ViewsController::update_year/$1');
     });
 
 

@@ -1,21 +1,21 @@
 <div class="wrapper">
     <!-- sidebar -->
     <?php 
-        include(APPPATH . '/Views/Admin/templates/sidebar.php');
+        include(APPPATH . '/Views/Instructor/templates/sidebar.php');
     ?>
 
     <div id="content">
         <div class="site-header px-3">
             <!-- navbar -->
             <?php 
-                include(APPPATH . '/Views/Admin/templates/navbar.php');                
+                include(APPPATH . '/Views/Instructor/templates/navbar.php');                
             ?>
             <div class="container">
                 <div class="mt-5">  
                     <div class="text-banner">
-                        <h3>Welcome Back, <?php echo ucwords($data['firstname'] . ' ' . $data['lastname']); ?></h3>
+                        <h3>Welcome Back, <?php echo ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']); ?></h3>
                         <?php 
-                            include(APPPATH . '/Views/Admin/templates/text-banner.php');
+                            include(APPPATH . '/Views/Instructor/templates/text-banner.php');
                         ?>
                     </div>
                 </div>

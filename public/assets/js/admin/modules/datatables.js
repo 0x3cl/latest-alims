@@ -196,7 +196,7 @@ export async function esTable() {
                 data: null,
                 orderable: false,
                 render: data => {
-                    return `<input type="checkbox" class="form-check-input multi-select-single" data-id="${data.enroll_id}">`;
+                    return `<input type="checkbox" class="form-check-input multi-select-single" data-id="${data.id}">`;
                 },
                 },
                 {
@@ -223,7 +223,7 @@ export async function esTable() {
                 data: null,
                 render: data => {
                     return `
-                    <a href="/admin/account/enroll/update/user/single/${data.enroll_id}" class="btn btn-secondary mx-1" data-id="${data.id}"><i class="bx bx-edit" style="margin-bottom: 0px;"></i></a>
+                    <a href="/admin/account/enroll/update/single/${data.id}" class="btn btn-secondary mx-1" data-id="${data.id}"><i class="bx bx-edit" style="margin-bottom: 0px;"></i></a>
                     <a href="javascript:void(0)" id="control" data-type="enroll" data-action="delete" data-id="${data.id}" class="btn btn-danger mx-1"><i class="bx bx-trash bx-tada" style="margin-bottom: 0px;"></i></a>`;
                 }
                 },
@@ -246,7 +246,7 @@ export async function eiTable() {
                 data: null,
                 orderable: false,
                 render: data => {
-                    return `<input type="checkbox" class="form-check-input multi-select-single" data-id="${data.enroll_id}">`;
+                    return `<input type="checkbox" class="form-check-input multi-select-single" data-id="${data.id}">`;
                 },
                 },
                 {
@@ -274,8 +274,8 @@ export async function eiTable() {
                 data: null,
                 render: data => {
                     return `
-                    <a href="/admin/account/enroll/update/user/single/${data.enroll_id}" class="btn btn-secondary mx-1" data-id="${data.enroll_id}"><i class="bx bx-edit" style="margin-bottom: 0px;"></i></a>
-                    <a href="javascript:void(0)" id="control" data-type="enroll" data-action="delete" data-id="${data.enroll_id}" class="btn btn-danger mx-1"><i class="bx bx-trash bx-tada" style="margin-bottom: 0px;"></i></a>`;
+                    <a href="/admin/account/enroll/update/single/${data.id}" class="btn btn-secondary mx-1" data-id="${data.id}"><i class="bx bx-edit" style="margin-bottom: 0px;"></i></a>
+                    <a href="javascript:void(0)" id="control" data-type="enroll" data-action="delete" data-id="${data.id}" class="btn btn-danger mx-1"><i class="bx bx-trash bx-tada" style="margin-bottom: 0px;"></i></a>`;
                 }
                 },
             ],

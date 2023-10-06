@@ -688,12 +688,11 @@ class Users extends BaseController
         $section = $this->request->getPost('section');
 
         try {
-            $isExists = $this->enroll_model->where('user_id', $id)->countAllResults();
+            $isExists = $this->enroll_model->where('id', $id)->countAllResults();
             if($isExists > 0) {
-                $enroll_id = $this->enroll_model->where('user_id', $id)->find()[0]['id'];
+                $enroll_id = $this->enroll_model->where('id', $id)->find()[0]['id'];
 
                 $data = [
-                    'user_id' => $id,
                     'course_id' => $course,
                     'year' => $year,
                     'section' => $section,

@@ -58,11 +58,11 @@
                     <div class="profile" data-bs-toggle="dropdown">
                         <div class="d-flex align-items-center gap-2" id="navbar-profile">
                             <div>
-                                <img src="<?= base_url('./uploads/avatar/'.$data['avatar']) ?>" id="img-profile">
+                                <img src="<?= base_url('./uploads/avatar/'.$current_userdata['avatar']) ?>" id="img-profile">
                             </div>
                             <div>
-                                <div class="dropdown-toggle"><?= ucwords($data['firstname'] . ' ' . $data['lastname']) ?></div>
-                                <div>#<?= $data['id'] ?></div>
+                                <div class="dropdown-toggle"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></div>
+                                <div>#<?= $current_userdata['id'] ?></div>
                             </div>
                         </div>
                     </div>

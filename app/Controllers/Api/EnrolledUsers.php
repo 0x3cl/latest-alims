@@ -19,7 +19,7 @@ class EnrolledUsers extends BaseController
 
     public function getEnrolledStudents($id = null) {
         $this->model->select('
-            enroll.id, users.username, users.email, students.firstname, students.lastname,
+            enroll.id, users.username, users.role, users.email, students.firstname, students.lastname,
             courses.code as course_code, courses.name as course_name,
             sections.name as section_name, years.name as year_name
         ');

@@ -68,5 +68,7 @@
 
 <script type="module">
 import { eiTable } from "/assets/js/admin/modules/datatables.js";
+import {controls} from '/assets/js/admin/modules/controls.js';
 eiTable();
+controls(eiTable);
 </script>
