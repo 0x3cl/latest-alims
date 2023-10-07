@@ -107,6 +107,13 @@ jQuery(function ($) {
 			}
 		});
 	});
+
+	// FLOATING ICON CLICKED
+	$('.floating-icon').on('click', function() {
+		$('.floating-menu-content').fadeToggle();
+	});
+
+
 });
 
 /***********

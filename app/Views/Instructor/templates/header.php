@@ -34,7 +34,7 @@
     ';
     } else {
     echo '
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script> 
 
         <link rel="shortcut icon" href="/assets/template/images/favicon.svg" />
         <link rel="stylesheet" href="/assets/template/fonts/bootstrap/bootstrap-icons.css" />
@@ -42,6 +42,10 @@
         <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.31/sweetalert2.min.css" integrity="sha512-IScV5kvJo+TIPbxENerxZcEpu9VrLUGh1qYWv6Z9aylhxWE4k4Fch3CHl0IYYmN+jrnWQBPlpoTVoWfSMakoKA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <link href="https://cdn.quilljs.com/1.2.6/quill.snow.css" rel="stylesheet">
+
+
         <!-- Scrollbar CSS -->
 		<link rel="stylesheet" href="/assets/template/vendor/overlay-scroll/OverlayScrollbars.min.css" />
 
@@ -49,6 +53,8 @@
 		<link rel="stylesheet" href="/assets/template/vendor/toastify/toastify.css" />
         <link rel="stylesheet" href="/assets/template/css/custom.css "/>
 
+        <script type="text/javascript" src="/assets/template/js/ckeditor.js">
+        
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.31/sweetalert2.min.js" integrity="sha512-dbgWBkIauIf3iy96dqgzBD9ysKHp7mAuym+V7AqaNIuICxDBVm6nzvl1Yi+rdfnh25SdmYDw2JbFk/FOXf6Ycg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

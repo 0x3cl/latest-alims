@@ -108,6 +108,9 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
     $routes->get('get-csrf-token', 'Token::generate_csrf');
     $routes->get('overview', 'Overview::index');
 
+    // INSTRUCTORS
+    $routes->get('post_group', 'PostGroup::getPostGroup');
+
     // API ROUTES FOR USERS
     $routes->group('users', function($routes) {
         $routes->get('/', 'Users::getUsers');
@@ -211,6 +214,12 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
 
     $routes->group('generate', function($routes) {
         $routes->post('report', 'Reports::index');
+    });
+
+    // FILEUPLOADER
+
+    $routes->group('upload', function($routes) {
+        $routes->post('(:any)', 'FileUploader::upload/$1');
     });
 
     // INSTRUCTORS API

@@ -71,3 +71,19 @@ export async function my_subjects(params) {
         })
     });
 }
+
+export async function post_group() {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/post_group`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}

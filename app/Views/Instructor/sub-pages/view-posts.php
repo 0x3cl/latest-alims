@@ -24,6 +24,7 @@
         <?php include(APPPATH . '/Views/Instructor/templates/sidebar-post.php'); ?>
         <div class="app-container">
             <?php include(APPPATH . '/Views/Instructor/templates/navbar.php'); ?>
+            <?= csrf_field(); ?>
             <div class="app-hero-header d-flex align-items-center">
                 <ol class="breadcrumb d-none d-lg-flex">
                     <li class="breadcrumb-item">
@@ -47,8 +48,8 @@
     </div>
 </div>
 
-<div class="modal fade" id="create-post-modal">
-    <div class="modal-dialog modal-xl">
+<div class="modal fade show" id="create-post-modal" style="display:block;">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title h4" id="exampleModalXlLabel">
@@ -56,15 +57,41 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">...</div>
+            <div class="modal-body">
+                <div class="col-12 col-md-12">
+                    <div class="form-group mb-3">
+                        <p class="mb-1" for="title">Title</p>
+                        <input type="text" name="title" id="title" class="form-control" placeholder="This post is about?">
+                    </div>
+                </div>
+                <div class="col-12 col-md-12">
+                    <div class="form-group mb-3">
+                        <p class="mb-1" for="title">Group</p>
+                        <select name="group" id="post-group" class="form-control">
+                            <option value="">Choose...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12">
+                    <div class="form-group mb-3">
+                        <div id="editor"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="module">
-import {my_courses, my_subjects} from '/assets/js/instructor/modules/dataUtils.js';
+import {generateCSRFToken, toastMessage, clearFields} from '/assets/js/admin/modules/utils.js';
+import {getJWTtoken} from '/assets/js/admin/modules/dataUtils.js';
+import {my_courses, my_subjects, post_group} from '/assets/js/instructor/modules/dataUtils.js';
 
-const id = <?= $current_userdata['id']?>
+const response = await getJWTtoken();
+const jwt_token = response.token;
+
+const id = <?= $current_userdata['id']?>;
+const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
 my_courses(id).then((response) => {
     let div = '';
@@ -110,5 +137,36 @@ my_subjects(id).then((response) => {
         $('.treeview-menu.subjects').append(DOMPurify.sanitize(div));
     }
 });
+
+post_group().then((response) => {
+    let div = '';
+    if(response.status == 200) {
+        const data = response.data;
+        data.forEach((data) => {
+            div += `
+                <option class="text-uppercase" value="${data.id}">${data.name}</option>
+            `;
+        });
+        $('#post-group').append(DOMPurify.sanitize(div));
+    }
+});
+
+ClassicEditor
+.create( document.querySelector( '#editor' ), {
+    placeholder: `What's your thoughts?`,
+    ckfinder: {
+        uploadUrl: '/api/v1/upload/image'
+    },
+    
+} )
+.then( editor => {
+    window.editor = editor;
+} )
+.catch((err) => {
+    console.log(err)
+});
+
+
+
 
 </script>
