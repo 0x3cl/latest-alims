@@ -58,25 +58,48 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="col-12 col-md-12">
-                    <div class="form-group mb-3">
-                        <p class="mb-1" for="title">Title</p>
-                        <input type="text" name="title" id="title" class="form-control" placeholder="This post is about?">
+                <div class="row">
+                    <h6 class="mb-3">All <span class="text-danger">*</span> is required</h6>
+                    <div class="col-12 col-md-12">
+                        <div class="form-group mb-3">
+                            <p class="mb-1" for="title">Title <span class="text-danger">*</span></p>
+                            <input type="text" name="title" id="title" class="form-control" placeholder="What's this post is about?">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12">
+                        <div class="form-group mb-3">
+                            <p class="mb-1" for="title">Group <span class="text-danger">*</span></p>
+                            <select name="group" id="post-group" class="form-control">
+                                <option value="">Choose...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12">
+                        <p class="mb-1" for="title">Content <span class="text-danger">*</span></p>
+                        <div class="form-group mb-3">
+                            <div id="editor"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                    <h5 class="mb-3">Set Timestamp Availability</h5>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-3">
+                            <p class="mb-1" for="title">Date</p>
+                            <input type="date" name="date" id="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-3">
+                            <p class="mb-1" for="title">Time</p>
+                            <input type="time" name="time" id="time" class="form-control">
+                        </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-12">
-                    <div class="form-group mb-3">
-                        <p class="mb-1" for="title">Group</p>
-                        <select name="group" id="post-group" class="form-control">
-                            <option value="">Choose...</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-12 col-md-12">
-                    <div class="form-group mb-3">
-                        <div id="editor"></div>
-                    </div>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary d-flex align-items-center gap-2">Proceed <i class="bi bi-arrow-right"></i></button>
             </div>
         </div>
     </div>
@@ -155,7 +178,7 @@ ClassicEditor
 .create( document.querySelector( '#editor' ), {
     placeholder: `What's your thoughts?`,
     ckfinder: {
-        uploadUrl: '/api/v1/upload/image'
+      
     },
     
 } )
@@ -165,8 +188,6 @@ ClassicEditor
 .catch((err) => {
     console.log(err)
 });
-
-
 
 
 </script>
