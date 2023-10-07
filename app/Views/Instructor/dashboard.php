@@ -1,296 +1,139 @@
-<div class="wrapper">
-    <!-- sidebar -->
-    <?php 
-        include(APPPATH . '/Views/Instructor/templates/sidebar.php');
-    ?>
-
-    <div id="content">
-        <div class="site-header px-3">
-            <!-- navbar -->
-            <?php 
-                include(APPPATH . '/Views/Instructor/templates/navbar.php');                
-            ?>
-            <div class="container">
-                <div class="mt-5">  
-                    <div class="text-banner">
-                        <h3>Welcome Back, <?php echo ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']); ?></h3>
-                        <?php 
-                            include(APPPATH . '/Views/Instructor/templates/text-banner.php');
-                        ?>
+<div class="page-wrapper">
+    <div class="main-container">
+        <?php include(APPPATH . '/Views/Instructor/templates/sidebar.php'); ?>
+        <div class="app-container">
+            <?php include(APPPATH . '/Views/Instructor/templates/navbar.php'); ?>
+            <div class="app-hero-header d-flex align-items-center">
+                <ol class="breadcrumb d-none d-lg-flex">
+                    <li class="breadcrumb-item">
+                        <i class="bi bi-house lh-1"></i>
+                        <a href="index.html" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item text-secondary" aria-current="page">
+                        Dashboard
+                    </li>
+                </ol>
+            </div>
+            <div class="app-body">
+                <div class="row gx-3">
+                    <div class="col-xl-3 col-sm-6 col-12">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <i class="bi bi-bar-chart fs-1 text-primary lh-1"></i>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="m-0 text-secondary fw-normal">Sales</h5>
+                                    <h3 class="m-0 text-primary">3500</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 col-12">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <i class="bi bi-bag-check fs-1 text-primary lh-1"></i>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="m-0 text-secondary fw-normal">Orders</h5>
+                                    <h3 class="m-0 text-primary">2900</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 col-12">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="arrow-label">+18%</div>
+                                <div class="mb-2">
+                                    <i class="bi bi-box-seam fs-1 text-primary lh-1"></i>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="m-0 text-secondary fw-normal">Items</h5>
+                                    <h3 class="m-0 text-primary">6500</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 col-12">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="arrow-label">+21%</div>
+                                <div class="mb-2">
+                                    <i class="bi bi-check-circle fs-1 text-danger lh-1"></i>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="m-0 text-secondary fw-normal">Signups</h5>
+                                    <h3 class="m-0 text-danger">7200</h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="dashboard" class="mx-2">
-            <div class="container">
-                <div class="count-overview">
-                    <div class="row">
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">   
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading">
-                                 <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-    
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body skeleton-loading w-100">
-                                    <div class="count w-100 skeleton-text sm-w">
-                                    </div>
-                                    <div class="label skeleton-text xsm-w mt-2">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="graph-overview">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="card mt-3">
-                                <div class="card-header m-0 p-3 d-flex justify-content-between">
-                                    <div class="section-tle">Users Analytics</div>
-                                    <div>
-                                        <small>
-                                            <a href="#" class="m-0">view advance</a>
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="card-body" id="card-graph-user">
-                                    <ul class="list-unstyled skeleton-loading">
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text xsm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text xsm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="card mt-3">
-                                <div class="card-header m-0 p-3 d-flex justify-content-between">
-                                    <div class="section-tle">Class Course Analytics</div>
-                                    <div>
-                                        <small>
-                                            <a href="#" class="m-0">view advance</a>
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="card-body" id="card-graph-classcourse">
-                                    <ul class="list-unstyled skeleton-loading">
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text xsm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text xsm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="app-footer">
+                <span>© Bootstrap Gallery 2023</span>
             </div>
         </div>
     </div>
 </div>
 
 <script type="module">
-import { dashboardData } from "/assets/js/admin/modules/dashboard.js";
-dashboardData();
+import {my_courses, my_subjects} from '/assets/js/instructor/modules/dataUtils.js';
+
+const id = <?= $current_userdata['id']?>
+
+my_courses(id).then((response) => {
+    let div = '';
+    if(response.status == 200) {
+        const data = response.data;
+        div = `
+            <li>
+                <a class=" py-0">
+                    <hr class="m-0">
+                </a>    
+            </li>
+        `;
+
+        data.forEach((data) => {
+            div += `
+                
+                <li>
+                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                        <p class="d-block text-capitalize mb-1">${data.course_name}</p>
+                        <small class="d-block text-uppercase">${data.course_code} </small>
+                        <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
+                    </a>
+                </li>
+            `;
+        });
+
+        $('.treeview-menu.courses').append(DOMPurify.sanitize(div));
+    }
+});
+
+
+my_subjects(id).then((response) => {
+    let div = '';
+    if(response.status == 200) {
+        const data = response.data;
+
+        data.forEach((data) => {
+            div += `
+                
+                <li>
+                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                        <p class="d-block text-capitalize mb-1">${data.subject_name}</p>
+                        <small class="d-block text-uppercase">${data.course_code} - ${data.subject_code} </small>
+                        <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
+                    </a>
+                </li>
+            `;
+        });
+
+        $('.treeview-menu.subjects').append(DOMPurify.sanitize(div));
+    }
+});
+
 </script>

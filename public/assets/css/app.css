@@ -216,6 +216,13 @@
     background-color: #363636;
 }
 
+#content .site-header.esc {
+    width: 100%;
+    height: 80px;
+    color: #000;
+    background-color: #363636;
+}
+
 #content .site-header .navbar {
     z-index: 99;
 }

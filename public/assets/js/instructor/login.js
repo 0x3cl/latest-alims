@@ -26,11 +26,20 @@ $(document).ready(function() {
                 xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
             }, success: function(response) {
                 if(response.status != 200) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ooops..',
-                        text: response.message,
-                    });
+                    if(typeof response.message === 'object') {
+                        const message = Object.values(response.message)[0];
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ooops..',
+                            text: message,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ooops..',
+                            text: response.message,
+                        });
+                    }
                 } else {
                     console.log(response)
                     window.location.href = '/instructor/dashboard'

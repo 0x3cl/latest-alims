@@ -3,7 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
-use App\Models\AdminModel;
+use App\Models\UserModel;
 use CodeIgniter\Api\ResponseTrait;
 use Firebase\JWT\JWT;
 
@@ -28,10 +28,10 @@ class AuthUser extends BaseController
             $username = $this->request->getVar('username');
             $password = $this->request->getVar('password');
             
-            $model = new AdminModel;
+            $model = new UserModel;
             $model->where('username', $username);
 
-            $data = $model->get()->getResult();;
+            $data = $model->get()->getResult();
 
             if($data != null || !empty($data)) {
                 $user_id = $data[0]->id;

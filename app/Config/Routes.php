@@ -95,7 +95,9 @@ $routes->group('instructor', ['namespace' => '\App\Controllers\Instructor'], fun
     $routes->get('/', 'ViewsController::index');
     $routes->get('login', 'ViewsController::login');
     $routes->get('dashboard', 'ViewsController::dashboard');
-    $routes->get('discover', 'ViewsController::discover');
+    $routes->get('courses', 'ViewsController::courses');
+    $routes->get('subjects', 'ViewsController::subjects');
+    $routes->get('subjects/posts', 'ViewsController::subjects_posts');
 });
 
 // API ROUTES
@@ -118,6 +120,11 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
         $routes->get('instructors/(:num)', 'Users::getInstructors/$1');
         $routes->get('administrators', 'Users::getAdmins');
         $routes->get('administrators/(:num)', 'Users::getAdmins/$1');
+
+        // INSTRUCTORS CLASS COURSE RELATED
+        $routes->get('courses', 'Users::getCoursesByID');
+        $routes->get('subjects', 'Users::getSubjectsByID');
+
 
         // ENROLLED USERS
 

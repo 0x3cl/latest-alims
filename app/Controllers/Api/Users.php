@@ -227,6 +227,79 @@ class Users extends BaseController
         return $this->respond($response, $response['status']);
     }
 
+    public function getCoursesByID() {
+        $uid = $this->getCurrentUser()['id'];
+        $model = new EnrolledModel;
+        $model->select(
+            'enroll.id, courses.id as course_id, courses.code as course_code,
+            courses.name as course_name, sections.id as section_id, sections.name as section_name, 
+            years.id as year_id, years.name as year_name
+            '
+        );
+        $model->join('courses', 'enroll.course_id = courses.id');
+        $model->join('sections', 'enroll.section = sections.id');
+        $model->join('years', 'enroll.year = years.id');
+        $result = $model->where('user_id', $uid)->find();
+
+        return $this->respond([
+            'status' => 200,
+            'message' => 'ok',
+            'data' => $result
+        ]);
+    }
+
+    public function getSubjectsByID() {
+
+        $uid = $this->getCurrentUser()['id'];
+        $course_id = $this->request->getGet('course');
+        $section_id = $this->request->getGet('section');
+        $year_id = $this->request->getGet('year');
+        
+
+        $model = new EnrolledModel;
+        $model->select(
+            'enroll.id, subjects.id as subject_id, 
+            subjects.code as subject_code, subjects.name as subject_name,
+            subjects.description as subject_description,
+            courses.id as course_id, courses.code as course_code,
+            courses.name as course_name, sections.id as section_id, sections.name as section_name, 
+            years.id as year_id, years.name as year_name
+            '
+        );
+        $model->join('subjects', 'enroll.course_id = subjects.course');
+        $model->join('courses', 'enroll.course_id = courses.id');
+        $model->join('sections', 'enroll.section = sections.id');
+        $model->join('years', 'enroll.year = years.id');
+        $model->where('user_id', $uid);
+        $model->where('course_id', $course_id);
+        $model->where('enroll.section', $section_id);
+        $model->where('enroll.year', $year_id);
+        $result = $model->findAll();
+
+
+        return $this->respond([
+            'status' => 200,
+            'message' => 'ok',
+            'data' => $result
+        ]);
+
+    }
+
+    public function getCurrentUser() {
+        $user_session = session()->get('user_session');
+        $uid = $user_session['id'];
+        $model = new UserModel;
+        $model->select('
+            users.id, users.email, users.username, users.role, instructors.firstname, instructors.lastname, 
+            instructors.contact, instructors.address, instructors.province, 
+            instructors.city, instructors.birthday, instructors.status, instructors.gender, 
+            instructors.avatar, instructors.banner, instructors.bio, instructors.fb_link, instructors.ig_link, instructors.twi_link
+        ');
+        $model->join('instructors', 'users.id = instructors.user_id');
+        $data = $model->find($uid);
+        return $data;
+    }
+
     public function getAdmins($id = null) {
         $data = $this->admin_model->findAll();
 

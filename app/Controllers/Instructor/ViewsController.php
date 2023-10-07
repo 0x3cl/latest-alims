@@ -4,6 +4,7 @@ namespace App\Controllers\Instructor;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use App\Models\EnrolledModel;
 
 class ViewsController extends BaseController
 {
@@ -28,13 +29,118 @@ class ViewsController extends BaseController
             'dir' => 'Instructor',
             'isSubPage' => false,
             'data' => [
-                'title' => 'Dashboard | Admin',
+                'title' => 'Dashboard | Instructor',
                 'active' => 'dashboard',
                 'current_userdata' => $this->getCurrentUser()
             ]
         ];
 
         return $this->renderView($page);
+    }
+
+    public function courses() {
+        $page = [
+            'view' => 'courses',
+            'dir' => 'Instructor',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'My Courses | Instructor',
+                'active' => 'courses',
+                'current_userdata' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function subjects() {
+        $uid = $this->getCurrentUser()['id'];
+        $course_id = $this->request->getGet('course');
+        $year_id = $this->request->getGet('year');
+        $section_id = $this->request->getGet('section');
+
+        try {
+            $model = new EnrolledModel;
+            $model->where('user_id', $uid);
+            $model->where('course_id', $course_id);
+            $model->where('year', $year_id);
+            $model->where('section', $section_id);
+
+            $result = $model->find();
+
+            if(count($result) > 0) {
+                // proceed
+                $page = [
+                    'view' => 'subjects',
+                    'dir' => 'Instructor',
+                    'isSubPage' => false,
+                    'data' => [
+                        'title' => 'Subjects | Instructor',
+                        'active' => 'courses',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => [
+                            'param_ids' => [
+                                'course_id' => $course_id,
+                                'year_id' => $year_id,
+                                'section_id' => $section_id
+                            ]
+                        ]
+                    ]
+                ];
+                        
+                return $this->renderView($page);
+            } else {
+                // 404
+            }
+
+
+        } catch(\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+       
+    }
+
+    public function subjects_posts() {
+        $uid = $this->getCurrentUser()['id'];
+        $eid = $this->request->getGet('eid');
+        $subj_id = $this->request->getGet('subj_id');
+
+        try {
+            $model = new EnrolledModel;
+            $model->join('subjects', 'subjects.id = '.$subj_id);
+            $model->where('enroll.id', $eid);
+            $model->where('user_id', $uid);
+
+            $result = $model->find();
+
+            if(count($result) > 0) {
+                // proceed
+                $page = [
+                    'view' => 'view-posts',
+                    'dir' => 'Instructor',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Posts | Instructor',
+                        'active' => 'courses',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => [
+                            'subject_id' => $result[0]['id']
+                        ]
+                    ]
+                ];
+                        
+                return $this->renderView($page);
+            } else {
+                // 404
+            }
+
+
+        } catch(\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+       
     }
 
     public function getCurrentUser() {
