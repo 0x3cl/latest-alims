@@ -53,7 +53,7 @@
 		<link rel="stylesheet" href="/assets/template/vendor/toastify/toastify.css" />
         <link rel="stylesheet" href="/assets/template/css/custom.css "/>
 
-        <script type="text/javascript" src="/assets/template/js/ckeditor.js">
+        <script type="text/javascript" src="/assets/template/js/ckeditor.js"></script>
         
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js"></script>

@@ -65,7 +65,6 @@ my_courses(id).then((response) => {
 
 const params = <?= json_encode($requested_data['param_ids']) ?>
 
-
 my_subjects(params).then((response) => {
     let div = '';
     if(response.status == 200) {
@@ -85,7 +84,7 @@ my_subjects(params).then((response) => {
                         </div>
                         <div class="card-footer w-100 d-flex justify-content-end gap-2">
                             <button class="btn btn-secondary">Masterlist</button>
-                            <a href="/instructor/subjects/posts?eid=${data.id}&subj_id=${data.subject_id}" class="btn btn-primary">View Posts</a>
+                            <a href="/instructor/subjects/posts?eid=${data.id}&sid=${data.subject_id}" class="btn btn-primary">View Posts</a>
                         </div>
                     </div>
                 </div>

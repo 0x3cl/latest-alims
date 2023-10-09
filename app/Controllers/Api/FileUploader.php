@@ -35,6 +35,8 @@ class FileUploader extends BaseController
                 if(optimizeImageUpload($path, $file, $filename)) {
                     return $this->respond([
                         'uploaded' => 'true',
+                        'filename' =>  $filename,
+                        'url' => base_url($path . $filename),
                         'message' => 'uploaded successfully'
                     ]);
                 }

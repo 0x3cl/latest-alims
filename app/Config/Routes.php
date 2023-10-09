@@ -110,6 +110,9 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
 
     // INSTRUCTORS
     $routes->get('post_group', 'PostGroup::getPostGroup');
+    $routes->get('posts', 'Post::getPost');
+    $routes->get('posts/all', 'Post::getPostAll');
+
 
     // API ROUTES FOR USERS
     $routes->group('users', function($routes) {
@@ -226,5 +229,9 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
 
     $routes->post('user/login', 'AuthUser::login');
     $routes->get('user/logout', 'AuthUser::logout');
+
+    $routes->group('create', function($routes) {
+        $routes->post('post', 'Post::create');
+    }); 
 
 });

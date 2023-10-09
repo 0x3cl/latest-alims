@@ -5,6 +5,7 @@ namespace App\Controllers\Instructor;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\EnrolledModel;
+use App\Models\PostModel;
 
 class ViewsController extends BaseController
 {
@@ -102,20 +103,30 @@ class ViewsController extends BaseController
     }
 
     public function subjects_posts() {
+
         $uid = $this->getCurrentUser()['id'];
         $eid = $this->request->getGet('eid');
-        $subj_id = $this->request->getGet('subj_id');
+        $sid = $this->request->getGet('sid');
+        $pid = $this->request->getGet('pid');
 
+    
         try {
             $model = new EnrolledModel;
-            $model->join('subjects', 'subjects.id = '.$subj_id);
+            $model->join('subjects', 'subjects.id = '.$sid);
             $model->where('enroll.id', $eid);
             $model->where('user_id', $uid);
 
             $result = $model->find();
-
             if(count($result) > 0) {
-                // proceed
+                
+                if(empty($pid)) {
+                    $model = new PostModel;
+                    $model->where('enroll_id', $eid);
+                    $model->where('subject_id', $sid);
+
+                    $pid = $model->first()['id'];
+                }
+
                 $page = [
                     'view' => 'view-posts',
                     'dir' => 'Instructor',
@@ -125,7 +136,9 @@ class ViewsController extends BaseController
                         'active' => 'courses',
                         'current_userdata' => $this->getCurrentUser(),
                         'requested_data' => [
-                            'subject_id' => $result[0]['id']
+                            'eid' => $eid,
+                            'sid' => $sid,
+                            'pid' => $pid
                         ]
                     ]
                 ];

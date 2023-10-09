@@ -108,3 +108,70 @@ export function isEmpty(data) {
     const trimmedData = data.trim();
     return trimmedData === '' ? 'Not yet updated' : trimmedData;
 }
+
+export function clearFields() {
+    $('input, select').val('');
+}
+
+export function formatFile(type, name) {
+    let icon;
+    switch(type) {
+        case 'doc':
+        case 'docx':
+            icon = `<i class="bi bi-filetype-docx"></i>`;
+            break;
+        case 'pdf':
+            icon = `<i class="bi bi-filetype-pdf"></i>`;
+            break;
+        case 'xlsx':
+            icon = `<i class="bi bi-filetype-xlsx"></i>`;
+            break;
+        case 'xls':
+            icon = `<i class="bi bi-filetype-xls"></i>`;
+            break;
+        case 'txt':
+            icon = `<i class="bi bi-filetype-txt"></i>`;
+            break;
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+            icon = `<i class="bi bi-image"></i>`;
+            break;
+        case 'html':
+            icon = `<i class="bi bi-filetype-html"></i>`;
+            break;
+        case 'css':
+            icon = `<i class="bi bi-filetype-css"></i>`;
+            break;
+        case 'js':
+            icon = `<i class="bi bi-filetype-js"></i>`;
+            break;
+        case 'json':
+            icon = `<i class="bi bi-filetype-json"></i>`;
+            break;
+        case 'jsx':
+            icon = `<i class="bi bi-filetype-jsx"></i>`;
+            break;
+        case 'php':
+            icon = `<i class="bi bi-filetype-php"></i>`;
+            break;
+        case 'sql':
+            icon = `<i class="bi bi-filetype-sql"></i>`;
+            break;
+        case 'ppt':
+            icon = `<i class="bi bi-filetype-ppt"></i>`;
+            break;
+        case 'pptx':
+            icon = `<i class="bi bi-filetype-pptx"></i>`;
+            break;
+        default:
+            icon = `<i class="bi bi-file-earmark-richtext"></i>`;
+            break;
+    }
+
+    return `<div>
+                ${icon} ${name}
+            </div>`;
+
+}

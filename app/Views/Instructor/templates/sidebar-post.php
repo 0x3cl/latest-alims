@@ -19,7 +19,18 @@
                     <span class="menu-text">Return to Courses</span>
                 </a>
             </li>
-            <p class="mt-2 ms-4">Content</p>
+            <hr class="mt-2 mb-0">
+        </ul>
+        <ul class="sidebar-menu post-group">
+            <div class="px-3 mt-4">
+                <li class="skeleton-text"></li>
+                <li class="skeleton-text"></li>
+                <li class="skeleton-text"></li>
+                <li class="skeleton-text"></li>
+                <li class="skeleton-text"></li>
+                <li class="skeleton-text"></li>
+                <li class="skeleton-text"></li>
+            </div>
         </ul>
     </div>
 </nav>
