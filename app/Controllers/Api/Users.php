@@ -56,20 +56,25 @@ class Users extends BaseController
         $user_session = session()->get('user_session');
         $id = $user_session['id'];
         $role = $user_session['role'];
-        switch($role) {
-            case 1:
-            case 2:
-                $model  = $this->user_model;
-                break;
-            case 3:
-                $model = $this->admin_model;
-                break;
-            default:
-                'err';
-                break;
-        }
         
         try {
+            switch($role) {
+                case 1:
+                case 2:
+                    $model  = $this->user_model;
+                    if($role == 1) {
+                        $model->join('instructors', 'instructors.user_id = users.id');
+                    } else if($role == 2) {
+                        $model->join('students', 'students.user_id = users.id');
+                    }
+                    break;
+                case 3:
+                    $model = $this->admin_model;
+                    break;
+                default:
+                    'err';
+                    break;
+            }
             $data = $model->find($id);
             $response = [
                 'status' => 200,
@@ -89,17 +94,24 @@ class Users extends BaseController
 
     }
 
-    public function getOtherAdmins() {
+    public function getOtherUsers() {
         $user_session = session()->get('user_session');
         $id = $user_session['id'];
         $role = $user_session['role'];
         switch($role) {
             case 1:
+                $model  = $this->user_model;
+                $model->join('instructors', 'instructors.user_id = users.id');
+                $data = $model->where('users.id !=', $id)->find();
+                break;
             case 2:
                 $model  = $this->user_model;
+                $model->join('students', 'students.user_id = users.id');
+                $data = $model->where('users.id !=', $id)->find();
                 break;
             case 3:
                 $model = $this->admin_model;
+                $data = $model->where('admins.id !=', $id)->find();
                 break;
             default:
                 'err';
@@ -107,7 +119,6 @@ class Users extends BaseController
         }
         
         try {
-            $data = $model->where('id !=', $id)->find();
             $response = [
                 'status' => 200,
                 'message' => 'ok',

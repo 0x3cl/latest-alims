@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="app-footer">
-                <span>© Bootstrap Gallery 2023</span>
+                <span>&copy; 2023 | ALIMS</span>
             </div>
         </div>
     </div>

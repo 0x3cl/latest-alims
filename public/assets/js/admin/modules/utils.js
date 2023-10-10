@@ -100,7 +100,6 @@ export function toastMessage(status, message) {
         stack: 5,
         loaderBg: `${status === "error" ? "red" : "green"}`
     });   
-      
 }
 
 export function isEmpty(data) {

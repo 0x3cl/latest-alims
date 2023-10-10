@@ -201,7 +201,7 @@ export async function otherAdmins() {
     const token = data.token
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: '/api/v1/users/my/admins',
+            url: '/api/v1/users/my/others',
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', `Bearer ${token}`)

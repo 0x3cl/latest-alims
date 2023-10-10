@@ -137,11 +137,11 @@
                 <img src="/uploads/avatar/<?= $current_userdata['avatar'] ?>" class="rounded-2 img-3x" alt="Bootstrap Gallery" />
             </a>
             <div class="dropdown-menu dropdown-menu-end shadow-lg">
-                <a class="dropdown-item d-flex align-items-center" href="profile.html"><i
+                <a class="dropdown-item d-flex align-items-center" href="/instructor/me"><i
                         class="bi bi-person fs-4 me-2"></i>Profile</a>
-                <a class="dropdown-item d-flex align-items-center" href="settings.html"><i
+                <a class="dropdown-item d-flex align-items-center" href="/instructor/settings"><i
                         class="bi bi-gear fs-4 me-2"></i>Settings</a>
-                <a class="dropdown-item d-flex align-items-center" href="login.html"><i
+                <a class="dropdown-item d-flex align-items-center" href="/instructor/sign-out"><i
                         class="bi bi-escape fs-4 me-2"></i>Logout</a>
             </div>
         </div>

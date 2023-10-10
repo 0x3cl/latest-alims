@@ -98,6 +98,9 @@ $routes->group('instructor', ['namespace' => '\App\Controllers\Instructor'], fun
     $routes->get('courses', 'ViewsController::courses');
     $routes->get('subjects', 'ViewsController::subjects');
     $routes->get('subjects/posts', 'ViewsController::subjects_posts');
+    $routes->get('me', 'ViewsController::me');
+    $routes->get('change/password', 'ViewsController::change_password');
+    $routes->get('sign-out', 'ViewsController::signout');
 });
 
 // API ROUTES
@@ -119,7 +122,7 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
     $routes->group('users', function($routes) {
         $routes->get('/', 'Users::getUsers');
         $routes->get('my', 'Users::getMyData');
-        $routes->get('my/admins', 'Users::getOtherAdmins');
+        $routes->get('my/others', 'Users::getOtherUsers');
         $routes->get('(:num)', 'Users::getUsers/$1');
         $routes->get('students', 'Users::getStudents');
         $routes->get('students/(:num)', 'Users::getStudents/$1');

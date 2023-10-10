@@ -188,7 +188,7 @@
                                     <div class="card-header">
                                         <h6 class="card-title m-0">Other Admins</h6>
                                     </div>
-                                    <div class="card-body" id="other-admin-lists">
+                                    <div class="card-body" id="other-lists">
                                         <ul class="list-unstyled skeleton-loading">
                                             <li class="list-unstyled-item">
                                                 <div class="d-flex align-items-center gap-2 skeleton-with-icon">
@@ -525,24 +525,33 @@ function viewMy() {
             const data = response.data;
             let div = '';
 
-            data.forEach((data) => {
-                div += `
-                <div class="d-flex mt-3 other-admins">
-                    <div class="other-profiles">
-                    <div class="profile-image">
-                        <img src="/uploads/avatar/${data.avatar}" alt="" srcset="">
-                    </div>
-                    <div class="other-profile-info">
-                        <h6>${(data.firstname.toUpperCase() + ' ' + data.lastname.toUpperCase())}</h6>
-                        <p class="text-uppercase fw-bold">${userRole(data.role) + '#' + data.id } <span class="badge-admin mb-1"><i class='bx bxs-badge-check'></i></span></p>
-                    </div>
-                    </div>
-                </div>
-                `;
-            });
+            if(response.status == 200) {
+                const data = response.data;
+                let div = '';
 
-            $('#other-admin-lists').html(DOMPurify.sanitize(div));
-            
+                if(data.length > 0) {
+                    data.forEach((data) => {
+                        div += `
+                        <div class="d-flex mt-3 other">
+                            <div class="other-profiles">
+                            <div class="profile-image">
+                                <img src="/uploads/avatar/${data.avatar}" alt="" srcset="">
+                            </div>
+                            <div class="other-profile-info">
+                                <h6 class="text-uppercase">${(data.firstname.toUpperCase() + ' ' + data.lastname.toUpperCase())}</h6>
+                                <p class="text-uppercase fw-bold">${userRole(data.role) + '#' + data.id } <span class="badge-admin mb-1"><i class='bx bxs-badge-check'></i></span></p>
+                            </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+
+                } else {
+                    div += `<small class="text-muted"><em>No other admins</em></small>`
+                }
+
+                $('#other-lists').html(DOMPurify.sanitize(div));
+            }
         }
     });
 }
@@ -706,55 +715,55 @@ $('#updateAvatarModal #file').on('change', function() {
 
 
 $('#updateBanner #file').on('change', function() {
-        const imgfilediv = $(this);
-        const file = $(this).prop('files')[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            $('.preview-image-banner img').attr('src', e.target.result);
-            imgfilediv.val('');
-        };
-        reader.readAsDataURL(file);
+    const imgfilediv = $(this);
+    const file = $(this).prop('files')[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        $('.preview-image-banner img').attr('src', e.target.result);
+        imgfilediv.val('');
+    };
+    reader.readAsDataURL(file);
 
-        $('#control-update-banner').on('click', function() {
-            const formData = new FormData();
-            const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
-            formData.append('file', file);
-            if(file != '') {
-                $.ajax({
-                    url: '/api/v1/my/banner',
-                    method: 'POST',
-                    contentType: false,
-                    processData: false,
-                    dataType: 'json',
-                    data: formData,
-                    beforeSend: function(xhr) {
-                        $(this).attr('disabled', true);
-                        xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
-                        xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
-                    },
-                    success: function(response) {
-                        if(response.status == 200) {
-                            toastMessage('success', response.message);
-                            viewMy();
-                        } else {
-                            const err = response.message;
-                            if(typeof err == 'object') {
-                                for(const key in err) {
-                                    toastMessage('error', err[key]);
-                                }
-                            } else if(typeof err == 'string') {
-                                toastMessage('error', err);
+    $('#control-update-banner').on('click', function() {
+        const formData = new FormData();
+        const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
+        formData.append('file', file);
+        if(file != '') {
+            $.ajax({
+                url: '/api/v1/my/banner',
+                method: 'POST',
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                data: formData,
+                beforeSend: function(xhr) {
+                    $(this).attr('disabled', true);
+                    xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+                },
+                success: function(response) {
+                    if(response.status == 200) {
+                        toastMessage('success', response.message);
+                        viewMy();
+                    } else {
+                        const err = response.message;
+                        if(typeof err == 'object') {
+                            for(const key in err) {
+                                toastMessage('error', err[key]);
                             }
+                        } else if(typeof err == 'string') {
+                            toastMessage('error', err);
                         }
                     }
-                }).done(function() {
-                    $(this).attr('disabled', false);
-                    $('.modal').modal('hide');
-                    generateCSRFToken();
-                })
-            }
-        });
-
+                }
+            }).done(function() {
+                $(this).attr('disabled', false);
+                $('.modal').modal('hide');
+                generateCSRFToken();
+            })
+        }
     });
+});
+
 
 </script>

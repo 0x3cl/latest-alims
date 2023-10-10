@@ -1,7 +1,7 @@
 <nav id="sidebar" class="sidebar-wrapper">
     <div class="app-brand px-3 py-2 d-flex align-items-center">
-        <a href="index.html">
-            <img src="/assets/template/images/logo.svg" class="logo" alt="Bootstrap Gallery" />
+        <a class="navbar-brand w-100 mt-3" href="index.html">
+            <h1 class="text-center">ALIM-S</h1>
         </a>
     </div>
     <div class="sidebar-profile">

@@ -85,19 +85,18 @@ export function get_date() {
 }
 
 
-export function toastMessage(icon, message) {
+export function toastMessage(status, message) {
     $.toast({
         heading: "System Message",
         text: `${message}`,
         showHideTransition: "fade",
-        icon: `${icon}`,
+        icon: `${status}`,
         position: "top-right",
         allowToastClose: true,
         hideAfter: 3500,
         stack: 5,
-        loaderBg: `${icon === "error" ? "red" : "green"}`
-      });
-      
+        loaderBg: `${status === "error" ? "red" : "green"}`
+    });   
 }
 
 export function isEmpty(data) {

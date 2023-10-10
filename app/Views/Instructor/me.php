@@ -1,196 +1,206 @@
-<div class="wrapper">
-    <!-- sidebar -->
-    <?php 
-        include(APPPATH . 'Views/Admin/templates/sidebar.php');
-    ?>
-
-    <div id="content">
-        <div class="banner">
-            <div class="site-header px-3 skeleton-image">
-                <div class="banner-container">
+<div class="page-wrapper">
+    <div class="main-container">
+        <?php include(APPPATH . '/Views/Instructor/templates/sidebar.php'); ?>
+        <div class="app-container">
+            <?php include(APPPATH . '/Views/Instructor/templates/navbar.php'); ?>
+            <div class="app-hero-header d-flex align-items-center">
+                <ol class="breadcrumb d-none d-lg-flex">
+                    <li class="breadcrumb-item">
+                        <i class="bi bi-house lh-1"></i>
+                        <a href="index.html" class="text-decoration-none">Home</a>
+                    </li>
+                    <li class="breadcrumb-item text-secondary" aria-current="page">
+                        Me
+                    </li>
+                </ol>
+            </div>
+            <div class="app-body">
+                <div class="banner">
                     <div class="banner-overlay">
                     </div>
                     <div class="banner-image">
-                        
+                            
                     </div>
                 </div>
-                <!-- navbar -->
-                <?php 
-                    include(APPPATH . 'Views/Admin/templates/navbar.php');
-                ?>
-            </div>
-        </div>
-        <div id="dashboard" class="mx-2">
-            <div class="container w-100">
-                <div class="d-block d-md-flex position-relative">
-                    <div>
-                        <div class="profile-container" id="profile-image">
-                            <div class="skeleton-image"></div>
+                <div class="profile-details">
+                    <div class="d-block d-md-flex align-items-center gap-4 position-relative">
+                         <div class="profile-container" id="profile-image">
+
                         </div>
-                    </div>
-                    <div class="profile-info" id="profile-info">
-                        <ul class="list-unstyled skeleton-loading">
-                            <li class="list-unstyled-item">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="w-100">
-                                        <div class="skeleton-text sm-w"></div>
+                        <div class="profile-info" id="profile-info">
+                            <ul class="list-unstyled skeleton-loading">
+                                <li class="list-unstyled-item">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="w-100">
+                                            <div class="skeleton-text sm-w"></div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="list-unstyled-item">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="w-100">
-                                        <div class="skeleton-text xsm-w"></div>
+                                </li>
+                                <li class="list-unstyled-item">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="w-100">
+                                            <div class="skeleton-text xsm-w"></div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>  
-                <div class="row mt-4">
-                    <div class="col-12 col-md-5 mb-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="card-title m-0">About</h6>
-                            </div>
-                            <div class="card-body">
-                                <?= csrf_field(); ?>
-                                <div class="bio" id="profile-info-bio">
-                                    <ul class="list-unstyled skeleton-loading">
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <hr>
-                                <div class="info" id="profile-info-list">
-                                    <ul class="list-unstyled skeleton-loading">
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-7">
-                        <div class="col-12 mb-3">
-                            <div class="info">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title m-0">Other Admins</h6>
-                                    </div>
-                                    <div class="card-body" id="other-admin-lists">
+                    </div>  
+                    <div class="row mt-5">
+                        <div class="col-12 col-md-5 mb-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="card-title m-0">About</h6>
+                                </div>
+                                <div class="card-body">
+                                    <?= csrf_field(); ?>
+                                    <div class="bio" id="profile-info-bio">
                                         <ul class="list-unstyled skeleton-loading">
                                             <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text sm-w"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <hr>
+                                    <div class="info" id="profile-info-list">
+                                        <ul class="list-unstyled skeleton-loading">
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-unstyled-item">
+                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                    <div class="icon w-auto">
+                                                        <i class="skeleton-icon"></i>
+                                                    </div>
+                                                    <div class="w-100">
+                                                        <div class="skeleton-text"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div class="col-12 mb-3">
+                                <div class="info">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="card-title m-0">Other Instructors</h6>
+                                        </div>
+                                        <div class="card-body" id="other-lists">
+                                            <ul class="list-unstyled skeleton-loading">
+                                                <li class="list-unstyled-item">
+                                                    <div class="d-flex align-items-center gap-2 skeleton-with-icon">
+                                                        <div class="icon w-auto">
+                                                            <i class="skeleton-icon"></i>
+                                                        </div>
+                                                        <div class="w-100">
+                                                            <div class="skeleton-text sm-w"></div>
+                                                            <div class="skeleton-text xsm-w"></div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-unstyled-item">
                                                 <div class="d-flex align-items-center gap-2 skeleton-with-icon">
                                                     <div class="icon w-auto">
                                                         <i class="skeleton-icon"></i>
@@ -201,24 +211,17 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="list-unstyled-item">
-                                            <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                <div class="icon w-auto">
-                                                    <i class="skeleton-icon"></i>
-                                                </div>
-                                                <div class="w-100">
-                                                    <div class="skeleton-text sm-w"></div>
-                                                    <div class="skeleton-text xsm-w"></div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        </ul>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="app-footer">
+                <span>&copy; 2023 | ALIMS</span>
             </div>
         </div>
     </div>
@@ -373,15 +376,17 @@
 </div>
 
 <script type="module">
-import { my, otherAdmins, getJWTtoken } from "/assets/js/admin/modules/dataUtils.js";
-import { isEmpty, userRole, generateCSRFToken, toastMessage } from "/assets/js/admin/modules/utils.js";
-import { address } from "/assets/js/admin/modules/address.js";
 
+import { my, otherInstructors, getJWTtoken } from "/assets/js/instructor/modules/dataUtils.js";
+import { isEmpty, userRole, generateCSRFToken, toastMessage } from "/assets/js/instructor/modules/utils.js";
+import { address } from "/assets/js/instructor/modules/address.js";
+import {my_courses, my_subjects} from '/assets/js/instructor/modules/dataUtils.js';
+
+viewMy();
+address();
 const response = await getJWTtoken();
 const jwt_token = response.token;
-
-address();
-viewMy();
+const id = <?= $current_userdata['id']?>
 
 function viewMy() {
     my().then((response) => {
@@ -451,7 +456,7 @@ function viewMy() {
                         </div>
                     </li>
                 </ul>
-                <button class="btn btn-custom-dark w-100 mt-3" data-bs-toggle="modal" data-bs-target="#updateProfileDetails">Update Details</button>
+                <button class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#updateProfileDetails">Update Details</button>
             `;
             $('#profile-info-list').html(DOMPurify.sanitize(div));
 
@@ -459,21 +464,21 @@ function viewMy() {
                 <div>   
                     ${isEmpty(data.bio)}
                 </div>
-                <button class="btn btn-custom-dark w-100 mt-3" id="toggle-update-bio">Update Bio</button>
+                <button class="btn btn-primary w-100 mt-3" id="toggle-update-bio">Update Bio</button>
             `;
 
             $('#profile-info-bio').html(DOMPurify.sanitize(div));
 
             div = `
-                <h1>${data.firstname + ' ' + data.lastname}</h1>
-                <p>${userRole(data.role)} <span class="badge-admin mb-1"><i class='bx bxs-badge-check'></i></span></p>
+                <h1 class="text-uppercase">${data.firstname + ' ' + data.lastname}</h1>
+                <p class="text-uppercase">${userRole(data.role)}</span></p>
             `
             $('#profile-info').html(DOMPurify.sanitize(div));
 
             div = `
                 <img src="/uploads/avatar/${data.avatar}" class="view-profile">
                 <div class="action-overlay">
-                    <button class="btn btn-custom-dark w-100 mt-3 p-2" data-bs-toggle="modal" data-bs-target="#updateAvatarModal"><i class='bx bx-camera'></i></button>
+                    <button class="btn btn-primary w-100 mt-3 p-2" data-bs-toggle="modal" data-bs-target="#updateAvatarModal"><i class='bx bx-camera'></i></button>
                 </div>
             `;
 
@@ -482,11 +487,11 @@ function viewMy() {
             div = `
                 <img src="/uploads/banner/${data.banner}">
                 <div class="banner-actions">
-                    <button class="btn btn-custom-dark" id="btn-update-banner" data-bs-toggle="modal" data-bs-target="#updateBanner"><i class='bx bx-camera'></i>Update Banner</button>
+                    <button class="btn btn-primary" id="btn-update-banner" data-bs-toggle="modal" data-bs-target="#updateBanner"><i class='bx bx-camera'></i>Update Banner</button>
                 </div>
             `;
 
-            $('.banner-image').html(DOMPurify.sanitize(div));
+            $('.banner-overlay').html(DOMPurify.sanitize(div));
 
             div = `
             <div>
@@ -520,32 +525,107 @@ function viewMy() {
         }
     });
 
-    otherAdmins().then((response) => {
+    otherInstructors().then((response) => {
+        console.log(response);
         if(response.status == 200) {
             const data = response.data;
             let div = '';
 
-            data.forEach((data) => {
-                div += `
-                <div class="d-flex mt-3 other-admins">
-                    <div class="other-profiles">
-                    <div class="profile-image">
-                        <img src="/uploads/avatar/${data.avatar}" alt="" srcset="">
+            if(data.length > 0) {
+                data.forEach((data) => {
+                    div += `
+                    <div class="d-flex mt-3 other">
+                        <div class="other-profiles">
+                        <div class="profile-image">
+                            <img src="/uploads/avatar/${data.avatar}" alt="" srcset="">
+                        </div>
+                        <div class="other-profile-info">
+                            <h6 class="text-uppercase">${(data.firstname.toUpperCase() + ' ' + data.lastname.toUpperCase())}</h6>
+                            <p class="text-uppercase fw-bold">${userRole(data.role) + '#' + data.id } <span class="badge-admin mb-1"><i class='bx bxs-badge-check'></i></span></p>
+                        </div>
+                        </div>
                     </div>
-                    <div class="other-profile-info">
-                        <h6>${(data.firstname.toUpperCase() + ' ' + data.lastname.toUpperCase())}</h6>
-                        <p class="text-uppercase fw-bold">${userRole(data.role) + '#' + data.id } <span class="badge-admin mb-1"><i class='bx bxs-badge-check'></i></span></p>
-                    </div>
-                    </div>
-                </div>
-                `;
-            });
+                    `;
+                });
 
-            $('#other-admin-lists').html(DOMPurify.sanitize(div));
-            
+            } else {
+                div += `<small class="text-muted"><em>No other users</em></small>`
+            }
+
+            $('#other-lists').html(DOMPurify.sanitize(div));
+
         }
     });
 }
+
+my_courses(id).then((response) => {
+    let div = '';
+    if(response.status == 200) {
+        const data = response.data;
+        console.log(data);
+        data.forEach((data) => {
+            div += `
+            <div class="col-12 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-capitalize fw-bold">${data.course_name}</h5>
+                        <h6 class="mb-0 text-uppercase">${data.course_code}</h6>
+                        <hr>
+                        <small class="mb-0 d-block fw-bold text-muted text-uppercase">SATURDAY 10:00AM - 11:00AM</small>
+                        <small class="mb-0 d-block fw-bold text-muted text-uppercase">${data.year_name} | ${data.section_name}</small>
+                    </div>
+                    <div class="card-footer w-100 d-flex justify-content-end gap-2">
+                        <button class="btn btn-secondary">Masterlist</button>
+                        <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-primary">View Subjects</a>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+
+        $('#data-col').html(DOMPurify.sanitize(div));
+
+        div = '';
+
+        data.forEach((data) => {
+            div += `
+                
+                <li>
+                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                        <p class="d-block text-capitalize mb-1">${data.course_name}</p>
+                        <small class="d-block text-uppercase">${data.course_code} </small>
+                        <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
+                    </a>
+                </li>
+            `;
+        });
+
+        $('.treeview-menu.courses').append(DOMPurify.sanitize(div));
+
+    }
+});
+
+my_subjects(id).then((response) => {
+    let div = '';
+    if(response.status == 200) {
+        const data = response.data;
+
+        data.forEach((data) => {
+            div += `
+                
+                <li>
+                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                        <p class="d-block text-capitalize mb-1">${data.subject_name}</p>
+                        <small class="d-block text-uppercase">${data.course_code} - ${data.subject_code} </small>
+                        <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
+                    </a>
+                </li>
+            `;
+        });
+
+        $('.treeview-menu.subjects').append(DOMPurify.sanitize(div));
+    }
+});
 
 $(document).on('click', '#toggle-update-bio, #toggle-cancel-bio', function() {
     const isUpdate = $(this).attr('id') === 'toggle-update-bio';
@@ -631,17 +711,18 @@ $('#control-update-profile-details').on('click', function() {
         },
         success: function(response) {
             if(response.status == 200) {
-                toastMessage('success', 'profile info updated');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Yey..',
+                    text: response.message,
+                });
                 viewMy();
             } else {
-                const err = response.message;
-                if(typeof err == 'object') {
-                    for(const key in err) {
-                        toastMessage('error', err[key]);
-                    }
-                } else if(typeof err == 'string') {
-                    toastMessage('error', err);
-                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops..',
+                    text: response.message[0],
+                });
             }
         }
     }).done(function() {
@@ -682,17 +763,18 @@ $('#updateAvatarModal #file').on('change', function() {
                 },
                 success: function(response) {
                     if(response.status == 200) {
-                        toastMessage('success', response.message);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Yey..',
+                            text: response.message,
+                        });
                         viewMy();
                     } else {
-                        const err = response.message;
-                        if(typeof err == 'object') {
-                            for(const key in err) {
-                                toastMessage('error', err[key]);
-                            }
-                        } else if(typeof err == 'string') {
-                            toastMessage('error', err);
-                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops..',
+                            text: response.message[0],
+                        });
                     }
                 }
             }).done(function() {
@@ -704,57 +786,57 @@ $('#updateAvatarModal #file').on('change', function() {
     });
 });
 
-
 $('#updateBanner #file').on('change', function() {
-        const imgfilediv = $(this);
-        const file = $(this).prop('files')[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            $('.preview-image-banner img').attr('src', e.target.result);
-            imgfilediv.val('');
-        };
-        reader.readAsDataURL(file);
+    const imgfilediv = $(this);
+    const file = $(this).prop('files')[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        $('.preview-image-banner img').attr('src', e.target.result);
+        imgfilediv.val('');
+    };
+    reader.readAsDataURL(file);
 
-        $('#control-update-banner').on('click', function() {
-            const formData = new FormData();
-            const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
-            formData.append('file', file);
-            if(file != '') {
-                $.ajax({
-                    url: '/api/v1/my/banner',
-                    method: 'POST',
-                    contentType: false,
-                    processData: false,
-                    dataType: 'json',
-                    data: formData,
-                    beforeSend: function(xhr) {
-                        $(this).attr('disabled', true);
-                        xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
-                        xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
-                    },
-                    success: function(response) {
-                        if(response.status == 200) {
-                            toastMessage('success', response.message);
-                            viewMy();
-                        } else {
-                            const err = response.message;
-                            if(typeof err == 'object') {
-                                for(const key in err) {
-                                    toastMessage('error', err[key]);
-                                }
-                            } else if(typeof err == 'string') {
-                                toastMessage('error', err);
-                            }
-                        }
+    $('#control-update-banner').on('click', function() {
+        const formData = new FormData();
+        const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
+        formData.append('file', file);
+        if(file != '') {
+            $.ajax({
+                url: '/api/v1/my/banner',
+                method: 'POST',
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                data: formData,
+                beforeSend: function(xhr) {
+                    $(this).attr('disabled', true);
+                    xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+                },
+                success: function(response) {
+                    if(response.status == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Yey..',
+                            text: response.message,
+                        });
+                        viewMy();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops..',
+                            text: response.message[0],
+                        });
                     }
-                }).done(function() {
-                    $(this).attr('disabled', false);
-                    $('.modal').modal('hide');
-                    generateCSRFToken();
-                })
-            }
-        });
-
+                }
+            }).done(function() {
+                $(this).attr('disabled', false);
+                $('.modal').modal('hide');
+                generateCSRFToken();
+            })
+        }
     });
+});
+
 
 </script>

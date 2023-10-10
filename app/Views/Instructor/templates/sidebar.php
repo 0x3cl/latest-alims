@@ -1,8 +1,8 @@
 <nav id="sidebar" class="sidebar-wrapper">
     <!-- App brand starts -->
     <div class="app-brand px-3 py-2 d-flex align-items-center">
-        <a href="index.html">
-            <img src="/assets/template/images/logo.svg" class="logo" alt="Bootstrap Gallery" />
+        <a class="navbar-brand w-100 mt-3" href="index.html">
+            <h1 class="text-center">ALIM-S</h1>
         </a>
     </div>
     <!-- App brand ends -->
@@ -11,8 +11,8 @@
     <div class="sidebar-profile">
         <img src="/uploads/avatar/<?= $current_userdata['avatar'] ?>" class="img-3x me-3 rounded-2" alt="Admin Dashboard" />
         <div class="m-0">
-            <p class="m-0 text-secondary">Hello &#128075;</p>
-            <h6 class="m-0 text-nowrap"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></h6>
+            <p class="m-0 mb-1 text-secondary">Welcome Back!</p>
+            <h6 class="m-0 text-nowrap fw-bold"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></h6>
         </div>
     </div>
     <!-- Sidebar profile ends -->
@@ -37,15 +37,23 @@
                     </li>
                 </ul>
             </li>
-            <!-- <li class="treeview <?= $active === 'subjects' ? 'active current-page' : '' ?>">
-                <a href="widgets.html">
-                    <i class="bi bi-stickies"></i>
-                    <span class="menu-text">My Subjects</span>
+            <li class="treeview <?= $active === 'settings' ? 'active current-page' : '' ?>">
+                <a href="#">
+                    <i class="bi bi-gear"></i>
+                    <span class="menu-text">Settings</span>
                 </a>
-                <ul class="treeview-menu subjects">
-                   
+                <ul class="treeview-menu settings">
+                    <li>
+                        <a href="/instructor/me">My Profile</a>
+                    </li>
+                    <li>
+                        <a href="/instructor/change/password">Change Password</a>
+                    </li>
+                    <li>
+                        <a href="/instructor/sign-out">Sign Out</a>
+                    </li>
                 </ul>
-            </li> -->
+            </li>
         </ul>
     </div>
     <!-- Sidebar menu ends -->

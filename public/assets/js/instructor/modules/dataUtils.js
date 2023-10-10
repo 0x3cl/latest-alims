@@ -36,6 +36,22 @@ export async function my() {
     });
 }
 
+export async function otherInstructors() {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/v1/users/my/others',
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}
+
 export async function my_courses() {
     const data = await getJWTtoken();
     const token = data.token

@@ -5,6 +5,8 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use CodeIgniter\Api\ResponseTrait;
 use App\Models\UserModel;
+use App\Models\StudentModel;
+use App\Models\InstructorModel;
 use App\Models\AdminModel;
 
 class Profile extends BaseController
@@ -48,6 +50,9 @@ class Profile extends BaseController
         ];
         
         
+        $data = $this->model->find($this->uid);
+        $role = $data['role'];
+
         if(!$this->validate($rules)) {
             $response = [
                 'status' => 500,
@@ -68,12 +73,25 @@ class Profile extends BaseController
             $fb_link = $this->request->getPost('fb_link');
             $ig_link = $this->request->getPost('ig_link');
             $twi_link = $this->request->getPost('twi_link');
-
+            $identity = '';
+            switch($role) {
+                case 1:
+                    $model = new InstructorModel;
+                    $identity = 'user_id';
+                    break;
+                case 2:
+                    $model = new StudentsModel;
+                    $identity = 'user_id';
+                    break;
+                case 3:
+                    $model = new AdminModel;
+                    $identity = 'id';
+            }
+    
             if(empty($state) || empty($city)) {
                 $data = [
                     'firstname' => $firstname,
                     'lastname' => $lastname,
-                    'email' => $email,
                     'contact' => $contact,
                     'birthday' => $birthday,
                     'address' => $address,
@@ -83,8 +101,10 @@ class Profile extends BaseController
                     'ig_link' => $ig_link,
                     'twi_link' => $twi_link
                 ];
+                
 
-                if($this->model->where('id', $this->uid)->set($data)->update()) {
+                if($model->where($identity, $this->uid)->set($data)->update()
+                && $this->model->where('id', $this->uid)->set(['email' => $email])->update()) {
                     $response = [
                         'status' => 200,
                         'message' => 'profile info updated'
@@ -96,7 +116,6 @@ class Profile extends BaseController
                 $data = [
                     'firstname' => $firstname,
                     'lastname' => $lastname,
-                    'email' => $email,
                     'contact' => $contact,
                     'birthday' => $birthday,
                     'address' => $address,
@@ -109,7 +128,8 @@ class Profile extends BaseController
                     'twi_link' => $twi_link
                 ];
 
-                if($this->model->where('id', $this->uid)->set($data)->update()) {
+                if($model->where($identity, $this->uid)->set($data)->update()
+                && $this->model->where('id', $this->uid)->set(['email' => $email])->update()) {
                     $response = [
                         'status' => 200,
                         'message' => 'profile info updated'
@@ -125,9 +145,30 @@ class Profile extends BaseController
     public function update_bio() {
         $bio = $this->request->getPost('bio');
         try {
-            if($this->model->where('id', $this->uid)->set([
-                'bio' => $bio
-            ])->update()) {
+            $data = $this->model->find($this->uid);
+            $role = $data['role'];
+            switch($role) {
+                case 1:
+                    $model = new InstructorModel;
+                    $model->where('instructors.user_id', $this->uid)->set([
+                        'bio' => $bio
+                    ]);
+                    break;
+                case 2:
+                    $model = new StudentsModel;
+                    $model->where('students.user_id', $this->uid)->set([
+                        'bio' => $bio
+                    ]);
+                    break;
+                case 3:
+                    $model = new AdminModel;
+                    $model->where('id', $this->uid)->set([
+                        'bio' => $bio
+                ]);
+                
+            }
+
+            if($model->update()) {
                 $response = [
                     'status' => 200,
                     'message' => 'bio updated'
@@ -135,6 +176,7 @@ class Profile extends BaseController
 
                 return $this->respond($response);
             }
+           
         } catch (\Exception $e) {
             $response = [
                 'status' => 500,
@@ -149,10 +191,28 @@ class Profile extends BaseController
         $image_path = './uploads/avatar/';
         $file = $this->request->getFile('file');
 
-        $previous_image = $this->model->where('id', $this->uid)->find()[0]['avatar'];
-        $previous_image_path = $image_path . $previous_image;
-
         try {
+
+            $data = $this->model->find($this->uid);
+            $role = $data['role'];
+            $identity = '';
+            switch($role) {
+                case 1:
+                    $model = new InstructorModel;
+                    $identity = 'user_id';
+                    break;
+                case 2:
+                    $model = new StudentsModel;
+                    $identity = 'user_id';
+                    break;
+                case 3:
+                    $model = new AdminModel;
+                    $identity = 'id';
+            }
+
+            $previous_image = $model->where($identity, $this->uid)->find()[0]['avatar'];
+            $previous_image_path = $image_path . $previous_image;    
+
             if($previous_image != 'male-default.jpg' || $previous_image != 'female-default.jpg' && file_exists($previous_image_path)) {
                 if(file_exists($previous_image_path)) {
                     unlink($previous_image_path);
@@ -161,7 +221,7 @@ class Profile extends BaseController
     
             if($file->isValid() && !$file->hasMoved()) {
                 $filename = $file->getRandomName();
-                if($this->model->where('id', $this->uid)->set([
+                if($model->where($identity, $this->uid)->set([
                     'avatar' => $filename
                 ])->update()
                     && optimizeImageUpload($image_path, $file, $filename)) {
@@ -187,10 +247,28 @@ class Profile extends BaseController
         $image_path = './uploads/banner/';
         $file = $this->request->getFile('file');
 
-        $previous_image = $this->model->where('id', $this->uid)->find()[0]['banner'];
-        $previous_image_path = $image_path . $previous_image;
-
         try {
+            $data = $this->model->find($this->uid);
+            $role = $data['role'];
+            $identity = '';
+            switch($role) {
+                case 1:
+                    $model = new InstructorModel;
+                    $identity = 'user_id';
+                    break;
+                case 2:
+                    $model = new StudentsModel;
+                    $identity = 'user_id';
+                    break;
+                case 3:
+                    $model = new AdminModel;
+                    $identity = 'id';
+            }
+                
+            $previous_image = $model->where($identity, $this->uid)->find()[0]['banner'];
+            $previous_image_path = $image_path . $previous_image;
+        
+
             if($previous_image != 'male-default.jpg' || $previous_image != 'female-default.jpg' && file_exists($previous_image_path)) {
                 if(file_exists($previous_image_path)) {
                     unlink($previous_image_path);
@@ -199,7 +277,7 @@ class Profile extends BaseController
     
             if($file->isValid() && !$file->hasMoved()) {
                 $filename = $file->getRandomName();
-                if($this->model->where('id', $this->uid)->set([
+                if($model->where($identity, $this->uid)->set([
                     'banner' => $filename
                 ])->update()
                     && optimizeImageUpload($image_path, $file, $filename)) {
@@ -241,6 +319,7 @@ class Profile extends BaseController
             $password_repeat = $this->request->getPost('password_repeat');
 
             try {
+                
                 $data = $this->model->where('id', $this->uid)->find();
                 $password_db = $data[0]['password'];
 

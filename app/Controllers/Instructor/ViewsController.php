@@ -173,6 +173,41 @@ class ViewsController extends BaseController
        
     }
 
+    public function me() {
+        $page = [
+            'view' => 'me',
+            'dir' => 'Instructor',
+            'isSubPage' => false,
+            'data' => [
+                'title' => 'My Profile | Settings',
+                'active' => 'settings',
+                'current_userdata' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function change_password() {
+        $page = [
+            'view' => 'change-password',
+            'dir' => 'Instructor',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Change Password | Settings',
+                'active' => 'settings',
+                'current_userdata' => $this->getCurrentUser()
+            ]
+        ];
+
+        return $this->renderView($page);
+    }
+
+    public function signout() {
+        session()->remove('user_session');
+        return redirect()->to('/instructor/login');
+    }
+
     public function getCurrentUser() {
         $user_session = session()->get('user_session');
         $uid = $user_session['id'];
