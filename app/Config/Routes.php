@@ -112,6 +112,7 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
     $routes->get('post_group', 'PostGroup::getPostGroup');
     $routes->get('posts', 'Post::getPost');
     $routes->get('posts/all', 'Post::getPostAll');
+    $routes->get('posts/attachments', 'Post::getPostAttachments');
 
 
     // API ROUTES FOR USERS
@@ -230,8 +231,9 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
     $routes->post('user/login', 'AuthUser::login');
     $routes->get('user/logout', 'AuthUser::logout');
 
-    $routes->group('create', function($routes) {
-        $routes->post('post', 'Post::create');
-    }); 
-
+    $routes->post('create/post', 'Post::create');
+    $routes->post('update/post', 'Post::update');
+    $routes->post('create/upload/attachment', 'Post::upload_attachment');
+    $routes->post('delete/post', 'Post::delete_post');
+    $routes->post('delete/attachment', 'Post::delete_attachment');
 });

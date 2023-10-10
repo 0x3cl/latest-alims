@@ -38,16 +38,17 @@
                         Subjects
                     </li>
                     <li class="breadcrumb-item text-secondary" aria-current="page">
-                        <div class="inner-title"></div>
+                        <div class="post-title"></div>
                     </li>
                 </ol>
             </div>
             <div class="app-body">
                 <div class="post my-3">
-                    <div class="post-title mt-5">
-                        <h1 class="inner-title">
-                            <div class="skeleton-text" style="width: 40%"></div>
-                        </h1>
+                    <h1 class="post-title mb-4">
+                        <div class="skeleton-text" style="width: 40%"></div>
+                    </h1>
+                    <div class="post-others mt-5 mb-4">
+                    
                     </div>
                     <div class="post-content">
                         <div class="skeleton-text" style="width: 60%"></div>
@@ -59,9 +60,36 @@
                         <div class="skeleton-text" style="width: 80%"></div>
                     </div>
                 </div>
+                <div class="attachments-container">
+                    <div class="toggle-icon" id="show-attachments">
+                        <i class="bi bi-arrow-left-square"></i>
+                    </div>
+                    <div class="attachments-content">
+                        <p>File Attachments</p>
+                        <div class="post-attachments">
+                            <div class="files">
+
+                            </div>
+                            <div class="uploads">
+                                <div class="droparea">
+                                    <input type="file" name="attachment[]" id="attachment" class="attachment" multiple>
+                                </div>
+                                <button class="btn btn-primary float-end mt-3" id="upload-attachment">Submit</button>
+                                <div class="attachment-preview">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="app-footer">
-                <span>© Bootstrap Gallery 2023</span>
+            <div class="app-footer d-flex align-items-center">
+                <div class="post-actions mt-2 d-flex gap-2">
+                    <div class="first-group d-flex gap-2">
+                        <button class="d-flex gap-1 align-items-center btn btn-secondary" id="post-edit"><i class="bi bi-pencil-square"></i> Edit</button>
+                    </div>
+                    <button class="d-flex gap-1 align-items-center btn btn-danger" id="post-delete"><i class="bi bi-trash3"></i> Delete</button>
+                </div>
             </div>
         </div>
     </div>
@@ -78,6 +106,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" name="eid" id="eid" value="<?= $requested_data['eid']; ?>">
+                    <input type="hidden" name="sid" id="sid" value="<?= $requested_data['sid'] ?>">
+                    <input type="hidden" name="pid" id="pid" value="<?= $requested_data['pid'] ?>">
                     <div class="row">
                         <h5 class="my-4"><em>Note: All <span class="text-danger">*</span> is required</em></h5>
                         <div class="col-12 col-md-12">
@@ -89,7 +120,7 @@
                         <div class="col-12 col-md-12">
                             <div class="form-group mb-3">
                                 <label class="mb-1" for="title">Group <span class="text-danger">*</span></label>
-                                <select name="group" id="post-group" class="form-control">
+                                <select name="group" id="post-group" class="post-group-select form-control">
                                     <option value="">Choose...</option>
                                 </select>
                             </div>
@@ -119,12 +150,23 @@
                         <div class="col-12">
                             <label for="droparea" class="mb-1">Attachments</label>
                             <div class="droparea">
-                                <input type="file" name="attachment" id="attachment" multiple>
+                                <input type="file" name="attachment" id="attachment" class="attachment" multiple>
                             </div>
-                            <input type="hidden" name="eid" id="eid" value="<?= $requested_data['eid']; ?>">
-                            <input type="hidden" name="sid" id="sid" value="<?= $requested_data['sid'] ?>">
-                            <input type="hidden" name="pid" id="pid" value="<?= $requested_data['pid'] ?>">
                             <div class="attachment-preview">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                        <h5 class="mb-3">Settings (Optional)</h5>
+                        <div class="col-4">
+                            <div class="form-check d-flex align-items-center gap-3">
+                                <input class="form-check-input" type="checkbox" id="accept-submission" name="accept-submission" value="true">
+                                <small class="form-check-label mt-1 m-0">Accept Submissions</small>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="schedule">
 
                             </div>
                         </div>
@@ -139,9 +181,11 @@
 </div>
 
 <script type="module">
-import {generateCSRFToken, toastMessage, clearFields, formatFile} from '/assets/js/instructor/modules/utils.js';
+import {generateCSRFToken, generateRandomCode, toastMessage, 
+        clearFields, formatFile, shortenFilename, ckeditor} from '/assets/js/instructor/modules/utils.js';
 import {getJWTtoken} from '/assets/js/instructor/modules/dataUtils.js';
-import {post_group, my_posts, all_posts} from '/assets/js/instructor/modules/dataUtils.js';
+import {post_group, my_posts, all_posts, post_attachments} from '/assets/js/instructor/modules/dataUtils.js';
+import {deleteModal } from '/assets/js/instructor/modules/modal.js';
 
 const response = await getJWTtoken();
 const jwt_token = response.token;
@@ -158,8 +202,36 @@ my_posts(eid, sid, pid).then((response) => {
     if(response.status == 200) {
         const data = response.data;
         if(data != null) {
-            $(' .inner-title').text(data.title);
+            $('.post-title').text(data.title);
+            $('.post-others').append(DOMPurify.sanitize(
+                `
+                <div class="col-12 col-md-12">
+                    <div class="form-group mb-3">
+                        <label class="mb-1" for="title">Title <span class="text-danger">*</span></label>
+                        <input type="text" name="title" id="up-title" class="form-control" placeholder="What's this post is about?" value="${data.title}">
+                    </div>
+                </div>
+                <div class="col-12 col-md-12">
+                    <div class="form-group mb-3">
+                        <label class="mb-1" for="title">Group <span class="text-danger">*</span></label>
+                        <select name="group" id="post-group" class="form-control">
+                            <option value="${data.post_group}">${data.group.toUpperCase()}</option>
+                        </select>
+                    </div>
+                </div>
+                `
+            )).hide();
             $('.post-content').html(data.content);
+
+            if(data.accept_submission == 1) {
+                $('.post-actions').append(DOMPurify.sanitize(`
+                    <a class="btn btn-primary d-flex gap-2 align-items-center" href="/instructor/subjects/posts/submission?eid=${eid}&sid=${sid}&pid=${pid}">
+                        <i class="bi bi-file-bar-graph"></i>
+                        View Submissions
+                    </a>
+                `));
+            }
+
         } else {
             $(' .inner-title').text('No Posts Yet!');
             $('.post-content').text('To create a new post, click the plus sign button below.');
@@ -198,7 +270,7 @@ all_posts(eid, sid).then((response) => {
                     div += `
                     <li>
                         <a href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
-                            <i class="bi bi-info-square"></i>
+                            <i class="bi bi-card-heading"></i>
                             <span class="menu-text">${item.title}</span>
                         </a>
                     </li>
@@ -231,32 +303,49 @@ post_group().then((response) => {
                 <option class="text-uppercase" value="${data.id}">${data.name}</option>
             `;
         });
-        $('#post-group').append(DOMPurify.sanitize(div));
+        $('.post-group-select').append(DOMPurify.sanitize(div));
+    }
+});
+
+post_attachments(eid, sid, pid).then((response) => {
+    let div = '';
+    if(response.status == 200) {
+        const data = response.data;
+        console.log(data);
+        if(data.length > 0) {
+            data.forEach((item) => {
+                const raw_filename = item.filename;
+                const shortened_filename = shortenFilename(raw_filename, 10, 10);
+                let ext = shortened_filename.split('.');
+                ext = ext[ext.length - 1];
+                div += `
+                    <div class="d-flex align-items-center gap-3">
+                        <p>${formatFile(ext, shortened_filename)}</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <a href="/uploads/files/${raw_filename}" class="text-success" download><i class="bi bi-download"></i></a>
+                            <a href="javascript:void(0)" id="delete-attachment" data-id="${item.id}" class="text-danger"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </div>
+                `;
+            })
+            $('.post-attachments .files').html(DOMPurify.sanitize(div));
+        } else {
+            $('.post-attachments .files').html(DOMPurify.sanitize(`
+                <small class="text-muted"><em>No attachments</em></small>
+            `));
+        }
     }
 });
 
 let editor;
 
-ClassicEditor
-.create( document.querySelector( '#editor' ), {
-    placeholder: `What's your thoughts?`,
-    ckfinder: {
-      uploadUrl: '/api/v1/upload/image'
-    },
-    
-} )
-.then( ckeditor => {
-    editor = ckeditor;
-} )
-.catch((err) => {
-    console.log(err)
-});
+ckeditor('#editor');
 
-$('#attachment').on('change', function() {
+$('.attachment').on('change', function() {
     const files = $(this)[0].files;
     let preview = '';
     $.each(files, (index, value) => {
-        // preview += formatFile(value);
+
         const filename = value.name;
         let ext = filename.split('.');
         ext = ext[ext.length - 1]
@@ -266,16 +355,154 @@ $('#attachment').on('change', function() {
     });
 
     $('.attachment-preview').html(DOMPurify.sanitize(preview));
-
 });
+
+$('#upload-attachment').on('click', function() {
+    const form_data = new FormData();
+    const attachments = $('#attachment').prop('files');
+    $.each(attachments, ((index, value) => {
+        form_data.append('attachments[]', value);
+    }));
+
+    form_data.append('pid', pid);
+
+    $.ajax({
+        url: '/api/v1/create/upload/attachment',
+        method: 'POST',
+        dataType: 'JSON',
+        contentType: false,
+        processData: false,
+        data: form_data,
+        beforeSend: function(xhr) {
+            $(this).attr('disabled', true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+        }, success: function(response) {
+            if(response.status == 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Yey..',
+                    text: response.message,
+                });
+                setTimeout(() => {
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                }, 1000);
+            } else {
+                let err = response.message;
+                if(typeof err === 'object') {
+                    err = Object.values(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ooops..',
+                        text: err[0],
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ooops..',
+                        text: err,
+                    });
+                }
+            }
+        },
+    }).done(function() {
+        $(this).attr('disabled', false);
+        clearFields();
+        generateCSRFToken();
+    });
+});
+
+$('#show-attachments').on('click', function() {
+    $(this).toggleClass("active");
+    $('.attachments-container').toggleClass('active');
+});
+
+let is_edit = false;
+
+$('#post-edit').on('click', function() {
+    if(!is_edit) {
+        ckeditor('.post-content');
+        $('.post-title').hide();
+        $('.post-others').show();
+        $('#post-edit').html(DOMPurify.sanitize(
+            `<i class="bi bi-x"></i> Cancel`
+        ));
+        $('.post-actions .first-group').append(DOMPurify.sanitize(
+            `<button class="d-flex gap-1 align-items-center btn btn-success" id="post-save"><i class="bi bi-check-lg"></i> Save</button>`
+        ));
+        is_edit = true;
+    } else {
+        const content = window.editor.getData();
+        window.editor.destroy();
+        $('.post-title').show();
+        $('.post-others').hide();
+        $('.post-content').html(DOMPurify.sanitize(content));
+        $('#post-save').remove();
+        $('#post-edit').html(DOMPurify.sanitize(
+            `<i class="bi bi-pencil-square"></i> Edit`
+        ));
+        is_edit = false;
+    }
+});
+
+$(document).on('click', '#post-save', function(e) {
+    e.preventDefault();
+    const title = DOMPurify.sanitize($('#up-title').val().trim());
+    const group = DOMPurify.sanitize($('#post-group').val().trim());
+    const content = DOMPurify.sanitize(window.editor.getData());
+    const date_avail = DOMPurify.sanitize($('#date').val());
+    const time_avail = DOMPurify.sanitize($('#time').val());
+    const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
+
+    $.ajax({
+        url: '/api/v1/update/post',
+        method: 'POST',
+        dataType: 'JSON',
+        data: {
+            pid: pid,
+            title: title,
+            group: group,
+            content: content,
+        },
+        beforeSend: function(xhr) {
+            $('#btn-proceed').attr('disabled', true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+        }, success: function(response) {
+            if(response.status == 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Yey..',
+                    text: response.message,
+                });
+                setTimeout(() => {
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                }, 1000);
+            } else {
+                let err = response.message;
+                err = Object.values(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ooops..',
+                    text: err[0],
+                });
+            }
+        }
+    });
+});
+
+let is_submission = 0;
 
 $('#create-post').on('submit', function(e) {
     e.preventDefault();
     const title = DOMPurify.sanitize($('#title').val().trim());
-    const group = DOMPurify.sanitize($('#post-group').val().trim());
-    const content = DOMPurify.sanitize(editor.getData());
+    const group = DOMPurify.sanitize($('.post-group-select').val().trim());
+    const content = DOMPurify.sanitize(window.editor.getData());
     const date_avail = DOMPurify.sanitize($('#date').val());
     const time_avail = DOMPurify.sanitize($('#time').val());
+    const restrict_submission = DOMPurify.sanitize($('#restrict-submission').val());
+    const date_submission = DOMPurify.sanitize($('#date-submission').val());
+    const time_submission = DOMPurify.sanitize($('#time-submission').val());
     const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
     const form_data = new FormData();
@@ -287,6 +514,10 @@ $('#create-post').on('submit', function(e) {
     form_data.append('content', content);
     form_data.append('date_avail', date_avail);
     form_data.append('time_avail', time_avail);
+    form_data.append('is_submission', is_submission);
+    form_data.append('restrict_submission', restrict_submission);
+    form_data.append('date_submission', date_submission);
+    form_data.append('time_submission', time_submission);
 
     $.each(attachments, ((index, value) => {
         form_data.append('attachments[]', value);
@@ -313,6 +544,7 @@ $('#create-post').on('submit', function(e) {
                 setTimeout(() => {
                     window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
                 }, 1000);
+                clearFields();
             } else {
                 let err = response.message;
                 err = Object.values(err);
@@ -325,10 +557,123 @@ $('#create-post').on('submit', function(e) {
         }
     }).done(function() {
         $('#btn-proceed').attr('disabled', false);
-        clearFields();
         generateCSRFToken();
     });
 
+});
+
+$('#post-delete').on('click', function() {
+    const code = generateRandomCode();
+    deleteModal(code);
+    $('#control-delete-proceed').on('click', function() {
+        let user_code = $('#confirmDeleteModal #code').val().trim();
+        user_code = DOMPurify.sanitize(user_code);
+        if(code === user_code) {
+            $.ajax({
+                url: `/api/v1/delete/post`,
+                method: 'POST',
+                data: {
+                    pid: pid
+                }, beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+                }, success: function(response) {
+                    if(response.status == 200) {
+                        const message = response.message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Yey..',
+                            text: response.message,
+                        });
+                        setTimeout(() => {
+                            window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                    }, 1000);
+                    }
+                }
+            }).done(function() {
+                generateCSRFToken();
+            });
+            $('#confirmDeleteModal').modal('hide');
+        } else {
+            $('#confirmDeleteModal').modal('hide');
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ooops..',
+                    text: 'Incorrect captcha code',
+                });
+            }, 600)
+        }
+    });
+});
+
+$(document).on('click', '#delete-attachment', function() {
+    const aid = DOMPurify.sanitize($(this).data('id'));
+    $.ajax({
+        url: '/api/v1/delete/attachment',
+        method: 'POST',
+        dataType: 'JSON',
+        data: {
+            aid: aid
+        }, beforeSend: function(xhr) {
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+        }, success: function(response) {
+            if(response.status == 200) {
+                const message = response.message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Yey..',
+                    text: response.message,
+                });
+                setTimeout(() => {
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+            }, 1000);
+            }
+        }
+    }).done(function() {
+        generateCSRFToken();
+    });
+});
+
+
+let accept_submission = false;
+
+$('#accept-submission').on('change', function() {
+    const isChecked = $(this).is(':checked');
+    if(isChecked) {
+        is_submission = 1;
+        let div = `
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group mb-3">
+                    <label class="mb-1" for="title">Restrict Submission?</label>
+                    <select name="restrict-submission" id="restrict-submission" class="form-control">
+                        <option value="">Choose</option>
+                        <option value="1">Yes - You can't receive submissions after the due date.</option>
+                        <option value="2">No - Still can receive submissions but marked as late.</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group mb-3">
+                    <label class="mb-1" for="title">Date Submission</label>
+                    <input type="date" name="date-submission" id="date-submission" class="form-control">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group mb-3">
+                    <label class="mb-1" for="title">Time Submission</label>
+                    <input type="time" name="time-submission" id="time-submission" class="form-control">
+                </div>
+            </div>
+        </div>
+        `;
+        $('.schedule').html(DOMPurify.sanitize(div));
+    } else {
+        is_submission = 0;
+        $('.schedule').empty();
+    }
 });
 
 </script>

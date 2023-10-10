@@ -14,9 +14,9 @@
     <div class="sidebarMenuScroll">
         <ul class="sidebar-menu">
             <li>
-                <a href="/instructor/courses">
+                <a href="/instructor/subjects?course=<?= $requested_data['cid'] ?>&year=<?= $requested_data['yid'] ?>&section=<?= $requested_data['secid'] ?>">
                     <i class="bi bi-arrow-left"></i>
-                    <span class="menu-text">Return to Courses</span>
+                    <span class="menu-text">Return to Subjects</span>
                 </a>
             </li>
             <hr class="mt-2 mb-0">

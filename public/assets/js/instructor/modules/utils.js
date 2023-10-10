@@ -175,3 +175,31 @@ export function formatFile(type, name) {
             </div>`;
 
 }
+
+export function shortenFilename(filename, prefixLength, suffixLength) {
+    if (filename.length <= prefixLength + suffixLength) {
+      return filename; // No need to shorten if the filename is already shorter than prefix + suffix
+    }
+    
+    const prefix = filename.slice(0, prefixLength);
+    const suffix = filename.slice(-suffixLength);
+    
+    return prefix + '..' + suffix;
+  }
+
+export function ckeditor(elem) {
+    ClassicEditor
+    .create( document.querySelector(elem), {
+        placeholder: `What's your thoughts?`,
+        ckfinder: {
+        uploadUrl: '/api/v1/upload/image'
+        },
+        
+    } )
+    .then( ckeditor => {
+        window.editor = ckeditor;
+    } )
+    .catch((err) => {
+        console.log(err)
+    });
+  }

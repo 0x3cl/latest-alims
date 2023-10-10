@@ -13543,7 +13543,14 @@ a:hover {
   text-decoration: none;
   color: #4d4d4d;
   font-size: 0.875rem;
-  white-space: nowrap;
+}
+.sidebar-menu > li > a > span.menu-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .sidebar-menu > li > a > i {
   font-size: 1.1rem;
@@ -13664,8 +13671,10 @@ a:hover {
 }
 
 .app-container {
+  height: 100vh;
   padding: 0;
   background: #f5f6fa;
+  position: relative;
 }
 
 .app-header {
@@ -13711,14 +13720,18 @@ a:hover {
 
 .app-body {
   padding: 1.25rem 1.5rem;
-  height: calc(100vh - 168px);
+  height: calc(100vh - 180px);
   overflow: auto;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .app-footer {
+  width: 100%;
   font-size: 0.8rem;
-  padding: 0.6rem 1.5rem;
+  padding: 0.6rem 1rem;
   border-top: 1px solid #dbe3ea;
+  z-index: 9;
 }
 
 /********************

@@ -116,16 +116,30 @@ class ViewsController extends BaseController
             $model->where('enroll.id', $eid);
             $model->where('user_id', $uid);
 
-            $result = $model->find();
-            if(count($result) > 0) {
+            $e_result = $model->find();
+
+            if(count($e_result) > 0) {
                 
                 if(empty($pid)) {
                     $model = new PostModel;
                     $model->where('enroll_id', $eid);
                     $model->where('subject_id', $sid);
+                    $pid = $model->first()['id'] ?? '';
+                } else {
+                    $model = new PostModel;
+                    $model->where('enroll_id', $eid);
+                    $model->where('subject_id', $sid);
+                    $model->where('id', $pid);
+                    $result = $model->countAllResults();
 
-                    $pid = $model->first()['id'];
+                    if($result == 0) {
+                        $pid = $model->first()['id'];
+                    } else {
+                        $pid = $pid;
+                    }
+                    
                 }
+
 
                 $page = [
                     'view' => 'view-posts',
@@ -138,14 +152,17 @@ class ViewsController extends BaseController
                         'requested_data' => [
                             'eid' => $eid,
                             'sid' => $sid,
-                            'pid' => $pid
+                            'pid' => $pid,
+                            'cid' => $e_result[0]['course_id'],
+                            'yid' => $e_result[0]['year'],
+                            'secid' => $e_result[0]['section'],
                         ]
                     ]
                 ];
                         
                 return $this->renderView($page);
             } else {
-                // 404
+                
             }
 
 
