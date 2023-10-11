@@ -59,6 +59,7 @@
                         <div class="skeleton-text" style="width: 75%"></div>
                         <div class="skeleton-text" style="width: 80%"></div>
                     </div>
+                    <div class="post-assessment"></div>
                 </div>
                 <div class="attachments-container">
                     <div class="toggle-icon" id="show-attachments">
@@ -128,7 +129,7 @@
                         <div class="col-12 col-md-12">
                             <label class="mb-1" for="title">Content <span class="text-danger">*</span></label>
                             <div class="form-group mb-3">
-                                <textarea id="editor" name="content"></textarea>
+                                <textarea class="editor" name="content"></textarea>
                             </div>
                         </div>
                         <div class="col-12">
@@ -180,11 +181,115 @@
     </form>
 </div>
 
+<div class="modal fade" id="create-assessment-modal">
+    <form id="create-assessment" method="post">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title h4" id="exampleModalXlLabel">
+                        Create Assessment
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="eid" id="eid" value="<?= $requested_data['eid']; ?>">
+                    <input type="hidden" name="sid" id="sid" value="<?= $requested_data['sid'] ?>">
+                    <input type="hidden" name="pid" id="pid" value="<?= $requested_data['pid'] ?>">
+                    <div class="row">
+                        <h5 class="my-4"><em>Note: All <span class="text-danger">*</span> is required</em></h5>
+                        <div class="col-12 col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="title">Title <span class="text-danger">*</span></label>
+                                <input type="text" name="title" id="a-title"  class="form-control" placeholder="What's this post is about?">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="title">Group <span class="text-danger">*</span></label>
+                                <select name="group" id="a-group" class="post-group-select form-control">
+                                    <option value="">Choose...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="type">Type <span class="text-danger">*</span></label>
+                                <select name="type" id="a-type" class="form-control">
+                                    <option value="1">Quiz</option>
+                                    <option value="2">Examination</option>
+                                    <option value="3">Practice</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="instruction">Instruction</label>
+                                <textarea name="content" id="editor" class="editor" cols="30" rows="10"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end my-5 me-4">
+                                <button type="button" class="btn btn-primary" id="btn-create-assessment">Save</button>
+                                <button type="button" class="btn btn-primary" id="add-q-item">Add Item</button>
+                            </div>
+                            <div class="q-item-container">
+                                <div class="card shadow-lg mb-3 q-item" id="q-item-1" data-id="1">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5>Q1.</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body px-4 py-5">
+                                        <div class="row">
+                                            <div class="col-12 col-md-7">
+                                                <div class="form-group mb-3">
+                                                    <label class="mb-1" for="question">Question</label>
+                                                    <input type="text" name="question" id="question" class="form-control" placeholder="Question...">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-5">
+                                                <div class="form-group mb-3">
+                                                    <label class="mb-1" for="type">Type</label>
+                                                    <select name="answer-type" id="answer-type" class="form-control" data-id="1">
+                                                        <option value="">Choose Answer Type</option>
+                                                        <option value="1">Multiple Choice</option>
+                                                        <option value="2">Identification</option>
+                                                        <option value="3">Explanatory</option>
+                                                        <option value="4">Multiple Select</option>
+                                                        <option value="5">File Upload</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="chosen-answer-type" data-id="1">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary d-flex align-items-center gap-2" id="btn-proceed">Proceed <i class="bi bi-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <script type="module">
 import {generateCSRFToken, generateRandomCode, toastMessage, 
         clearFields, formatFile, shortenFilename, ckeditor} from '/assets/js/instructor/modules/utils.js';
 import {getJWTtoken} from '/assets/js/instructor/modules/dataUtils.js';
-import {post_group, my_posts, all_posts, post_attachments} from '/assets/js/instructor/modules/dataUtils.js';
+import {post_group, my_posts, my_assessments, all_posts, post_attachments} from '/assets/js/instructor/modules/dataUtils.js';
 import {deleteModal } from '/assets/js/instructor/modules/modal.js';
 
 const response = await getJWTtoken();
@@ -197,10 +302,11 @@ const id = <?= $current_userdata['id']?>;
 const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
 my_posts(eid, sid, pid).then((response) => {
-    let div;
     console.log(response);
     if(response.status == 200) {
         const data = response.data;
+        console.log(data);
+        
         if(data != null) {
             $('.post-title').text(data.title);
             $('.post-others').append(DOMPurify.sanitize(
@@ -232,8 +338,80 @@ my_posts(eid, sid, pid).then((response) => {
                 `));
             }
 
+            if(data.is_assessment == 1) {
+            // CALL ASSESSMENT
+            my_assessments(eid, sid, pid).then((response) => {
+                const data = response.data;
+                const questions = data.questions;
+                const answers = data.answers;
+                const choices = data.choices;
+
+                const item_count = questions.length;
+
+                let item_div = '';
+                let choice_div = '';
+                let choice_count;
+                
+                questions.forEach((item, index) => {
+                    if(item.assessment_type == 1 || item.assessment_type == 4 ) {
+                        item_div += `
+                        <div class="card mb-3">
+                            <div class="card-body p-4 mb-3">
+                                <div class="question">
+                                    <h5>${index + 1}. ${item.question}</h5>
+                                    <div class="choices mt-3" data-id="${index+1}">
+                                      
+                                    </div>
+                                </div>
+                                <div class="note mt-5">
+                                    <p class="text-muted"><em>Correct answer is the selected</em></p>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    } else {
+                        item_div += `
+                        <div class="card mb-3">
+                            <div class="card-body p-4 mb-3">
+                                <div class="question">
+                                    <h5>${index + 1}. ${item.question}</h5>
+                                    <div class="answer mt-3">
+                                        <input type="text" name="answer" id="answer" class="form-control" placeholder="Students answers goes here" readonly>
+                                        <hr class="mt-4 mb-3">
+                                        <p class="text-muted"><em>Correct answer is: ${item.answers[0].name}</e></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    }
+                });
+
+                $('.post-assessment').html(item_div);
+
+                questions.forEach((item, index) => {
+                    if (item.assessment_type == 1 || item.assessment_type == 4) {
+                        item.choices.forEach((choice, choiceIndex) => {
+                            choice_div = `
+                                <div class="option-group">
+                                    <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                                        <input class="form-check-input" type="radio" name="answer_${choice.qid}" value="${choiceIndex + 1}" ${(choiceIndex === parseInt(item.answers[0].name) - 1) ? 'checked' : ''}>
+                                        <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
+                                        <span class="text-success">${(choiceIndex === parseInt(item.answers[0].name) - 1) ? '<i class="bi bi-check-lg fw-bold fs-3"></i>' : ''}</span>
+                                    </div>
+                                </div>
+                            `;
+                            $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
+                        });
+                    }
+                });
+
+
+            });
+        }
+
         } else {
-            $(' .inner-title').text('No Posts Yet!');
+            $(' .post-title').text('No Posts Yet!');
             $('.post-content').text('To create a new post, click the plus sign button below.');
         }
 
@@ -339,7 +517,7 @@ post_attachments(eid, sid, pid).then((response) => {
 
 let editor;
 
-ckeditor('#editor');
+ckeditor('.editor');
 
 $('.attachment').on('change', function() {
     const files = $(this)[0].files;
@@ -675,5 +853,327 @@ $('#accept-submission').on('change', function() {
         $('.schedule').empty();
     }
 });
+
+let choice_count = 1;
+let q_item = 1;
+let div;
+
+$(document).on('click', '#add-q-item', function() {
+    q_item += 1;
+    div = `
+    <div class="card shadow-lg mb-3 q-item" id="q-item-${q_item}" data-id="${q_item}">
+        <div class="card-header d-flex justify-content-between">
+            <div>
+                <h5>Q${q_item}.</h5>
+            </div>
+            <div class="q-item-action" data-id="${q_item}">
+               
+            </div>
+        </div>
+        <div class="card-body px-4 py-5">
+            <div class="row">
+                <div class="col-12 col-md-7">
+                    <div class="form-group mb-3">
+                        <label class="mb-1" for="question">Question</label>
+                        <input type="text" name="question" id="question" class="form-control" placeholder="Question...">
+                    </div>
+                </div>
+                <div class="col-12 col-md-5">
+                    <div class="form-group mb-3">
+                    <label class="mb-1" for="type">Type</label>
+                        <select name="answer-type" id="answer-type" class="form-control" data-id="${q_item}">
+                            <option value="">Choose Answer Type</option>
+                            <option value="1">Multiple Choice</option>
+                            <option value="2">Identification</option>
+                            <option value="3">Explanatory</option>
+                            <option value="4">Multiple Select</option>
+                            <option value="5">File Upload</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="chosen-answer-type" data-id="${q_item}">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    `;    
+    $('.q-item-container').append(DOMPurify.sanitize(div))
+
+    $('.q-item-action').empty();
+    $(`.q-item-action[data-id="${q_item}"]`).html(DOMPurify.sanitize(`
+        <button class="btn btn-danger" id="delete-q-item" data-id="${q_item}">
+            <i class="bi bi-trash"></i>
+        </button>
+    `));
+});
+
+$(document).on('click', '#delete-q-item', function() {
+    const id = $(this).data('id');
+    $(`#q-item-${id}`).remove();
+    q_item -= 1;
+    $('.q-item-action').empty();
+    $(`.q-item-action[data-id="${q_item}"]`).html(DOMPurify.sanitize(`
+        <button class="btn btn-danger" id="delete-q-item" data-id="${q_item}">
+            <i class="bi bi-trash"></i>
+        </button>
+    `));
+});
+
+$(document).on('change', '#answer-type', function() {
+    const selected = $(this).val();
+    const id = $(this).data('id');
+    console.log(id); 
+    if (selected == 1) {
+        div = `
+        <div class="option-actions d-flex justify-content-end gap-3 mt-4 mb-3">
+            <button type="button" class="btn btn-secondary" id="remove-option-radio">Remove</button>
+            <button type="button" class="btn btn-primary" id="add-option-radio">Add</button>
+        </div>
+        <div class="option-group">
+            <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                <input class="form-check-input" type="radio" name="answer-${id}" id="answer" value="1">
+                <input type="text" name="option" id="option" class="form-control" placeholder="Option 1">
+            </div>
+        </div>
+       `
+    } else if (selected == 2) {
+        div = `
+            <input type="text" name="answer" id="answer" class="form-control" placeholder="Type correct answer">
+        `
+    } else if (selected == 3) {
+        div = `
+            <textarea class="form-control" name="answer" placeholder="Student's answer goes here" readonly></textarea>
+        `
+    } else if (selected == 4) {
+        div = `
+        <div class="option-actions d-flex justify-content-end gap-3 mt-4 mb-3">
+            <button type="button" class="btn btn-secondary" id="remove-option-checkbox">Remove</button>
+            <button type="button" class="btn btn-primary" id="add-option-checkbox">Add</button>
+        </div>
+        <div class="option-group">
+            <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                <input class="form-check-input" type="checkbox" value="1" class="answer" id="answer" name="answer-${id}">
+                <input type="text" name="option" id="option" class "form-control" placeholder="Option 1">
+            </div>
+        </div>
+        `;
+    }
+
+    $(`.chosen-answer-type[data-id="${id}"]`).html(DOMPurify.sanitize(div));
+});
+
+
+$(document).on('click', '#add-option-radio', function() {
+    choice_count += 1;
+    const id = $(this).closest('.q-item').data('id');
+    const length = $(this).closest(`.q-item[data-id="${id}"]`).find('#item').length;
+    console.log(length);
+    $(`.q-item[data-id="${id}"] .option-group`).append(DOMPurify.sanitize(
+        `
+        <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+            <input class="form-check-input" type="radio" name="answer" id="answer" value="${length+1}">
+            <input type="text" name="option" id="option" class="form-control" placeholder="Option ${length+1}">
+        </div>
+        `
+    ));
+   
+});
+
+$(document).on('click', '#remove-option-radio', function() {
+    const id = $(this).closest('.q-item').data('id');
+    const item = $(`#q-item-${q_item} .option-group #item`).length;
+    if(item > 1) {
+        $(`.q-item[data-id="${id}"] .option-group div:last-child`).remove();
+        choice_count -= 1;
+    }
+});
+
+$(document).on('click', '#add-option-checkbox', function() {
+    choice_count += 1;
+    $(`#q-item-${q_item} .option-group`).append(DOMPurify.sanitize(
+        `
+        <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+            <input class="form-check-input" type="checkbox" value="${choice_count}" id="answer">
+            <input type="text" name="option" id="option" class="form-control" placeholder="Option 1">
+        </div>
+        `
+    ));
+});
+
+$(document).on('click', '#remove-option-checkbox', function() {
+    const item = $('.option-group #item').length;
+    if(item > 1) {
+        $('.option-group div:last-child').remove();
+        choice_count -= 1;
+    }
+});
+
+$('#create-assessment').on('submit', function(e) {
+    e.preventDefault();
+    const total_question = $('.q-item').length;
+    const title = DOMPurify.sanitize(($('#a-title').val()));
+    const group = DOMPurify.sanitize($('#a-group').val());
+    const type = DOMPurify.sanitize($('#a-type').val());
+    const content = window.editor.getData();
+
+    let questions = [];
+    let types = [];
+    let answers = [];
+    let options = [];
+
+    console.log(group);
+
+
+    // Iterate through the questions and gather data
+    $('.q-item').each((index, qItem) => {
+        const questionInput = $(qItem).find('#question');
+        const typeInput = $(qItem).find('#answer-type');
+        const answerInput = typeInput.val() == 1 || typeInput.val() == 4 ? 
+        $(qItem).find('#answer:checked') : $(qItem).find('#answer');
+        const optionInputs = $(qItem).find('.option-group #option');
+
+        const question = questionInput.val();
+        const type = typeInput.val();
+        const qid = typeInput.data('id');
+        const answer = answerInput.val() ;
+        const typeValue = parseInt(type);
+
+
+        // Validate required fields
+        if (!question) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops..',
+                text: 'Question is required for item ' + (index + 1),
+            });
+            return;
+        }
+
+        if (typeValue !== 2 && !type) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops..',
+                text: 'Question type required for item ' + (index + 1),
+            });
+            return;
+        }
+
+        if (!answer) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops..',
+                text: 'Answer is required for question ' + (index + 1),
+            });
+            return;
+        }
+
+        if (typeValue === 1) {
+            if (optionInputs.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops..',
+                    text: 'For multiple-choice questions, at least one option is required for question ' + (index + 1),
+                });
+                return;
+            }
+
+            optionInputs.each((optionIndex, optionValue) => {
+                const option = $(optionValue).val();
+                if (!option) {
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Oops..',
+                    text: 'Option is required for question ' + (index + 1) + ', option ' + (optionIndex + 1)
+                });
+                    return;
+                }
+
+                options.push({
+                    qid: qid,
+                    id: optionIndex + 1,
+                    option: option
+                });
+            });
+
+            answers.push({
+                qid: qid,
+                answer: answer
+            });
+        } else if (typeValue === 2) {
+            answers.push({
+                qid: qid,
+                answer: answer
+            });
+        }
+
+        // Push data into respective arrays
+        questions.push({
+            id: index + 1,
+            question: question
+        });
+
+        types.push({
+            id: qid,
+            type: typeValue
+        });
+    });
+
+    // Combining the arrays
+    let data = [];
+
+    questions.forEach(question => {
+        const qid = question.id;
+        const type = types.find(type => type.id === qid);
+        const answer = answers.find(answer => answer.qid === qid);
+        const option = options.filter(option => option.qid === qid);
+
+        if (type) {
+            const dataItem = {
+                qid,
+                question: question.question,
+                type: type.type,
+                answer: answer.answer,
+            };
+
+            if (type.type === 1) {
+                dataItem.options = option;
+            }
+
+            data.push(dataItem);
+        }
+    });
+
+    $.ajax({
+        url: '/api/v1/create/assessment',
+        method: 'POST',
+        type: 'JSON',
+        data: {
+            eid: eid,
+            sid: sid,
+            title: title,
+            group: group,
+            type: type,
+            content: content,
+            data: data
+        }, beforeSend: function(xhr) {
+            // $(this).attr('disabled', true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+        }, success: function(response) {
+           console.log(response);
+        },
+    }).done(function() {
+        $(this).attr('disabled', false);
+        // clearFields();
+        generateCSRFToken();
+    });
+});
+
+
+
+
 
 </script>

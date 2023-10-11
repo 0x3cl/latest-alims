@@ -120,6 +120,22 @@ export async function my_posts(eid, sid, pid) {
     });
 }
 
+export async function my_assessments(eid, sid, pid) {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/posts/assessments?eid=${eid}&sid=${sid}&pid=${pid}`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}
+
 export async function all_posts(eid, sid) {
     const data = await getJWTtoken();
     const token = data.token

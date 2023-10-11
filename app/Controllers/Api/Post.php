@@ -6,6 +6,9 @@ use App\Controllers\BaseController;
 use App\Models\PostModel;
 use App\Models\AttachmentModel;
 use App\Models\UserModel;
+use App\Models\AssessmentModel;
+use App\Models\ChoiceModel;
+use App\Models\AnswersModel;
 use CodeIgniter\Api\ResponseTrait;
 
 class Post extends BaseController
@@ -83,7 +86,95 @@ class Post extends BaseController
         }
     }
 
-    public function create() {
+    public function getPostAssessments() {
+        $eid = $this->request->getGet('eid');
+        $sid = $this->request->getGet('sid');
+        $pid = $this->request->getGet('pid');
+        
+        $questions = [];
+        $answers = [];
+        $choices = [];
+
+        $data = [];
+
+        try {
+           
+            $model = new AssessmentModel;
+            $model = new AssessmentModel;
+            $model->select('assessments.question, assessments.type as assessment_type, assessments.qid');
+            $model->join('posts', 'posts.id = assessments.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('posts.subject_id', $sid);
+            
+            $data['questions'] = $model->find();
+            
+            $model = new ChoiceModel;
+            $model->select('choices.name, choices.qid');
+            $model->join('posts', 'posts.id = choices.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('posts.subject_id', $sid);
+            
+            $choices = $model->find();
+            
+            $model = new AnswersModel;
+            $model->select('answers.name, answers.qid');
+            $model->join('posts', 'posts.id = answers.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('posts.subject_id', $sid);
+            
+            $answers = $model->find();
+            
+            // Create an associative array to store choices and answers by qid
+            $choicesAndAnswersByQid = [];
+            
+            foreach ($choices as $choice) {
+                $qid = $choice['qid'];
+                if (!isset($choicesAndAnswersByQid[$qid])) {
+                    $choicesAndAnswersByQid[$qid] = [
+                        'choices' => [],
+                        'answers' => [],
+                    ];
+                }
+                $choicesAndAnswersByQid[$qid]['choices'][] = $choice;
+            }
+            
+            foreach ($answers as $answer) {
+                $qid = $answer['qid'];
+                if (!isset($choicesAndAnswersByQid[$qid])) {
+                    $choicesAndAnswersByQid[$qid] = [
+                        'choices' => [],
+                        'answers' => [],
+                    ];
+                }
+                $choicesAndAnswersByQid[$qid]['answers'][] = $answer;
+            }
+            
+            // Insert choices and answers into the questions array based on qid
+            foreach ($data['questions'] as &$question) {
+                $qid = $question['qid'];
+                if (isset($choicesAndAnswersByQid[$qid])) {
+                    $question['choices'] = $choicesAndAnswersByQid[$qid]['choices'];
+                    $question['answers'] = $choicesAndAnswersByQid[$qid]['answers'];
+                }
+            }
+            
+            return $this->respond([
+                'status' => 200,
+                'data' => $data
+            ]);
+            
+
+            
+            
+        } catch(\Exception $e) {
+            print_r($e->getMessage());
+        }
+    }
+
+    public function create_post() {
         $rules = [
             'title' => 'required',
             'group' => 'required',
@@ -213,10 +304,6 @@ class Post extends BaseController
                 ]);
             }
         }
-
-            
-        
-
     }
 
     public function update() {
@@ -365,6 +452,93 @@ class Post extends BaseController
         $model->join('instructors', 'users.id = instructors.user_id');
         $data = $model->find($uid);
         return $data;
+    }
+
+    public function create_assessment() {
+        $rules = [
+            'title' => 'required',
+            'group' => 'required',
+        ];
+
+        if(!$this->validate($rules)) {
+            return $this->respond([
+                'status' => 500,
+                'message' => $this->validator->getErrors()
+            ]);
+        } else {
+
+            $eid = $this->request->getPost('eid');
+            $sid = $this->request->getPost('sid');
+            $title = $this->request->getPost('title');
+            $group = $this->request->getPost('group');
+            $content = $this->request->getPost('content');
+
+            $data = [
+                'is_assessment' => 1,
+                'enroll_id' => $eid,
+                'subject_id' => $sid,
+                'title' => $title,
+                'post_group' => $group,
+                'content' => $content,
+                'accept_submission' => 1,
+                'date_posted' => get_timestamp()
+            ];
+
+            $assessments_data = $this->request->getPost()['data'];
+
+            $assessments = [];
+            $choices = [];
+            $answers = [];
+
+            try {
+                $model = new PostModel;
+                // print_r($data);
+                if($model->insert($data)) {
+                    $inserted_id = $model->insertID();
+
+                    foreach($assessments_data as $item) {
+                        $assessments[] = [
+                            'post_id' => $inserted_id,
+                            'qid' => $item['qid'],
+                            'question' => $item['question'],
+                            'type' => $item['type'],
+                        ];
+
+                        $answers[] = [
+                            'post_id' => $inserted_id,
+                            'qid' => $item['qid'],
+                            'name' => $item['answer']
+                        ];
+
+                        if(array_key_exists('options', $item)) {
+                            foreach($item['options'] as $item) {
+                                $choices[] = [
+                                    'post_id' => $inserted_id,
+                                    'qid' => $item['qid'],
+                                    'name' => $item['option']
+                                ];
+                            }
+                        }
+                    }
+
+                    $amodel = new AssessmentModel;
+                    $cmodel = new ChoiceModel;
+                    $ansmodel = new AnswersModel;
+                    if($amodel->insertBatch($assessments) && $ansmodel->insertBatch($answers)) {
+                        if(!empty($choices)) {
+                            $cmodel->insertBatch($choices);
+                            return $this->respond([
+                                'status' => 200,
+                                'message' => 'assessment created'
+                            ]);
+                        }
+                    }
+
+                }
+            } catch(\Exception $e) {
+                print_r($e);
+            }
+        }
     }
 
 }

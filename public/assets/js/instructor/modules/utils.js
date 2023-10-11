@@ -199,6 +199,6 @@ export function ckeditor(elem) {
         window.editor = ckeditor;
     } )
     .catch((err) => {
-        console.log(err)
+        // console.log(err)
     });
   }
