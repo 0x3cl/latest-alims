@@ -107,12 +107,13 @@ class ViewsController extends BaseController
 
     public function subjects_posts() {
 
+
+        
         $uid = $this->getCurrentUser()['id'];
         $eid = $this->request->getGet('eid');
         $sid = $this->request->getGet('sid');
-        $pid = $this->request->getGet('pid');
+        $pid = $this->request->getGet('pid') ?? 1;
 
-    
         try {
             $model = new EnrolledModel;
             $model->join('subjects', 'subjects.id = '.$sid);
@@ -142,6 +143,7 @@ class ViewsController extends BaseController
                         }
                         
                     }
+
     
                     $page = [
                         'view' => 'view-posts',

@@ -30,9 +30,8 @@ class Response extends BaseController
             $response_model = new ResponseModel;
             $post_model = new PostModel;
             $responseInserted = $response_model->insertBatch($data);
-            $postUpdated = $post_model->where('id', $data[0]['post_id'])->set(['is_respond' => 1])->update();
 
-            if ($responseInserted && $postUpdated) {
+            if ($responseInserted) {
                 return $this->respond([
                     'status' => 200,
                     'message' => 'response recorded',
