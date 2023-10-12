@@ -38,7 +38,7 @@
             </div>
             <div class="app-footer d-flex align-items-center">
                 <div class="post-actions mt-2 d-flex gap-2">
-                   
+                    <a href="/instructor/subjects/posts/submission?eid=<?= $requested_data['eid']?>&sid=<?= $requested_data['sid'] ?>&pid=<?= $requested_data['pid'] ?>" class="btn btn-primary"><i class="bi bi-arrow-left me-1"></i> Go Back</a>
                 </div>
             </div>
         </div>
@@ -51,9 +51,11 @@
 
 
 <script type="module">
-import {generateCSRFToken, generateRandomCode} from '/assets/js/instructor/modules/utils.js';
-import {getJWTtoken} from '/assets/js/instructor/modules/dataUtils.js';
-import {all_posts, getSubmission} from '/assets/js/instructor/modules/dataUtils.js';
+import {
+    generateCSRFToken, generateRandomCode, 
+    submissionStatus, formatFile, shortenFilename
+} from '/assets/js/instructor/modules/utils.js';
+import {getJWTtoken, all_posts, getSubmission} from '/assets/js/instructor/modules/dataUtils.js';
 import {deleteModal } from '/assets/js/instructor/modules/modal.js';
 
 const response = await getJWTtoken();
@@ -66,10 +68,10 @@ const cid = <?= $requested_data['cid'] ?>;
 const yid = <?= $requested_data['yid'] ?>;
 const sid = <?= $requested_data['sid'] ?>;
 const pid = <?= $requested_data['pid'] ?>;
-const secid = <?= $requested_data['secid'] ?>;
+const subid = <?= $requested_data['subid'] ?>;
 
 
-const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
+const csrf_token = DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
 
 all_posts(eid, sid).then((response) => {
@@ -124,54 +126,59 @@ all_posts(eid, sid).then((response) => {
     }
 });
 
-getSubmission(cid, sid, yid, secid).then((response) => {
+getSubmission(eid, sid, pid, subid).then((response) => {
     if(response.status == 200) {
-        const data = response.data;
-        let div = '';
-        if(data.length > 0) {
-            div = `
-            <h1 class="text-uppercase fw-bold m-0">${data[0].course_name}</h1>
-            <h5 class="text-uppercase fw-bold mb-4">${data[0].course_code}</h5>
-            <h5 class="text-uppercase fw-bold mb-0">${data[0].subject_name}</h5>
-            <h5 class="text-uppercase fw-bold mb-0">${data[0].subject_code}</h5>
-            <hr class="my-4">
-            <div class="table-responsive">
-                <table class="table table align-middle table-hover m-0 nowrap" id="participants">
-                    <thead>
-                        <tr>
-                            <th scope="col">Avatar</th>
-                            <th scope="col">Full Name</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            data.forEach((item) => {
-               div += `
-                    <tr>
-                        <td><img src="/uploads/avatar/${item.avatar}"></td>
-                        <td>${item.firstname + ' ' + item.lastname}</td>
-                        <td>${item.username}</td>
-                        <td>${item.email}</td>
-                        <td>
-                            <a href="#" class="btn btn-primary">View</a>
-                        </td>
-                    </tr>
-                `;
-            });
+       const submission = response.data.submission;
+       const files = response.data.files;
+       let div = '';
+       div = `
+        <div class="py-3">
+            <h3 class="text-uppercase mb-1 fw-bold">${submission.course_name}</h3>
+            <h5 class="text-uppercase m-0 fw-bold">${submission.course_code}</h5>
+            <h5 class="text-uppercase m-0 fw-bold">${submission.section_name + ' | ' + submission.year_name}</h5>
+            <hr class="my-3">
+            <h5 class="text-uppercase m-0 fw-bold">${submission.subject_name}</h5>
+            <h5 class="text-uppercase m-0 fw-bold">${submission.subject_code}</h5>
+            <hr class="my-3">
+            <div class="d-flex align-items-center gap-2">
+                <img src="/uploads/avatar/${submission.avatar}" style="width: 50px; height: 50px; border: 3px solid #3eb489; border-radius: 50%; object-fit: contain; object-position:center">
+                <div>
+                    <h5 class="m-0 text-capitalize m-0 fw-bold">${submission.firstname + ' ' + submission.lastname}</h5>
+                    <h6 class="text-uppercase fw-bold m-0">Student</h6>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label>SUBMISSION:</label>
+                <div>
+                    ${submission.content}
+                </div>
+            </div>
+            <div class="mt-3" id="files">
+            
+            </div>
+        </div>
+       `;
+
+       files.forEach((item) => {
+            const raw_filename = item.filename;
+            const shortened_filename = shortenFilename(raw_filename, 10, 10);
+            let ext = shortened_filename.split('.');
+            ext = ext[ext.length - 1];
+
             div += `
-                </tbody>
-            </table>
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center me-3">
+                        <a href="/uploads/files/${raw_filename}" style="font-size:18px;" class="text-success" download><i class="bi bi-download"></i></a>
+                    </div>
+                    <p style="font-size:18px;">${formatFile(ext, shortened_filename)}</p>
+                </div>
             `;
-            $('#content').html(div);
-        } else {
-            div += `
-                <h5 class="text-uppercase text-muted fw-bold my-4">No students currently enrolled</h5>
-            `;
-            $('#content').html(div);
-        }
+
+            $('#content #files').html(div);
+            
+       })
+
+       $('#content').html(div);
     }
 })
 

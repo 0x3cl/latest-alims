@@ -6,6 +6,9 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\EnrolledModel;
 use App\Models\PostModel;
+use App\Models\SubmissionModel;
+use App\Models\SubmissionFilesModel;
+
 
 class ViewsController extends BaseController
 {
@@ -220,84 +223,151 @@ class ViewsController extends BaseController
         $eid = $this->request->getGet('eid');
         $sid = $this->request->getGet('sid');
         $pid = $this->request->getGet('pid');
+ 
+        $subid = $this->request->getGet('submission');
 
+        if(empty($subid) || !($subid)) {
+            try {
+                $model = new EnrolledModel;
+                $model->join('subjects', 'subjects.id = '.$sid);
+                $model->where('enroll.id', $eid);
+                $model->where('user_id', $uid);
     
-        try {
-            $model = new EnrolledModel;
-            $model->join('subjects', 'subjects.id = '.$sid);
-            $model->where('enroll.id', $eid);
-            $model->where('user_id', $uid);
-
-            $e_result = $model->find();
-
-            if(!$e_result && count($e_result) > 0) {
-                
-                if(empty($pid)) {
-                    $model = new PostModel;
-                    $model->where('enroll_id', $eid);
-                    $model->where('subject_id', $sid);
-                    $pid = $model->first()['id'] ?? '';
-                } else {
-                    $model = new PostModel;
-                    $model->where('enroll_id', $eid);
-                    $model->where('subject_id', $sid);
-                    $model->where('id', $pid);
-                    $result = $model->countAllResults();
-
-                    if($result == 0) {
-                        $pid = $model->first()['id'];
-                    } else {
-                        $pid = $pid;
-                    }
+                $e_result = $model->find();
+    
+                if(!$e_result && count($e_result) > 0) {
                     
-                }
-
-
-                $page = [
-                    'view' => 'view-posts',
-                    'dir' => 'Instructor',
-                    'isSubPage' => true,
-                    'data' => [
-                        'title' => 'Posts | Instructor',
-                        'active' => 'courses',
-                        'current_userdata' => $this->getCurrentUser(),
-                        'requested_data' => [
-                            'eid' => $eid,
-                            'sid' => $sid,
-                            'pid' => $pid,
-                            'cid' => $e_result[0]['course_id'],
-                            'yid' => $e_result[0]['year'],
-                            'secid' => $e_result[0]['section'],
-                        ]
-                    ]
-                ];
+                    if(empty($pid)) {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $pid = $model->first()['id'] ?? '';
+                    } else {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $model->where('id', $pid);
+                        $result = $model->countAllResults();
+    
+                        if($result == 0) {
+                            $pid = $model->first()['id'];
+                        } else {
+                            $pid = $pid;
+                        }
                         
-                return $this->renderView($page);
-            } else {
-                $page = [
-                    'view' => 'view-submissions',
-                    'dir' => 'Instructor',
-                    'isSubPage' => true,
-                    'data' => [
-                        'title' => 'Posts | Instructor',
-                        'active' => 'courses',
-                        'current_userdata' => $this->getCurrentUser(),
-                        'requested_data' => [
-                            'eid' => $eid,
-                            'sid' => $sid,
-                            'pid' => $pid,
-                            'cid' => $e_result[0]['course_id'],
-                            'yid' => $e_result[0]['year'],
-                            'secid' => $e_result[0]['section'],
+                    }
+    
+    
+                    $page = [
+                        'view' => 'view-submission-status',
+                        'dir' => 'Instructor',
+                        'isSubPage' => true,
+                        'data' => [
+                            'title' => 'Posts | Instructor',
+                            'active' => 'courses',
+                            'current_userdata' => $this->getCurrentUser(),
+                            'requested_data' => [
+                                'eid' => $eid,
+                                'sid' => $sid,
+                                'pid' => $pid,
+                                'cid' => $e_result[0]['course_id'],
+                                'yid' => $e_result[0]['year'],
+                                'secid' => $e_result[0]['section'],
+                            ]
                         ]
-                    ]
-                ];
-                
-                return $this->renderView($page);
+                    ];
+                            
+                    return $this->renderView($page);
+                } else {
+                    $page = [
+                        'view' => 'view-submission-status',
+                        'dir' => 'Instructor',
+                        'isSubPage' => true,
+                        'data' => [
+                            'title' => 'Posts | Instructor',
+                            'active' => 'courses',
+                            'current_userdata' => $this->getCurrentUser(),
+                            'requested_data' => [
+                                'eid' => $eid,
+                                'sid' => $sid,
+                                'pid' => $pid,
+                                'cid' => $e_result[0]['course_id'],
+                                'yid' => $e_result[0]['year'],
+                                'secid' => $e_result[0]['section'],
+                            ]
+                        ]
+                    ];
+                    
+                    return $this->renderView($page);
+                }
+            } catch(\Exception $e) {
+                print_r($e->getMessage());
             }
-        } catch(\Exception $e) {
-            print_r($e->getMessage());
+        } else {
+            try {
+                $model = new EnrolledModel;
+                $model->join('subjects', 'subjects.id = '.$sid);
+                $model->where('enroll.id', $eid);
+                $model->where('user_id', $uid);
+    
+                $e_result = $model->find();
+                if(count($e_result) > 0) {
+                    if(empty($pid)) {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $pid = $model->first()['id'] ?? '';
+
+                    } else {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $model->where('id', $pid);
+                        $result = $model->countAllResults();
+    
+                        if($result == 0) {
+                            $pid = $model->first()['id'];
+                        } else {
+                            $pid = $pid;
+                        }
+                    }
+
+                    $model = new SubmissionModel;
+                    $model->where('post_id', $pid);
+                    $result = $model->find($subid);
+
+                    if($result) {
+                        $page = [
+                            'view' => 'view-submission',
+                            'dir' => 'Instructor',
+                            'isSubPage' => true,
+                            'data' => [
+                                'title' => 'Posts | Instructor',
+                                'active' => 'courses',
+                                'current_userdata' => $this->getCurrentUser(),
+                                'requested_data' => [
+                                    'eid' => $eid,
+                                    'sid' => $sid,
+                                    'pid' => $pid,
+                                    'cid' => $e_result[0]['course_id'],
+                                    'yid' => $e_result[0]['year'],
+                                    'secid' => $e_result[0]['section'],
+                                    'subid' => $subid
+                                ]
+                            ]
+                        ];
+
+                        return $this->renderView($page);
+                    } else {
+                        return redirect()->to('/instructor/subjects/posts/submission?eid='.$eid.'&sid='.$sid.'&pid='.$pid);
+                    }
+                            
+                }
+            } catch(\Exeption $e) {
+                print_r($e->getMessage());
+            }
         }
+
     }
 
     public function masterlist() {

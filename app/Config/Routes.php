@@ -138,7 +138,9 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
         $routes->get('courses', 'Users::getCoursesByID');
         $routes->get('courses/masterlist', 'Users::getMasterlist');
         $routes->get('subjects', 'Users::getSubjectsByID');
-        $routes->get('subjects/submission', 'Users::getPreviewSubmission');
+        $routes->get('subjects/submission/list', 'Users::getPreviewSubmission');
+        $routes->get('subjects/submission/view', 'Users::getSubmission');
+
 
 
 

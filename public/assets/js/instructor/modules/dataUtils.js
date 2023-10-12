@@ -184,12 +184,12 @@ export async function masterlist(cid, yid, sid) {
     });
 }
 
-export async function getSubmission(cid, sid, yid, secid) {
+export async function getSubmissionList(cid, sid, yid, secid) {
     const data = await getJWTtoken();
     const token = data.token
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: `/api/v1/users/subjects/submission?course=${cid}}&subject=${sid}sid&year=${yid}&section=${secid}`,
+            url: `/api/v1/users/subjects/submission/list?course=${cid}&subject=${sid}&year=${yid}&section=${secid}`,
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', `Bearer ${token}`)
@@ -200,5 +200,19 @@ export async function getSubmission(cid, sid, yid, secid) {
     });
 }
 
-
+export async function getSubmission(eid, sid, pid, subid) {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/users/subjects/submission/view?eid=${eid}&sid=${sid}&pid=${pid}&subid=${subid}`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}
 

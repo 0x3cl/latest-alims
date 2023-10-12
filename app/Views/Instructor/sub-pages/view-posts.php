@@ -504,10 +504,10 @@ post_attachments(eid, sid, pid).then((response) => {
                 ext = ext[ext.length - 1];
                 div += `
                     <div class="d-flex align-items-center gap-3">
-                        <p>${formatFile(ext, shortened_filename)}</p>
+                        ${formatFile(ext, shortened_filename)}
                         <div class="d-flex align-items-center gap-3">
-                            <a href="/uploads/files/${raw_filename}" class="text-success" download><i class="bi bi-download"></i></a>
-                            <a href="javascript:void(0)" id="delete-attachment" data-id="${item.id}" class="text-danger"><i class="bi bi-trash"></i></a>
+                            <a style="font-size: 15px" href="/uploads/files/${raw_filename}" class="text-success" download><i class="bi bi-download"></i></a>
+                            <a style="font-size: 15px" href="javascript:void(0)" id="delete-attachment" data-id="${item.id}" class="text-danger"><i class="bi bi-trash"></i></a>
                         </div>
                     </div>
                 `;
