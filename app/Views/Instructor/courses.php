@@ -49,7 +49,7 @@ my_courses(id).then((response) => {
                         <small class="mb-0 d-block fw-bold text-muted text-uppercase">${data.year_name} | ${data.section_name}</small>
                     </div>
                     <div class="card-footer w-100 d-flex justify-content-end gap-2">
-                        <button class="btn btn-secondary">Masterlist</button>
+                        <a href="/instructor/subjects/masterlist?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-secondary">Masterlists</a>
                         <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-primary">View Subjects</a>
                     </div>
                 </div>

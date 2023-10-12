@@ -97,7 +97,9 @@ $routes->group('instructor', ['namespace' => '\App\Controllers\Instructor'], fun
     $routes->get('dashboard', 'ViewsController::dashboard');
     $routes->get('courses', 'ViewsController::courses');
     $routes->get('subjects', 'ViewsController::subjects');
+    $routes->get('subjects/masterlist', 'ViewsController::masterlist');
     $routes->get('subjects/posts', 'ViewsController::subjects_posts');
+    $routes->get('subjects/posts/submission', 'ViewsController::subjects_submission');
     $routes->get('me', 'ViewsController::me');
     $routes->get('change/password', 'ViewsController::change_password');
     $routes->get('sign-out', 'ViewsController::signout');
@@ -134,7 +136,11 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
 
         // INSTRUCTORS CLASS COURSE RELATED
         $routes->get('courses', 'Users::getCoursesByID');
+        $routes->get('courses/masterlist', 'Users::getMasterlist');
         $routes->get('subjects', 'Users::getSubjectsByID');
+        $routes->get('subjects/submission', 'Users::getPreviewSubmission');
+
+
 
 
         // ENROLLED USERS

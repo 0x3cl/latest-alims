@@ -259,6 +259,42 @@ class Users extends BaseController
         ]);
     }
 
+    public function getMasterlist() {
+
+        $uid = $this->getCurrentUser()['id'];
+        $cid = $this->request->getGet('course');
+        $yid = $this->request->getGet('year');
+        $sid = $this->request->getGet('section');
+        
+        try {
+            $model = new EnrolledModel;
+            $model->select(
+                'users.username, users.email, students.firstname, students.lastname,
+                students.avatar, students.banner, courses.name as course_name,
+                courses.code as course_code
+                '
+            );
+            $model->join('users', 'users.id = enroll.user_id', 'left');
+            $model->join('students', 'students.user_id = enroll.user_id', 'left');
+            $model->join('courses', 'courses.id = enroll.course_id');
+            $model->where('enroll.course_id', $cid);
+            $model->where('enroll.year', $yid);
+            $model->where('enroll.section', $sid);
+            $model->where('users.role', 2);
+            $result = $model->find();
+           
+            return $this->respond([
+                'status' => 200,
+                'message' => 'ok',
+                'data' => $result
+            ]);
+
+        } catch(\Exception $e) {
+            print_r($e);
+        }
+
+    }
+
     public function getSubjectsByID() {
 
         $uid = $this->getCurrentUser()['id'];
@@ -287,13 +323,52 @@ class Users extends BaseController
         $model->where('enroll.year', $year_id);
         $result = $model->findAll();
 
-
         return $this->respond([
             'status' => 200,
             'message' => 'ok',
             'data' => $result
         ]);
 
+    }
+
+    public function getPreviewSubmission() {
+        $uid = $this->getCurrentUser()['id'];
+        $cid = $this->request->getGet('course');
+        $sid = $this->request->getGet('subject');
+        $yid = $this->request->getGet('year');
+        $secid = $this->request->getGet('section');
+        
+        try {
+            $model = new EnrolledModel;
+            $model->select(
+                'users.username, users.email, students.firstname, students.lastname,
+                students.avatar, students.banner, courses.name as course_name,
+                courses.code as course_code, subjects.name as subject_name, 
+                subjects.code as subject_code
+                '
+            );
+            $model->join('users', 'enroll.user_id = users.id', 'left');
+            $model->join('courses', 'courses.id = enroll.course_id');
+            $model->join('subjects', 'courses.id = subjects.course', 'left');
+            $model->join('students', 'users.id = students.user_id', 'left');
+            $model->where('users.role', 2);
+            $model->where('enroll.course_id', $cid);
+            $model->where('enroll.section', $secid);
+            $model->where('enroll.year', $yid);
+            $model->where('subjects.id', $sid);
+         
+            $result = $model->find();
+
+            return $this->respond([
+                'status' => 200,
+                'message' => 'ok',
+                'data' => $result
+            ]);
+            
+
+        } catch(\Exception $e) {
+            print_r($e);
+        }
     }
 
     public function getCurrentUser() {

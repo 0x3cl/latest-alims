@@ -240,3 +240,16 @@ input, select {
     object-fit: cover;
     object-position: center;
 }
+
+table th {
+    font-weight: 800;
+}
+
+table img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    object-position: center;
+    border: 2px solid #3eb489;
+    border-radius: 50%;
+}

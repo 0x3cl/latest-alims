@@ -118,7 +118,119 @@ class ViewsController extends BaseController
 
             $e_result = $model->find();
 
-            if(count($e_result) > 0) {
+            if($e_result) {
+                if(count($e_result) > 0) {
+                    if(empty($pid)) {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $pid = $model->first()['id'] ?? '';
+                    } else {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $model->where('id', $pid);
+                        $result = $model->countAllResults();
+    
+                        if($result == 0) {
+                            $pid = $model->first()['id'];
+                        } else {
+                            $pid = $pid;
+                        }
+                        
+                    }
+    
+                    $page = [
+                        'view' => 'view-posts',
+                        'dir' => 'Instructor',
+                        'isSubPage' => true,
+                        'data' => [
+                            'title' => 'Posts | Instructor',
+                            'active' => 'courses',
+                            'current_userdata' => $this->getCurrentUser(),
+                            'requested_data' => [
+                                'eid' => $eid,
+                                'sid' => $sid,
+                                'pid' => $pid,
+                                'cid' => $e_result[0]['course_id'],
+                                'yid' => $e_result[0]['year'],
+                                'secid' => $e_result[0]['section'],
+                            ]
+                        ]
+                    ];
+                            
+                    return $this->renderView($page);
+                } else {
+                    $page = [
+                        'view' => 'view-posts',
+                        'dir' => 'Instructor',
+                        'isSubPage' => true,
+                        'data' => [
+                            'title' => 'Posts | Instructor',
+                            'active' => 'courses',
+                            'current_userdata' => $this->getCurrentUser(),
+                            'requested_data' => [
+                                'eid' => $eid,
+                                'sid' => $sid,
+                                'pid' => $pid,
+                                'cid' => $e_result[0]['course_id'],
+                                'yid' => $e_result[0]['year'],
+                                'secid' => $e_result[0]['section'],
+                            ]
+                        ]
+                    ];
+                    
+                    return $this->renderView($page);
+                }
+                
+            } else {
+                $page = [
+                    'view' => 'view-posts',
+                    'dir' => 'Instructor',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Posts | Instructor',
+                        'active' => 'courses',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => [
+                            'eid' => $eid,
+                            'sid' => $sid,
+                            'pid' => $pid,
+                            'cid' => $e_result[0]['course_id'],
+                            'yid' => $e_result[0]['year'],
+                            'secid' => $e_result[0]['section'],
+                        ]
+                    ]
+                ];
+                
+                return $this->renderView($page);
+
+            }
+
+
+        } catch(\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+       
+    }
+
+    public function subjects_submission() {
+        $uid = $this->getCurrentUser()['id'];
+        $eid = $this->request->getGet('eid');
+        $sid = $this->request->getGet('sid');
+        $pid = $this->request->getGet('pid');
+
+    
+        try {
+            $model = new EnrolledModel;
+            $model->join('subjects', 'subjects.id = '.$sid);
+            $model->where('enroll.id', $eid);
+            $model->where('user_id', $uid);
+
+            $e_result = $model->find();
+
+            if(!$e_result && count($e_result) > 0) {
                 
                 if(empty($pid)) {
                     $model = new PostModel;
@@ -162,13 +274,57 @@ class ViewsController extends BaseController
                         
                 return $this->renderView($page);
             } else {
+                $page = [
+                    'view' => 'view-submissions',
+                    'dir' => 'Instructor',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Posts | Instructor',
+                        'active' => 'courses',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => [
+                            'eid' => $eid,
+                            'sid' => $sid,
+                            'pid' => $pid,
+                            'cid' => $e_result[0]['course_id'],
+                            'yid' => $e_result[0]['year'],
+                            'secid' => $e_result[0]['section'],
+                        ]
+                    ]
+                ];
                 
+                return $this->renderView($page);
             }
-
-
         } catch(\Exception $e) {
             print_r($e->getMessage());
         }
+    }
+
+    public function masterlist() {
+
+        $uid = $this->getCurrentUser()['id'];
+        $cid = $this->request->getGet('course');
+        $yid = $this->request->getGet('year');
+        $sid = $this->request->getGet('section');
+        
+
+        $page = [
+            'view' => 'masterlist',
+            'dir' => 'Instructor',
+            'isSubPage' => true,
+            'data' => [
+                'title' => 'Participants | Courses',
+                'active' => 'courses',
+                'current_userdata' => $this->getCurrentUser(),
+                'requested_data' => [
+                    'cid' => $cid,
+                    'yid' => $yid,
+                    'sid' => $sid,
+                ]
+            ]
+        ];
+
+        return $this->renderView($page);
 
        
     }

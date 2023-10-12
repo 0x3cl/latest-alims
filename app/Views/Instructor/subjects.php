@@ -70,7 +70,6 @@ my_subjects(params).then((response) => {
     if(response.status == 200) {
         const data = response.data;
         if(data.length > 0) {
-            console.log(data);
             data.forEach((data) => {
             div += `
                 <div class="col-12 col-md-6 mb-3">
@@ -83,14 +82,12 @@ my_subjects(params).then((response) => {
                             <small class="mb-0 d-block fw-bold text-muted text-uppercase">${data.year_name} | ${data.section_name}</small>
                         </div>
                         <div class="card-footer w-100 d-flex justify-content-end gap-2">
-                            <button class="btn btn-secondary">Masterlist</button>
                             <a href="/instructor/subjects/posts?eid=${data.id}&sid=${data.subject_id}" class="btn btn-primary">View Posts</a>
                         </div>
                     </div>
                 </div>
                 `;
             });
-
             $('#data-col').html(DOMPurify.sanitize(div));
         } else {
             div = `

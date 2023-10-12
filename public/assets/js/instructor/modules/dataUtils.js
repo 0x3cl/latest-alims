@@ -167,3 +167,38 @@ export async function post_attachments(eid, sid, pid) {
         })
     });
 }
+
+export async function masterlist(cid, yid, sid) {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/users/courses/masterlist?course=${cid}}&year=${yid}&section=${sid}`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}
+
+export async function getSubmission(cid, sid, yid, secid) {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/users/subjects/submission?course=${cid}}&subject=${sid}sid&year=${yid}&section=${secid}`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}
+
+
+

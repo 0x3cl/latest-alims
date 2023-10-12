@@ -7,8 +7,8 @@
     <div class="sidebar-profile">
         <img src="/uploads/avatar/<?= $current_userdata['avatar'] ?>" class="img-3x me-3 rounded-2" alt="Admin Dashboard" />
         <div class="m-0">
-            <p class="m-0 text-secondary">Hello &#128075;</p>
-            <h6 class="m-0 text-nowrap"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></h6>
+            <p class="m-0 text-secondary">Welcome Back!</p>
+            <h6 class="m-0 text-nowrap fw-bold"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></h6>
         </div>
     </div>
     <div class="sidebarMenuScroll">

@@ -86,10 +86,7 @@
             </div>
             <div class="app-footer d-flex align-items-center">
                 <div class="post-actions mt-2 d-flex gap-2">
-                    <div class="first-group d-flex gap-2">
-                        <button class="d-flex gap-1 align-items-center btn btn-secondary" id="post-edit"><i class="bi bi-pencil-square"></i> Edit</button>
-                    </div>
-                    <button class="d-flex gap-1 align-items-center btn btn-danger" id="post-delete"><i class="bi bi-trash3"></i> Delete</button>
+                   
                 </div>
             </div>
         </div>
@@ -129,7 +126,7 @@
                         <div class="col-12 col-md-12">
                             <label class="mb-1" for="title">Content <span class="text-danger">*</span></label>
                             <div class="form-group mb-3">
-                                <textarea class="editor" name="content"></textarea>
+                                <textarea id="p-editor" name="content"></textarea>
                             </div>
                         </div>
                         <div class="col-12">
@@ -151,7 +148,7 @@
                         <div class="col-12">
                             <label for="droparea" class="mb-1">Attachments</label>
                             <div class="droparea">
-                                <input type="file" name="attachment" id="attachment" class="attachment" multiple>
+                                <input type="file" name="attachment" id="attachment" class="post-attachment" multiple>
                             </div>
                             <div class="attachment-preview">
                             </div>
@@ -215,6 +212,7 @@
                             <div class="form-group mb-3">
                                 <label class="mb-1" for="type">Type <span class="text-danger">*</span></label>
                                 <select name="type" id="a-type" class="form-control">
+                                    <option value="">Choose</option>
                                     <option value="1">Quiz</option>
                                     <option value="2">Examination</option>
                                     <option value="3">Practice</option>
@@ -223,8 +221,8 @@
                         </div>
                         <div class="col-12 col-md-12">
                             <div class="form-group mb-3">
-                                <label class="mb-1" for="instruction">Instruction</label>
-                                <textarea name="content" id="editor" class="editor" cols="30" rows="10"></textarea>
+                                <label class="mb-1" for="instruction">Content</label>
+                                <textarea name="content" id="a-editor" class="editor" cols="30" rows="10"></textarea>
                             </div>
                         </div>
                         <div class="col-12">
@@ -301,6 +299,10 @@ const pid = DOMPurify.sanitize($('#pid').val().trim());
 const id = <?= $current_userdata['id']?>;
 const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
+
+ckeditor('#a-editor', 'aeditor');
+ckeditor('#p-editor', 'peditor');
+
 my_posts(eid, sid, pid).then((response) => {
     console.log(response);
     if(response.status == 200) {
@@ -339,77 +341,83 @@ my_posts(eid, sid, pid).then((response) => {
             }
 
             if(data.is_assessment == 1) {
-            // CALL ASSESSMENT
-            my_assessments(eid, sid, pid).then((response) => {
-                const data = response.data;
-                const questions = data.questions;
-                const answers = data.answers;
-                const choices = data.choices;
+                my_assessments(eid, sid, pid).then((response) => {
+                    const data = response.data;
+                    const questions = data.questions;
+                    const answers = data.answers;
+                    const choices = data.choices;
 
-                const item_count = questions.length;
+                    const item_count = questions.length;
 
-                let item_div = '';
-                let choice_div = '';
-                let choice_count;
-                
-                questions.forEach((item, index) => {
-                    if(item.assessment_type == 1 || item.assessment_type == 4 ) {
-                        item_div += `
-                        <div class="card mb-3">
-                            <div class="card-body p-4 mb-3">
-                                <div class="question">
-                                    <h5>${index + 1}. ${item.question}</h5>
-                                    <div class="choices mt-3" data-id="${index+1}">
-                                      
+                    let item_div = '';
+                    let choice_div = '';
+                    let choice_count;
+                    
+                    questions.forEach((item, index) => {
+                        if(item.assessment_type == 1 || item.assessment_type == 4 ) {
+                            item_div += `
+                            <div class="card mb-3">
+                                <div class="card-body p-4 mb-3">
+                                    <div class="question">
+                                        <h5>${index + 1}. ${item.question}</h5>
+                                        <div class="choices mt-3" data-id="${index+1}">
+                                        
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="note mt-5">
-                                    <p class="text-muted"><em>Correct answer is the selected</em></p>
-                                </div>
-                            </div>
-                        </div>
-                        `;
-                    } else {
-                        item_div += `
-                        <div class="card mb-3">
-                            <div class="card-body p-4 mb-3">
-                                <div class="question">
-                                    <h5>${index + 1}. ${item.question}</h5>
-                                    <div class="answer mt-3">
-                                        <input type="text" name="answer" id="answer" class="form-control" placeholder="Students answers goes here" readonly>
-                                        <hr class="mt-4 mb-3">
-                                        <p class="text-muted"><em>Correct answer is: ${item.answers[0].name}</e></p>
+                                    <div class="note mt-5">
+                                        <p class="text-muted"><em>Correct answer is the selected</em></p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                    }
-                });
-
-                $('.post-assessment').html(item_div);
-
-                questions.forEach((item, index) => {
-                    if (item.assessment_type == 1 || item.assessment_type == 4) {
-                        item.choices.forEach((choice, choiceIndex) => {
-                            choice_div = `
-                                <div class="option-group">
-                                    <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
-                                        <input class="form-check-input" type="radio" name="answer_${choice.qid}" value="${choiceIndex + 1}" ${(choiceIndex === parseInt(item.answers[0].name) - 1) ? 'checked' : ''}>
-                                        <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
-                                        <span class="text-success">${(choiceIndex === parseInt(item.answers[0].name) - 1) ? '<i class="bi bi-check-lg fw-bold fs-3"></i>' : ''}</span>
-                                    </div>
-                                </div>
                             `;
-                            $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
-                        });
-                    }
+                        } else {
+                            item_div += `
+                            <div class="card mb-3">
+                                <div class="card-body p-4 mb-3">
+                                    <div class="question">
+                                        <h5>${index + 1}. ${item.question}</h5>
+                                        <div class="answer mt-3">
+                                            <input type="text" name="answer" id="answer" class="form-control" placeholder="Students answers goes here" readonly>
+                                            <hr class="mt-4 mb-3">
+                                            <p class="text-muted"><em>Correct answer is: ${item.answers[0].name}</e></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        }
+                    });
+
+                    $('.post-assessment').html(item_div);
+
+                    questions.forEach((item, index) => {
+                        if (item.assessment_type == 1 || item.assessment_type == 4) {
+                            item.choices.forEach((choice, choiceIndex) => {
+                                choice_div = `
+                                    <div class="option-group">
+                                        <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                                            <input class="form-check-input" type="radio" name="answer_${choice.qid}" value="${choiceIndex + 1}" ${(choiceIndex === parseInt(item.answers[0].name) - 1) ? 'checked' : ''}>
+                                            <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
+                                            <span class="text-success">${(choiceIndex === parseInt(item.answers[0].name) - 1) ? '<i class="bi bi-check-lg fw-bold fs-3"></i>' : ''}</span>
+                                        </div>
+                                    </div>
+                                `;
+                                $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
+                            });
+                        }
+                    });
                 });
-
-
-            });
-        }
-
+                $('.post-actions').append(DOMPurify.sanitize(`
+                    <button class="d-flex gap-1 align-items-center btn btn-danger" id="post-delete"><i class="bi bi-trash3"></i> Delete</button>
+                `))
+            } else {
+                $('.post-actions').append(DOMPurify.sanitize(`
+                    <div class="first-group d-flex gap-2">
+                        <button class="d-flex gap-1 align-items-center btn btn-secondary" id="post-edit"><i class="bi bi-pencil-square"></i> Edit</button>
+                    </div>
+                    <button class="d-flex gap-1 align-items-center btn btn-danger" id="post-delete"><i class="bi bi-trash3"></i> Delete</button>
+                `))
+            }
         } else {
             $(' .post-title').text('No Posts Yet!');
             $('.post-content').text('To create a new post, click the plus sign button below.');
@@ -422,9 +430,7 @@ all_posts(eid, sid).then((response) => {
     let div = '';
     if(response.status == 200) {
         const data = response.data;
-        let group = [];
-        console.log(data);
-        
+        let group = [];        
         if(data.length > 0) {
             data.forEach((item) => {
                 if (!group.hasOwnProperty(item.group)) {
@@ -446,7 +452,7 @@ all_posts(eid, sid).then((response) => {
                 `;
                 group[key].forEach((item) => {
                     div += `
-                    <li>
+                    <li class="${item.id == pid ? 'active current-page' : ''}">
                         <a href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
                             <i class="bi bi-card-heading"></i>
                             <span class="menu-text">${item.title}</span>
@@ -459,7 +465,7 @@ all_posts(eid, sid).then((response) => {
             $('.sidebar-menu.post-group').html(div);
         } else {
             div += `
-                <li>
+                <li class="active current-page">
                     <a href="#">
                         <i class="bi bi-info-square"></i>
                         <span class="menu-text">No posts yet</span>
@@ -515,10 +521,6 @@ post_attachments(eid, sid, pid).then((response) => {
     }
 });
 
-let editor;
-
-ckeditor('.editor');
-
 $('.attachment').on('change', function() {
     const files = $(this)[0].files;
     let preview = '';
@@ -563,7 +565,7 @@ $('#upload-attachment').on('click', function() {
                     text: response.message,
                 });
                 setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${response.pid}`;
                 }, 1000);
             } else {
                 let err = response.message;
@@ -597,7 +599,7 @@ $('#show-attachments').on('click', function() {
 
 let is_edit = false;
 
-$('#post-edit').on('click', function() {
+$(document).on('click', '#post-edit', function() {
     if(!is_edit) {
         ckeditor('.post-content');
         $('.post-title').hide();
@@ -610,8 +612,8 @@ $('#post-edit').on('click', function() {
         ));
         is_edit = true;
     } else {
-        const content = window.editor.getData();
-        window.editor.destroy();
+        const content = window.editorz.getData();
+        window.editorz.destroy();
         $('.post-title').show();
         $('.post-others').hide();
         $('.post-content').html(DOMPurify.sanitize(content));
@@ -627,7 +629,7 @@ $(document).on('click', '#post-save', function(e) {
     e.preventDefault();
     const title = DOMPurify.sanitize($('#up-title').val().trim());
     const group = DOMPurify.sanitize($('#post-group').val().trim());
-    const content = DOMPurify.sanitize(window.editor.getData());
+    const content = DOMPurify.sanitize(window.editorz.getData());
     const date_avail = DOMPurify.sanitize($('#date').val());
     const time_avail = DOMPurify.sanitize($('#time').val());
     const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
@@ -654,7 +656,7 @@ $(document).on('click', '#post-save', function(e) {
                     text: response.message,
                 });
                 setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
                 }, 1000);
             } else {
                 let err = response.message;
@@ -675,7 +677,7 @@ $('#create-post').on('submit', function(e) {
     e.preventDefault();
     const title = DOMPurify.sanitize($('#title').val().trim());
     const group = DOMPurify.sanitize($('.post-group-select').val().trim());
-    const content = DOMPurify.sanitize(window.editor.getData());
+    const content = DOMPurify.sanitize(window.editor['peditor'][0].getData());
     const date_avail = DOMPurify.sanitize($('#date').val());
     const time_avail = DOMPurify.sanitize($('#time').val());
     const restrict_submission = DOMPurify.sanitize($('#restrict-submission').val());
@@ -684,7 +686,7 @@ $('#create-post').on('submit', function(e) {
     const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
     const form_data = new FormData();
-    const attachments = $('#attachment').prop('files');
+    const attachments = $('.post-attachment').prop('files');
     form_data.append('eid', eid);
     form_data.append('sid', sid);
     form_data.append('title', title);
@@ -713,6 +715,7 @@ $('#create-post').on('submit', function(e) {
             xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
             xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
         }, success: function(response) {
+            const pid = response.pid;
             if(response.status == 200) {
                 Swal.fire({
                     icon: 'success',
@@ -720,7 +723,7 @@ $('#create-post').on('submit', function(e) {
                     text: response.message,
                 });
                 setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
                 }, 1000);
                 clearFields();
             } else {
@@ -740,7 +743,7 @@ $('#create-post').on('submit', function(e) {
 
 });
 
-$('#post-delete').on('click', function() {
+$(document).on('click', '#post-delete', function() {
     const code = generateRandomCode();
     deleteModal(code);
     $('#control-delete-proceed').on('click', function() {
@@ -764,7 +767,7 @@ $('#post-delete').on('click', function() {
                             text: response.message,
                         });
                         setTimeout(() => {
-                            window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                            window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${response.pid}`;
                     }, 1000);
                     }
                 }
@@ -805,7 +808,7 @@ $(document).on('click', '#delete-attachment', function() {
                     text: response.message,
                 });
                 setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}`;
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${response.pid}`;
             }, 1000);
             }
         }
@@ -1017,7 +1020,7 @@ $('#create-assessment').on('submit', function(e) {
     const title = DOMPurify.sanitize(($('#a-title').val()));
     const group = DOMPurify.sanitize($('#a-group').val());
     const type = DOMPurify.sanitize($('#a-type').val());
-    const content = window.editor.getData();
+    const content = DOMPurify.sanitize(window.editor['aeditor'][0].getData());
 
     let questions = [];
     let types = [];
@@ -1163,11 +1166,29 @@ $('#create-assessment').on('submit', function(e) {
             xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
             xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
         }, success: function(response) {
-           console.log(response);
+            const pid = response.pid;
+            if(response.status == 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Yey..',
+                    text: response.message,
+                });
+                setTimeout(() => {
+                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
+                }, 1000);
+            } else {
+                let err = response.message;
+                err = Object.values(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ooops..',
+                    text: err[0],
+                });
+            }
         },
     }).done(function() {
         $(this).attr('disabled', false);
-        // clearFields();
+        clearFields();
         generateCSRFToken();
     });
 });

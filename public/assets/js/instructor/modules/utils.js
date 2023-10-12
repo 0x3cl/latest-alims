@@ -185,20 +185,36 @@ export function shortenFilename(filename, prefixLength, suffixLength) {
     
     return prefix + '..' + suffix;
   }
+  export function ckeditor(classSelector, name) {
+    if (!window.editor) {
+        window.editor = {};
+      }
+    // Initialize the array for the specified name if it doesn't exist
+    if (!window.editor[name]) {
+      window.editor[name] = [];
+    }
+  
+    const elements = document.querySelectorAll(classSelector);
+  
+    elements.forEach((element) => {
+      ClassicEditor
+        .create(element, {
+          placeholder: `What's your thoughts?`,
+          ckfinder: {
+            uploadUrl: '/api/v1/upload/image'
+          },
+        })
+        .then(ckeditor => {
+          // Add each CKEditor instance to the array associated with its name
+          window.editor[name].push(ckeditor);
+          window.editorz = ckeditor;
 
-export function ckeditor(elem) {
-    ClassicEditor
-    .create( document.querySelector(elem), {
-        placeholder: `What's your thoughts?`,
-        ckfinder: {
-        uploadUrl: '/api/v1/upload/image'
-        },
-        
-    } )
-    .then( ckeditor => {
-        window.editor = ckeditor;
-    } )
-    .catch((err) => {
-        // console.log(err)
+        })
+        .catch((err) => {
+          // Handle errors if needed
+          console.error(err);
+        });
     });
   }
+  
+  

@@ -276,7 +276,8 @@ class Post extends BaseController
                                         if($model->insert($data) && $file->move($path, $filename)) {
                                             return $this->respond([
                                                 'status' => 200,
-                                                'message' => 'posted successfully!'
+                                                'message' => 'posted successfully!',
+                                                'pid' => $inserted_id
                                             ]);
                                         }
                                     }
@@ -291,10 +292,10 @@ class Post extends BaseController
                     } else {
                         return $this->respond([
                             'status' => 200,
-                            'message' => 'posted successfully!'
+                            'message' => 'posted successfully!',
+                            'pid' => $inserted_id
                         ]);
                     }
-
                 }
 
             } catch(\Exception $e) {
@@ -376,7 +377,8 @@ class Post extends BaseController
                             if($model->insert($data) && $file->move($path, $filename)) {
                                 return $this->respond([
                                     'status' => 200,
-                                    'message' => 'posted successfully!'
+                                    'message' => 'posted successfully!',
+                                    'pid' => $pid
                                 ]);
                             }
                         }
@@ -400,18 +402,49 @@ class Post extends BaseController
         $pid = $this->request->getPost('pid');
         $post_model = new PostModel;
         $attachment_model = new AttachmentModel;
+        $is_assessment = $post_model->find($pid)['is_assessment'];
+        
 
-        if($post_model->where('id', $pid)->delete()
-            && $attachment_model->where('post_id', $pid)->delete()) {
-            return $this->respond([
-                'status' => 200,
-                'message' => 'post deleted successfully'
-            ]);
+        if($is_assessment != 0) {
+
+            $a_model = new AssessmentModel;
+            $ans_model = new AnswersModel;
+            $c_model = new ChoiceModel;
+
+
+            if(
+                $post_model->where('id', $pid)->delete()
+                && $attachment_model->where('post_id', $pid)->delete()
+                && $a_model->where('post_id', $pid)->delete()
+                && $ans_model->where('post_id', $pid)->delete()
+                && $c_model->where('post_id', $pid)->delete()
+            
+                ) {
+                return $this->respond([
+                    'status' => 200,
+                    'message' => 'post deleted successfully'
+                ]);
+            } else {
+                return $this->respond([
+                    'status' => 500,
+                    'message' => 'failed to delete post'
+                ]);
+            }
         } else {
-            return $this->respond([
-                'status' => 500,
-                'message' => 'failed to delete post'
-            ]);
+            if($post_model->where('id', $pid)->delete()
+                && $attachment_model->where('post_id', $pid)->delete()) {
+                $pid = $post_model->orderBy('id', 'desc')->first()['id'] ?? 0;
+                return $this->respond([
+                    'status' => 200,
+                    'message' => 'post deleted successfully',
+                    'pid' => $pid
+                ]);
+            } else {
+                return $this->respond([
+                    'status' => 500,
+                    'message' => 'failed to delete post'
+                ]);
+            }
         }
 
     }
@@ -420,19 +453,23 @@ class Post extends BaseController
         $aid = $this->request->getPost('aid');
         $uid = $this->getCurrentUser()['id'];
         $model = new AttachmentModel;
-        $model->select('attachments.id, attachments.filename');
+        $model->select('attachments.id, attachments.post_id, attachments.filename');
         $model->join('posts', 'attachments.post_id = posts.id');
         $model->join('enroll', 'posts.enroll_id = enroll.id');
         $model->where('attachments.id', $aid);
         $model->where('enroll.user_id', $uid);
+        
         $result = $model->find();
+
+        $pid = $result[0]['post_id'];
        
         if(count($result) > 0) {
             if($model->where('id', $aid)->delete()
                 && unlink('./uploads/files/'.$result[0]['filename'])) {
                 return $this->respond([
                     'status' => 200,
-                    'message' => 'file deleted'
+                    'message' => 'file deleted',
+                    'pid' => $pid
                 ]);
             }
         }
@@ -458,6 +495,7 @@ class Post extends BaseController
         $rules = [
             'title' => 'required',
             'group' => 'required',
+            'type' => 'required',
         ];
 
         if(!$this->validate($rules)) {
@@ -529,7 +567,8 @@ class Post extends BaseController
                             $cmodel->insertBatch($choices);
                             return $this->respond([
                                 'status' => 200,
-                                'message' => 'assessment created'
+                                'message' => 'assessment created',
+                                'pid' => $inserted_id
                             ]);
                         }
                     }
