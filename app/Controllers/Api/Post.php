@@ -101,7 +101,7 @@ class Post extends BaseController
            
             $model = new AssessmentModel;
             $model = new AssessmentModel;
-            $model->select('assessments.question, assessments.type as assessment_type, assessments.qid');
+            $model->select('assessments.id, assessments.question, assessments.type as assessment_type, assessments.qid');
             $model->join('posts', 'posts.id = assessments.post_id');
             $model->where('posts.id', $pid);
             $model->where('posts.enroll_id', $eid);
@@ -274,7 +274,7 @@ class Post extends BaseController
                                             'filename' => $filename
                                         ];
                                         if($model->insert($data) && $file->move($path, $filename)) {
-                                            return $this->respond([
+                                            $response = ([
                                                 'status' => 200,
                                                 'message' => 'posted successfully!',
                                                 'pid' => $inserted_id
@@ -282,12 +282,14 @@ class Post extends BaseController
                                         }
                                     }
                                 } else {
-                                    return $this->respond([
+                                    $response = ([
                                         'status' => 500,
                                         'message' => 'invalid file'
                                     ]);
                                 }
                             }
+
+                            return $this->respond($response);
                         }
                     } else {
                         return $this->respond([
@@ -375,7 +377,7 @@ class Post extends BaseController
                                 'filename' => $filename
                             ];
                             if($model->insert($data) && $file->move($path, $filename)) {
-                                return $this->respond([
+                                $response = ([
                                     'status' => 200,
                                     'message' => 'posted successfully!',
                                     'pid' => $pid
@@ -383,12 +385,14 @@ class Post extends BaseController
                             }
                         }
                     } else {
-                        return $this->respond([
+                        $response = ([
                             'status' => 500,
                             'message' => 'invalid file'
                         ]);
                     }
                 }
+
+                return $this->respond($response);
             }
         } else {
             return $this->respond([
@@ -579,5 +583,4 @@ class Post extends BaseController
             }
         }
     }
-
 }

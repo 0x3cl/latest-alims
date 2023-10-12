@@ -203,13 +203,16 @@
                     toastMessage('success', response.message);
                 } else {
                     let err = response.message;
-                    err = Object.values(err);
-                    toastMessage('error', err[0]);
+                    if(typeof err == 'object') {
+                        err = Object.values(err);
+                        toastMessage('error', err[0]);
+                    } else {
+                        toastMessage('error', err);
+                    }
                 }
             }
         }).done(function(){
             $('#btn-proceed').attr('disabled', false);
-            clearFields();
             generateCSRFToken();
         });
         

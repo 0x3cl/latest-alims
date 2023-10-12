@@ -36,45 +36,52 @@ my_courses(id).then((response) => {
     let div = '';
     if(response.status == 200) {
         const data = response.data;
-        console.log(data);
-        data.forEach((data) => {
-            div += `
-            <div class="col-12 col-md-6 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="text-capitalize fw-bold">${data.course_name}</h5>
-                        <h6 class="mb-0 text-uppercase">${data.course_code}</h6>
-                        <hr>
-                        <small class="mb-0 d-block fw-bold text-muted text-uppercase">SATURDAY 10:00AM - 11:00AM</small>
-                        <small class="mb-0 d-block fw-bold text-muted text-uppercase">${data.year_name} | ${data.section_name}</small>
-                    </div>
-                    <div class="card-footer w-100 d-flex justify-content-end gap-2">
-                        <a href="/instructor/subjects/masterlist?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-secondary">Masterlists</a>
-                        <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-primary">View Subjects</a>
+        if(data.length > 0) {
+            data.forEach((data) => {
+                div += `
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="text-capitalize fw-bold">${data.course_name}</h5>
+                            <h6 class="mb-0 text-uppercase">${data.course_code}</h6>
+                            <hr>
+                            <small class="mb-0 d-block fw-bold text-muted text-uppercase">SATURDAY 10:00AM - 11:00AM</small>
+                            <small class="mb-0 d-block fw-bold text-muted text-uppercase">${data.year_name} | ${data.section_name}</small>
+                        </div>
+                        <div class="card-footer w-100 d-flex justify-content-end gap-2">
+                            <a href="/instructor/subjects/masterlist?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-secondary">Masterlists</a>
+                            <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-primary">View Subjects</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            `;
-        });
+                `;
+            });
 
-        $('#data-col').html(DOMPurify.sanitize(div));
+            $('#data-col').html(DOMPurify.sanitize(div));
 
-        div = '';
+            div = '';
 
-        data.forEach((data) => {
-            div += `
-                
-                <li>
-                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
-                        <p class="d-block text-capitalize mb-1">${data.course_name}</p>
-                        <small class="d-block text-uppercase">${data.course_code} </small>
-                        <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
-                    </a>
-                </li>
-            `;
-        });
+            data.forEach((data) => {
+                div += `
+                    
+                    <li>
+                        <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                            <p class="d-block text-capitalize mb-1">${data.course_name}</p>
+                            <small class="d-block text-uppercase">${data.course_code} </small>
+                            <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
+                        </a>
+                    </li>
+                `;
+            });
 
-        $('.treeview-menu.courses').append(DOMPurify.sanitize(div));
+            $('.treeview-menu.courses').append(DOMPurify.sanitize(div));
+        } else {
+            $('#data-col').html(DOMPurify.sanitize(`
+                <div class="alert alert-info mt-3">
+                    <h5 class="m-0">You are not currently enrolled to any courses.</h5>
+                </div>
+            `));
+        }
 
     }
 });

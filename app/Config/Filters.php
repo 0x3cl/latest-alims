@@ -84,7 +84,8 @@ class Filters extends BaseConfig
        'authFilter' => [
             'before' => [
                 'admin/*',
-                'instructor/*'
+                'instructor/*',
+                'student/*'
             ],
             'except' => [
                 'admin/login',

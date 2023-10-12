@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Instructor;
+namespace App\Controllers\Student;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
@@ -16,10 +16,10 @@ class ViewsController extends BaseController
     public function login() {
         $page = [
             'view' => 'login',
-            'dir' => 'Instructor',
+            'dir' => 'Student',
             'isSubPage' => false,
             'data' => [
-                'title' => 'Instructor Login',
+                'title' => 'Student Login',
                 'active' => '',
             ]
         ];
@@ -30,10 +30,10 @@ class ViewsController extends BaseController
     public function dashboard() {
         $page = [
             'view' => 'dashboard',
-            'dir' => 'Instructor',
+            'dir' => 'Student',
             'isSubPage' => false,
             'data' => [
-                'title' => 'Dashboard | Instructor',
+                'title' => 'Dashboard | Student',
                 'active' => 'dashboard',
                 'current_userdata' => $this->getCurrentUser()
             ]
@@ -45,10 +45,10 @@ class ViewsController extends BaseController
     public function courses() {
         $page = [
             'view' => 'courses',
-            'dir' => 'Instructor',
+            'dir' => 'Student',
             'isSubPage' => false,
             'data' => [
-                'title' => 'My Courses | Instructor',
+                'title' => 'My Courses | Student',
                 'active' => 'courses',
                 'current_userdata' => $this->getCurrentUser()
             ]
@@ -76,10 +76,10 @@ class ViewsController extends BaseController
                 // proceed
                 $page = [
                     'view' => 'subjects',
-                    'dir' => 'Instructor',
+                    'dir' => 'Student',
                     'isSubPage' => false,
                     'data' => [
-                        'title' => 'Subjects | Instructor',
+                        'title' => 'Subjects | Student',
                         'active' => 'courses',
                         'current_userdata' => $this->getCurrentUser(),
                         'requested_data' => [
@@ -117,7 +117,7 @@ class ViewsController extends BaseController
             $model = new EnrolledModel;
             $model->join('subjects', 'subjects.id = '.$sid);
             $model->where('enroll.id', $eid);
-            $model->where('user_id', $uid);
+            // $model->where('user_id', $uid);
 
             $e_result = $model->find();
 
@@ -145,10 +145,10 @@ class ViewsController extends BaseController
     
                     $page = [
                         'view' => 'view-posts',
-                        'dir' => 'Instructor',
+                        'dir' => 'Student',
                         'isSubPage' => true,
                         'data' => [
-                            'title' => 'Posts | Instructor',
+                            'title' => 'Posts | Student',
                             'active' => 'courses',
                             'current_userdata' => $this->getCurrentUser(),
                             'requested_data' => [
@@ -166,10 +166,10 @@ class ViewsController extends BaseController
                 } else {
                     $page = [
                         'view' => 'view-posts',
-                        'dir' => 'Instructor',
+                        'dir' => 'Student',
                         'isSubPage' => true,
                         'data' => [
-                            'title' => 'Posts | Instructor',
+                            'title' => 'Posts | Student',
                             'active' => 'courses',
                             'current_userdata' => $this->getCurrentUser(),
                             'requested_data' => [
@@ -189,10 +189,10 @@ class ViewsController extends BaseController
             } else {
                 $page = [
                     'view' => 'view-posts',
-                    'dir' => 'Instructor',
+                    'dir' => 'Student',
                     'isSubPage' => true,
                     'data' => [
-                        'title' => 'Posts | Instructor',
+                        'title' => 'Posts | Student',
                         'active' => 'courses',
                         'current_userdata' => $this->getCurrentUser(),
                         'requested_data' => [
@@ -260,10 +260,10 @@ class ViewsController extends BaseController
     
                     $page = [
                         'view' => 'view-submission-status',
-                        'dir' => 'Instructor',
+                        'dir' => 'Student',
                         'isSubPage' => true,
                         'data' => [
-                            'title' => 'Posts | Instructor',
+                            'title' => 'Posts | Student',
                             'active' => 'courses',
                             'current_userdata' => $this->getCurrentUser(),
                             'requested_data' => [
@@ -281,10 +281,10 @@ class ViewsController extends BaseController
                 } else {
                     $page = [
                         'view' => 'view-submission-status',
-                        'dir' => 'Instructor',
+                        'dir' => 'Student',
                         'isSubPage' => true,
                         'data' => [
-                            'title' => 'Posts | Instructor',
+                            'title' => 'Posts | Student',
                             'active' => 'courses',
                             'current_userdata' => $this->getCurrentUser(),
                             'requested_data' => [
@@ -339,10 +339,10 @@ class ViewsController extends BaseController
                     if($result) {
                         $page = [
                             'view' => 'view-submission',
-                            'dir' => 'Instructor',
+                            'dir' => 'Student',
                             'isSubPage' => true,
                             'data' => [
-                                'title' => 'Posts | Instructor',
+                                'title' => 'Posts | Student',
                                 'active' => 'courses',
                                 'current_userdata' => $this->getCurrentUser(),
                                 'requested_data' => [
@@ -370,6 +370,118 @@ class ViewsController extends BaseController
 
     }
 
+    public function add_submission() {
+        $uid = $this->getCurrentUser()['id'];
+        $eid = $this->request->getGet('eid');
+        $sid = $this->request->getGet('sid');
+        $pid = $this->request->getGet('pid');
+
+    
+        try {
+            $model = new EnrolledModel;
+            $model->join('subjects', 'subjects.id = '.$sid);
+            $model->where('enroll.id', $eid);
+            // $model->where('user_id', $uid);
+
+            $e_result = $model->find();
+
+            if($e_result) {
+                if(count($e_result) > 0) {
+                    if(empty($pid)) {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $pid = $model->first()['id'] ?? '';
+                    } else {
+                        $model = new PostModel;
+                        $model->where('enroll_id', $eid);
+                        $model->where('subject_id', $sid);
+                        $model->where('id', $pid);
+                        $result = $model->countAllResults();
+    
+                        if($result == 0) {
+                            $pid = $model->first()['id'];
+                        } else {
+                            $pid = $pid;
+                        }
+                        
+                    }
+    
+                    $page = [
+                        'view' => 'add-submission',
+                        'dir' => 'Student',
+                        'isSubPage' => true,
+                        'data' => [
+                            'title' => 'Posts | Student',
+                            'active' => 'courses',
+                            'current_userdata' => $this->getCurrentUser(),
+                            'requested_data' => [
+                                'eid' => $eid,
+                                'sid' => $sid,
+                                'pid' => $pid,
+                                'cid' => $e_result[0]['course_id'],
+                                'yid' => $e_result[0]['year'],
+                                'secid' => $e_result[0]['section'],
+                            ]
+                        ]
+                    ];
+                            
+                    return $this->renderView($page);
+                } else {
+                    $page = [
+                        'view' => 'view-posts',
+                        'dir' => 'Student',
+                        'isSubPage' => true,
+                        'data' => [
+                            'title' => 'Posts | Student',
+                            'active' => 'courses',
+                            'current_userdata' => $this->getCurrentUser(),
+                            'requested_data' => [
+                                'eid' => $eid,
+                                'sid' => $sid,
+                                'pid' => $pid,
+                                'cid' => $e_result[0]['course_id'],
+                                'yid' => $e_result[0]['year'],
+                                'secid' => $e_result[0]['section'],
+                            ]
+                        ]
+                    ];
+                    
+                    return $this->renderView($page);
+                }
+                
+            } else {
+                $page = [
+                    'view' => 'view-posts',
+                    'dir' => 'Student',
+                    'isSubPage' => true,
+                    'data' => [
+                        'title' => 'Posts | Student',
+                        'active' => 'courses',
+                        'current_userdata' => $this->getCurrentUser(),
+                        'requested_data' => [
+                            'eid' => $eid,
+                            'sid' => $sid,
+                            'pid' => $pid,
+                            'cid' => $e_result[0]['course_id'],
+                            'yid' => $e_result[0]['year'],
+                            'secid' => $e_result[0]['section'],
+                        ]
+                    ]
+                ];
+                
+                return $this->renderView($page);
+
+            }
+
+
+        } catch(\Exception $e) {
+            print_r($e->getMessage());
+        }
+
+       
+    }
+
     public function masterlist() {
 
         $uid = $this->getCurrentUser()['id'];
@@ -380,7 +492,7 @@ class ViewsController extends BaseController
 
         $page = [
             'view' => 'masterlist',
-            'dir' => 'Instructor',
+            'dir' => 'Student',
             'isSubPage' => true,
             'data' => [
                 'title' => 'Participants | Courses',
@@ -402,7 +514,7 @@ class ViewsController extends BaseController
     public function me() {
         $page = [
             'view' => 'me',
-            'dir' => 'Instructor',
+            'dir' => 'Student',
             'isSubPage' => false,
             'data' => [
                 'title' => 'My Profile | Settings',
@@ -417,7 +529,7 @@ class ViewsController extends BaseController
     public function change_password() {
         $page = [
             'view' => 'change-password',
-            'dir' => 'Instructor',
+            'dir' => 'Student',
             'isSubPage' => true,
             'data' => [
                 'title' => 'Change Password | Settings',
@@ -431,7 +543,7 @@ class ViewsController extends BaseController
 
     public function signout() {
         session()->remove('user_session');
-        return redirect()->to('/instructor/login');
+        return redirect()->to('/student/login');
     }
 
     public function getCurrentUser() {
@@ -439,12 +551,12 @@ class ViewsController extends BaseController
         $uid = $user_session['id'];
         $model = new UserModel;;
         $model->select('
-            users.id, users.email, users.username, users.role, instructors.firstname, instructors.lastname, 
-            instructors.contact, instructors.address, instructors.province, 
-            instructors.city, instructors.birthday, instructors.status, instructors.gender, 
-            instructors.avatar, instructors.banner, instructors.bio, instructors.fb_link, instructors.ig_link, instructors.twi_link
+            users.id, users.email, users.username, users.role, students.firstname, students.lastname, 
+            students.contact, students.address, students.province, 
+            students.city, students.birthday, students.status, students.gender, 
+            students.avatar, students.banner, students.bio, students.fb_link, students.ig_link, students.twi_link
         ');
-        $model->join('instructors', 'users.id = instructors.user_id');
+        $model->join('students', 'users.id = students.user_id');
         $data = $model->find($uid);
         return $data;
     }

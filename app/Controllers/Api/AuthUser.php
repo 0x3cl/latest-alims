@@ -41,31 +41,37 @@ class AuthUser extends BaseController
                 $verifyPassword = password_verify($password, $password_db);
 
                 if($verifyPassword) {
-                    $key = getenv('JWT_SECRET');
-                    $iat = time();
-                    $exp = $iat + 3600;
+                    if($data[0]->is_active == 1) {
+                        $key = getenv('JWT_SECRET');
+                        $iat = time();
+                        $exp = $iat + 3600;
 
-                    $payload = array(
-                        "iss" => "Issuer of the JWT",
-                        "aud" => "Audience that the JWT",
-                        "sub" => "Subject of the JWT",
-                        "iat" => $iat, 
-                        "exp" => $exp, 
-                        "username" => $username,
-                    );
-                    $token = JWT::encode($payload, $key, 'HS256');
-                    $session = [
-                        'id' => $user_id,
-                        'username' => $username,
-                        'role' => $data[0]->role,
-                        'token' => $token
-                    ];
-                    session()->set(['user_session' => $session]);
-                    $response = [
-                        'status' => 200,
-                        'message' => 'Login Success',
-                        'token' => $token
-                    ];
+                        $payload = array(
+                            "iss" => "Issuer of the JWT",
+                            "aud" => "Audience that the JWT",
+                            "sub" => "Subject of the JWT",
+                            "iat" => $iat, 
+                            "exp" => $exp, 
+                            "username" => $username,
+                        );
+                        $token = JWT::encode($payload, $key, 'HS256');
+                        $session = [
+                            'id' => $user_id,
+                            'username' => $username,
+                            'role' => $data[0]->role,
+                            'token' => $token
+                        ];
+                        session()->set(['user_session' => $session]);
+                        $response = [
+                            'status' => 200,
+                            'message' => 'Login Success',
+                        ];
+                    } else if($data[0]->is_active == 0) {
+                        $response = [
+                            'status' => 500,
+                            'message' => 'Account is not active',
+                        ];
+                    }
                 } else {
                     $response = [
                         'status' => 401,

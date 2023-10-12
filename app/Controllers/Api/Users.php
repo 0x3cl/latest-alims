@@ -241,6 +241,7 @@ class Users extends BaseController
     }
 
     public function getCoursesByID() {
+        $user_session = session()->get('user_session');
         $uid = $this->getCurrentUser()['id'];
         $model = new EnrolledModel;
         $model->select(
@@ -319,10 +320,11 @@ class Users extends BaseController
         $model->join('courses', 'enroll.course_id = courses.id');
         $model->join('sections', 'enroll.section = sections.id');
         $model->join('years', 'enroll.year = years.id');
-        $model->where('user_id', $uid);
+        // $model->where('user_id', $uid);
         $model->where('course_id', $course_id);
         $model->where('enroll.section', $section_id);
         $model->where('enroll.year', $year_id);
+        $model->groupBy('subjects.id', 'ASC');
         $result = $model->findAll();
 
         return $this->respond([
@@ -428,15 +430,16 @@ class Users extends BaseController
 
     public function getCurrentUser() {
         $user_session = session()->get('user_session');
+        $table = $user_session['role'] == 1 ? 'instructors' : ($user_session['role'] == 2 ? 'students' : '');
         $uid = $user_session['id'];
         $model = new UserModel;
         $model->select('
-            users.id, users.email, users.username, users.role, instructors.firstname, instructors.lastname, 
-            instructors.contact, instructors.address, instructors.province, 
-            instructors.city, instructors.birthday, instructors.status, instructors.gender, 
-            instructors.avatar, instructors.banner, instructors.bio, instructors.fb_link, instructors.ig_link, instructors.twi_link
+            users.id, users.email, users.username, users.role, '.$table.'.firstname, '.$table.'.lastname, 
+            '.$table.'.contact, '.$table.'.address, '.$table.'.province, 
+            '.$table.'.city, '.$table.'.birthday, '.$table.'.status, '.$table.'.gender, 
+            '.$table.'.avatar, '.$table.'.banner, '.$table.'.bio, '.$table.'.fb_link, '.$table.'.ig_link, '.$table.'.twi_link
         ');
-        $model->join('instructors', 'users.id = instructors.user_id');
+        $model->join(''.$table.'', 'users.id = '.$table.'.user_id');
         $data = $model->find($uid);
         return $data;
     }

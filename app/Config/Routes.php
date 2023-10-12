@@ -105,20 +105,102 @@ $routes->group('instructor', ['namespace' => '\App\Controllers\Instructor'], fun
     $routes->get('sign-out', 'ViewsController::signout');
 });
 
-// API ROUTES
+// STUDENT ROUTES
+$routes->group('student', ['namespace' => '\App\Controllers\Student'], function($routes) {
+    $routes->get('/', 'ViewsController::index');
+    $routes->get('login', 'ViewsController::login');
+    $routes->get('dashboard', 'ViewsController::dashboard');
+    $routes->get('courses', 'ViewsController::courses');
+    $routes->get('subjects', 'ViewsController::subjects');
+    $routes->get('subjects/masterlist', 'ViewsController::masterlist');
+    $routes->get('subjects/posts', 'ViewsController::subjects_posts');
+    $routes->get('subjects/posts/submission', 'ViewsController::subjects_submission');
+    $routes->get('subjects/posts/add/submission', 'ViewsController::add_submission');
+    $routes->get('me', 'ViewsController::me');
+    $routes->get('change/password', 'ViewsController::change_password');
+    $routes->get('sign-out', 'ViewsController::signout');
+});
 
+// API INSTRUCTOR ROUTES
 $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($routes) {
 
-    $routes->get('get-jwt-token', 'Token::generate_jwt');
-    $routes->get('get-csrf-token', 'Token::generate_csrf');
-    $routes->get('overview', 'Overview::index');
+     // GET
+     $routes->get('post_group', 'PostGroup::getPostGroup');
+     $routes->get('posts', 'Post::getPost');
+     $routes->get('posts/assessments', 'Post::getPostAssessments');
+     $routes->get('posts/all', 'Post::getPostAll');
+     $routes->get('posts/attachments', 'Post::getPostAttachments');
+     $routes->get('posts/assessment/status', 'Assessment::checkAssessmentStatus');
+     $routes->get('posts/submission/status', 'Submission::checkSubmissionStatus');
 
-    // INSTRUCTORS
+     // POST API
+
+    $routes->post('user/login', 'AuthUser::login');
+    $routes->get('user/logout', 'AuthUser::logout');
+    $routes->post('create/post', 'Post::create_post');
+    $routes->post('create/assessment', 'Post::create_assessment');
+    $routes->post('update/post', 'Post::update');
+    $routes->post('create/upload/attachment', 'Post::upload_attachment');
+    $routes->post('delete/post', 'Post::delete_post');
+    $routes->post('delete/attachment', 'Post::delete_attachment');
+
+    $routes->post('posts/assessment/respond', 'Submission::submit_response');
+
+
+    $routes->group('users', function($routes) {
+         $routes->get('courses', 'Users::getCoursesByID');
+         $routes->get('courses/masterlist', 'Users::getMasterlist');
+         $routes->get('subjects', 'Users::getSubjectsByID');
+         $routes->get('subjects/submission/list', 'Users::getPreviewSubmission');
+         $routes->get('subjects/submission/view', 'Users::getSubmission');
+    });
+
+});
+
+// API INSTRUCTOR ROUTES
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($routes) {
+
+    // GET
     $routes->get('post_group', 'PostGroup::getPostGroup');
     $routes->get('posts', 'Post::getPost');
     $routes->get('posts/assessments', 'Post::getPostAssessments');
     $routes->get('posts/all', 'Post::getPostAll');
     $routes->get('posts/attachments', 'Post::getPostAttachments');
+
+    // POST API
+
+   $routes->post('user/login', 'AuthUser::login');
+   $routes->get('user/logout', 'AuthUser::logout');
+
+    $routes->post('submit/response', 'Response::submit');
+
+   $routes->post('create/post', 'Post::create_post');
+   $routes->post('create/assessment', 'Post::create_assessment');
+   $routes->post('update/post', 'Post::update');
+   $routes->post('create/upload/attachment', 'Post::upload_attachment');
+   $routes->post('delete/post', 'Post::delete_post');
+   $routes->post('delete/attachment', 'Post::delete_attachment');
+
+   $routes->group('users', function($routes) {
+        $routes->get('courses', 'Users::getCoursesByID');
+        $routes->get('courses/masterlist', 'Users::getMasterlist');
+        $routes->get('subjects', 'Users::getSubjectsByID');
+        $routes->get('subjects/submission/list', 'Users::getPreviewSubmission');
+        $routes->get('subjects/submission/view', 'Users::getSubmission');
+   });
+
+});
+
+
+// API ROUTES ADMIN
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($routes) {
+
+
+    // GENDERAL ROUTES
+
+    $routes->get('get-jwt-token', 'Token::generate_jwt');
+    $routes->get('get-csrf-token', 'Token::generate_csrf');
+    $routes->get('overview', 'Overview::index');
 
 
     // API ROUTES FOR USERS
@@ -133,17 +215,6 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
         $routes->get('instructors/(:num)', 'Users::getInstructors/$1');
         $routes->get('administrators', 'Users::getAdmins');
         $routes->get('administrators/(:num)', 'Users::getAdmins/$1');
-
-        // INSTRUCTORS CLASS COURSE RELATED
-        $routes->get('courses', 'Users::getCoursesByID');
-        $routes->get('courses/masterlist', 'Users::getMasterlist');
-        $routes->get('subjects', 'Users::getSubjectsByID');
-        $routes->get('subjects/submission/list', 'Users::getPreviewSubmission');
-        $routes->get('subjects/submission/view', 'Users::getSubmission');
-
-
-
-
 
         // ENROLLED USERS
 
@@ -238,15 +309,5 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
         $routes->post('(:any)', 'FileUploader::upload/$1');
     });
 
-    // INSTRUCTORS API
-
-    $routes->post('user/login', 'AuthUser::login');
-    $routes->get('user/logout', 'AuthUser::logout');
-
-    $routes->post('create/post', 'Post::create_post');
-    $routes->post('create/assessment', 'Post::create_assessment');
-    $routes->post('update/post', 'Post::update');
-    $routes->post('create/upload/attachment', 'Post::upload_attachment');
-    $routes->post('delete/post', 'Post::delete_post');
-    $routes->post('delete/attachment', 'Post::delete_attachment');
+    
 });

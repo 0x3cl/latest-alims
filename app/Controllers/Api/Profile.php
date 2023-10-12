@@ -80,7 +80,7 @@ class Profile extends BaseController
                     $identity = 'user_id';
                     break;
                 case 2:
-                    $model = new StudentsModel;
+                    $model = new StudentModel;
                     $identity = 'user_id';
                     break;
                 case 3:
@@ -155,7 +155,7 @@ class Profile extends BaseController
                     ]);
                     break;
                 case 2:
-                    $model = new StudentsModel;
+                    $model = new StudentModel;
                     $model->where('students.user_id', $this->uid)->set([
                         'bio' => $bio
                     ]);
@@ -202,7 +202,7 @@ class Profile extends BaseController
                     $identity = 'user_id';
                     break;
                 case 2:
-                    $model = new StudentsModel;
+                    $model = new StudentModel;
                     $identity = 'user_id';
                     break;
                 case 3:
@@ -213,7 +213,7 @@ class Profile extends BaseController
             $previous_image = $model->where($identity, $this->uid)->find()[0]['avatar'];
             $previous_image_path = $image_path . $previous_image;    
 
-            if($previous_image != 'male-default.jpg' || $previous_image != 'female-default.jpg' && file_exists($previous_image_path)) {
+            if($previous_image !== 'male-default.jpg' && $previous_image !== 'female-default.jpg' ) {
                 if(file_exists($previous_image_path)) {
                     unlink($previous_image_path);
                 }
@@ -257,7 +257,7 @@ class Profile extends BaseController
                     $identity = 'user_id';
                     break;
                 case 2:
-                    $model = new StudentsModel;
+                    $model = new StudentModel;
                     $identity = 'user_id';
                     break;
                 case 3:

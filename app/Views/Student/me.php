@@ -1,8 +1,8 @@
 <div class="page-wrapper">
     <div class="main-container">
-        <?php include(APPPATH . '/Views/Instructor/templates/sidebar.php'); ?>
+        <?php include(APPPATH . '/Views/Student/templates/sidebar.php'); ?>
         <div class="app-container">
-            <?php include(APPPATH . '/Views/Instructor/templates/navbar.php'); ?>
+            <?php include(APPPATH . '/Views/Student/templates/navbar.php'); ?>
             <div class="app-hero-header d-flex align-items-center">
                 <ol class="breadcrumb d-none d-lg-flex">
                     <li class="breadcrumb-item">
@@ -180,43 +180,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-7">
-                            <div class="col-12 mb-3">
-                                <div class="info">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h6 class="card-title m-0">Other Instructors</h6>
-                                        </div>
-                                        <div class="card-body" id="other-lists">
-                                            <ul class="list-unstyled skeleton-loading">
-                                                <li class="list-unstyled-item">
-                                                    <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                        <div class="icon w-auto">
-                                                            <i class="skeleton-icon"></i>
-                                                        </div>
-                                                        <div class="w-100">
-                                                            <div class="skeleton-text sm-w"></div>
-                                                            <div class="skeleton-text xsm-w"></div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li class="list-unstyled-item">
-                                                <div class="d-flex align-items-center gap-2 skeleton-with-icon">
-                                                    <div class="icon w-auto">
-                                                        <i class="skeleton-icon"></i>
-                                                    </div>
-                                                    <div class="w-100">
-                                                        <div class="skeleton-text sm-w"></div>
-                                                        <div class="skeleton-text xsm-w"></div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -377,10 +340,10 @@
 
 <script type="module">
 
-import { my, otherInstructors, getJWTtoken } from "/assets/js/instructor/modules/dataUtils.js";
-import { isEmpty, userRole, generateCSRFToken, toastMessage } from "/assets/js/instructor/modules/utils.js";
-import { address } from "/assets/js/instructor/modules/address.js";
-import {my_courses, my_subjects} from '/assets/js/instructor/modules/dataUtils.js';
+import { my, getJWTtoken } from "/assets/js/student/modules/dataUtils.js";
+import { isEmpty, userRole, generateCSRFToken, toastMessage } from "/assets/js/student/modules/utils.js";
+import { address } from "/assets/js/student/modules/address.js";
+import {my_courses, my_subjects} from '/assets/js/student/modules/dataUtils.js';
 
 viewMy();
 address();
@@ -524,38 +487,6 @@ function viewMy() {
             $("#twilink").val(DOMPurify.sanitize(data.twilink));
         }
     });
-
-    otherInstructors().then((response) => {
-        console.log(response);
-        if(response.status == 200) {
-            const data = response.data;
-            let div = '';
-
-            if(data.length > 0) {
-                data.forEach((data) => {
-                    div += `
-                    <div class="d-flex mt-3 other">
-                        <div class="other-profiles">
-                        <div class="profile-image">
-                            <img src="/uploads/avatar/${data.avatar}" alt="" srcset="">
-                        </div>
-                        <div class="other-profile-info">
-                            <h6 class="text-uppercase">${(data.firstname.toUpperCase() + ' ' + data.lastname.toUpperCase())}</h6>
-                            <p class="text-uppercase fw-bold">${userRole(data.role) + '#' + data.id } <span class="badge-admin mb-1"><i class='bx bxs-badge-check'></i></span></p>
-                        </div>
-                        </div>
-                    </div>
-                    `;
-                });
-
-            } else {
-                div += `<small class="text-muted"><em>No other users</em></small>`
-            }
-
-            $('#other-lists').html(DOMPurify.sanitize(div));
-
-        }
-    });
 }
 
 my_courses(id).then((response) => {
@@ -576,7 +507,7 @@ my_courses(id).then((response) => {
                     </div>
                     <div class="card-footer w-100 d-flex justify-content-end gap-2">
                         <button class="btn btn-secondary">Masterlist</button>
-                        <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-primary">View Subjects</a>
+                        <a href="/student/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}" class="btn btn-primary">View Subjects</a>
                     </div>
                 </div>
             </div>
@@ -591,7 +522,7 @@ my_courses(id).then((response) => {
             div += `
                 
                 <li>
-                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                    <a href="/student/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
                         <p class="d-block text-capitalize mb-1">${data.course_name}</p>
                         <small class="d-block text-uppercase">${data.course_code} </small>
                         <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
@@ -614,7 +545,7 @@ my_subjects(id).then((response) => {
             div += `
                 
                 <li>
-                    <a href="/instructor/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
+                    <a href="/student/subjects?course=${data.course_id}&year=${data.year_id}&section=${data.section_id}">
                         <p class="d-block text-capitalize mb-1">${data.subject_name}</p>
                         <small class="d-block text-uppercase">${data.course_code} - ${data.subject_code} </small>
                         <small class="d-block text-uppercase">${data.section_name} | ${data.year_name}</small>
@@ -710,6 +641,7 @@ $('#control-update-profile-details').on('click', function() {
             xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
         },
         success: function(response) {
+            console.log(response);
             if(response.status == 200) {
                 Swal.fire({
                     icon: 'success',
@@ -719,12 +651,20 @@ $('#control-update-profile-details').on('click', function() {
                 viewMy();
             } else {
                 let err = response.message;
-                err = Object.values(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops..',
-                    text: err[0],
-                });
+                if(typeof err == 'object') {
+                    err = Object.values(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops..',
+                        text: err[0],
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops..',
+                        text: err,
+                    });
+                }
             }
         }
     }).done(function() {
