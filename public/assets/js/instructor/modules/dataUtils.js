@@ -216,3 +216,34 @@ export async function getSubmission(eid, sid, pid, subid) {
     });
 }
 
+export async function getResponseList(cid, sid, yid, secid) {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/users/subjects/response/list?course=${cid}&subject=${sid}&year=${yid}&section=${secid}`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}
+
+export async function getResponses(cid, sid, yid, secid) {
+    const data = await getJWTtoken();
+    const token = data.token
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/v1/users/subjects/response/answer?course=${cid}&subject=${sid}&year=${yid}&section=${secid}`,
+            method: 'GET',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+            },
+            success: resolve,
+            error: reject
+        })
+    });
+}

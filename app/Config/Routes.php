@@ -100,6 +100,7 @@ $routes->group('instructor', ['namespace' => '\App\Controllers\Instructor'], fun
     $routes->get('subjects/masterlist', 'ViewsController::masterlist');
     $routes->get('subjects/posts', 'ViewsController::subjects_posts');
     $routes->get('subjects/posts/submission', 'ViewsController::subjects_submission');
+    $routes->get('subjects/posts/response/answer', 'ViewsController::response_answers');
     $routes->get('me', 'ViewsController::me');
     $routes->get('change/password', 'ViewsController::change_password');
     $routes->get('sign-out', 'ViewsController::signout');
@@ -153,6 +154,8 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api'], function($route
          $routes->get('subjects', 'Users::getSubjectsByID');
          $routes->get('subjects/submission/list', 'Users::getPreviewSubmission');
          $routes->get('subjects/submission/view', 'Users::getSubmission');
+         $routes->get('subjects/response/list', 'Users::getPreviewResponse');
+         $routes->get('subjects/response/answer', 'Users::getResponses');
     });
 
 });

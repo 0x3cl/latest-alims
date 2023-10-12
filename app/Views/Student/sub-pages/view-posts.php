@@ -94,6 +94,7 @@ my_posts(eid, sid, pid).then((response) => {
         console.log(data);
         
         if(data != null) {
+            console.log(data);
             $('.post-title').text(data.title);
             $('.post-others').append(DOMPurify.sanitize(
                 `
@@ -114,7 +115,6 @@ my_posts(eid, sid, pid).then((response) => {
                 `
             )).hide();
             $('.post-content').html(data.content);
-
             
             if(data.is_assessment == 1) {
                 checkAssessmentRespond(pid).then((response) => {

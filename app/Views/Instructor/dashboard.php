@@ -14,63 +14,9 @@
                     </li>
                 </ol>
             </div>
-            <div class="app-body">
-                <div class="row gx-3">
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="mb-2">
-                                    <i class="bi bi-bar-chart fs-1 text-primary lh-1"></i>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h5 class="m-0 text-secondary fw-normal">Sales</h5>
-                                    <h3 class="m-0 text-primary">3500</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="mb-2">
-                                    <i class="bi bi-bag-check fs-1 text-primary lh-1"></i>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h5 class="m-0 text-secondary fw-normal">Orders</h5>
-                                    <h3 class="m-0 text-primary">2900</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="arrow-label">+18%</div>
-                                <div class="mb-2">
-                                    <i class="bi bi-box-seam fs-1 text-primary lh-1"></i>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h5 class="m-0 text-secondary fw-normal">Items</h5>
-                                    <h3 class="m-0 text-primary">6500</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="arrow-label">+21%</div>
-                                <div class="mb-2">
-                                    <i class="bi bi-check-circle fs-1 text-danger lh-1"></i>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h5 class="m-0 text-secondary fw-normal">Signups</h5>
-                                    <h3 class="m-0 text-danger">7200</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="app-body mt-3">
+                <h4>Welcome Back! </h4>
+                <h1><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></h1>
             </div>
             <div class="app-footer">
                 <span>&copy; 2023 | ALIMS</span>

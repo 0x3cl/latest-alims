@@ -428,6 +428,127 @@ class Users extends BaseController
         }
     }
 
+    public function getPreviewResponse() {
+        $uid = $this->getCurrentUser()['id'];
+        $cid = $this->request->getGet('course');
+        $sid = $this->request->getGet('subject');
+        $yid = $this->request->getGet('year');
+        $pid = $this->request->getPost('pid');
+        $secid = $this->request->getGet('section');
+        
+        try {
+            $model = new EnrolledModel;
+            $model->select('
+                users.username, users.email, students.firstname, students.lastname,
+                students.avatar, students.banner, courses.name as course_name,
+                courses.code as course_code, subjects.name as subject_name, 
+                subjects.code as subject_code,
+                IF(assessments_responses.post_id IS NULL, 0, 1) AS has_response
+            ');
+
+            $model->join('users', 'users.id = enroll.user_id');
+            $model->join('courses', 'courses.id = enroll.course_id');
+            $model->join('subjects', 'courses.id = subjects.course', 'left');
+            $model->join('students', 'users.id = students.user_id', 'left');
+            $model->join('assessments_responses', 'assessments_responses.user_id = users.id', 'left');
+            $model->where('users.role', 2);
+            $model->where('enroll.course_id', $cid);
+            $model->where('enroll.section', $secid);
+            $model->where('enroll.year', $yid);
+            $model->where('subjects.id', $sid);
+            $model->groupBy('assessments_responses.post_id', 'DESC');
+
+
+            $result = $model->find();
+
+            return $this->respond([
+                'status' => 200,
+                'message' => 'ok',
+                'data' => $result
+            ]);
+            
+
+        } catch(\Exception $e) {
+            print_r($e);
+        }
+    }
+
+    public function getResponses() {
+        $uid = $this->getCurrentUser()['id'];
+        $cid = $this->request->getGet('course');
+        $sid = $this->request->getGet('subject');
+        $yid = $this->request->getGet('year');
+        $pid = $this->request->getPost('pid');
+        $secid = $this->request->getGet('section');
+        
+        try {
+
+           
+
+
+            $model = new EnrolledModel;
+            // $model->select('
+            // users.username, users.email, students.firstname, students.lastname,
+            //     students.avatar, students.banner, courses.name as course_name,
+            //     courses.code as course_code, subjects.name as subject_name, 
+            //     subjects.code as subject_code,
+            //     IF(assessments_responses.post_id IS NULL, 0, 1) AS has_response,
+            //     assessments_responses.assessment_id, assessments.question, assessments.type
+            // ');
+            // $model->join('users', 'users.id = enroll.user_id');
+            // $model->join('courses', 'courses.id = enroll.course_id');
+            // $model->join('subjects', 'courses.id = subjects.course', 'left');
+            // $model->join('students', 'users.id = students.user_id', 'left');
+            // $model->join('assessments_responses', 'assessments_responses.user_id = users.id');
+            // $model->join('assessments', 'assessments.post_id = assessments_responses.post_id');
+            // $model->where('users.role', 2);
+            // $model->where('enroll.course_id', $cid);
+            // $model->where('enroll.section', $secid);
+            // $model->where('enroll.year', $yid);
+            // $model->where('subjects.id', $sid);
+            // $model->groupBy('assessments.qid', 'DESC');
+
+            // $result = $model->find();
+
+            $model->select('
+                assessments_responses.response as student_respomse,
+                assessments_responses.assessment_id as question_id
+            ');
+
+            $model->join('users', 'users.id = enroll.user_id');
+            $model->join('courses', 'courses.id = enroll.course_id');
+            $model->join('subjects', 'courses.id = subjects.course', 'left');
+            $model->join('students', 'users.id = students.user_id', 'left');
+            $model->join('assessments_responses', 'assessments_responses.user_id = users.id');
+            $model->join('assessments', 'assessments.post_id = assessments_responses.post_id');
+            $model->where('users.role', 2);
+            $model->where('enroll.course_id', $cid);
+            $model->where('enroll.section', $secid);
+            $model->where('enroll.year', $yid);
+            $model->where('subjects.id', $sid);
+            $model->groupBy('assessments_responses.assessment_id', 'DESC');
+
+            $result = $model->find();
+
+            return $this->respond([
+                'status' => 200,
+                'message' => 'ok',
+                'data' => $result
+            ]);
+
+            return $this->respond([
+                'status' => 200,
+                'message' => 'ok',
+                'data' => $result
+            ]);
+
+        
+
+        } catch(\Exception $e) {
+            print_r($e);
+        }
+    }
+
     public function getCurrentUser() {
         $user_session = session()->get('user_session');
         $table = $user_session['role'] == 1 ? 'instructors' : ($user_session['role'] == 2 ? 'students' : '');

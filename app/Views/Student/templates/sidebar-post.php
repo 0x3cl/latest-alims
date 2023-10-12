@@ -6,9 +6,11 @@
     </div>
     <div class="sidebar-profile">
         <img src="/uploads/avatar/<?= $current_userdata['avatar'] ?>" class="img-3x me-3 rounded-2" alt="Admin Dashboard" />
-        <div class="m-0">
-            <p class="m-0 text-secondary">Welcome Back!</p>
+        <div class="m-0 mt-2">
             <h6 class="m-0 text-nowrap fw-bold"><?= ucwords($current_userdata['firstname'] . ' ' . $current_userdata['lastname']) ?></h6>
+            <hr class="my-1">
+            <p class="m-0 text-secondary"><?= $current_userdata['username'] ?></p>
+            <p class="m-0 text-secondary position-relative line-clamp" style="bottom: 5px"><?= $current_userdata['email'] ?></p>
         </div>
     </div>
     <div class="sidebarMenuScroll">

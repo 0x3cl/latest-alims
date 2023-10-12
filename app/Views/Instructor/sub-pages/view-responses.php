@@ -286,7 +286,7 @@
 import {generateCSRFToken, generateRandomCode, toastMessage, 
         clearFields, formatFile, shortenFilename, ckeditor} from '/assets/js/instructor/modules/utils.js';
 import {getJWTtoken} from '/assets/js/instructor/modules/dataUtils.js';
-import {post_group, my_posts, my_assessments, all_posts, post_attachments} from '/assets/js/instructor/modules/dataUtils.js';
+import {post_group, my_posts, my_assessments, all_posts, post_attachments, getResponses} from '/assets/js/instructor/modules/dataUtils.js';
 import {deleteModal } from '/assets/js/instructor/modules/modal.js';
 
 const response = await getJWTtoken();
@@ -296,6 +296,9 @@ const sid = DOMPurify.sanitize($('#sid').val().trim());
 const pid = DOMPurify.sanitize($('#pid').val().trim());
 
 const id = <?= $current_userdata['id']?>;
+const cid = <?= $requested_data['cid'] ?>;
+const yid = <?= $requested_data['yid'] ?>;
+const secid = <?= $requested_data['secid'] ?>;
 const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim());
 
 
@@ -349,19 +352,12 @@ my_posts(eid, sid, pid).then((response) => {
             }
 
             if(data.is_assessment == 1) {
-                my_assessments(eid, sid, pid).then((response) => {
+                getResponses(cid, sid, yid, secid).then((response) => {
+                    console.log(response);
                     const data = response.data;
-                    const questions = data.questions;
-                    const answers = data.answers;
-                    const choices = data.choices;
-
-                    const item_count = questions.length;
-
                     let item_div = '';
-                    let choice_div = '';
-                    let choice_count;
-                    
-                    questions.forEach((item, index) => {
+                    console.log(data);
+                    data.forEach((item, index) => {
                         if(item.assessment_type == 1 || item.assessment_type == 4 ) {
                             item_div += `
                             <div class="card mb-3">
@@ -385,9 +381,9 @@ my_posts(eid, sid, pid).then((response) => {
                                     <div class="question">
                                         <h5>${index + 1}. ${item.question}</h5>
                                         <div class="answer mt-3">
-                                            <input type="text" name="answer" id="answer" class="form-control" placeholder="Students answers goes here" readonly>
+                                            <input type="text" name="answer" id="answer" class="form-control" placeholder="${item.assessment_response}" readonly>
                                             <hr class="mt-4 mb-3">
-                                            <p class="text-muted"><em>Correct answer is: ${item.answers[0].name}</e></p>
+                                            <p class="text-muted"><em>Correct answer is: ${item.assessment_response}</e></p>
                                         </div>
                                     </div>
                                 </div>
@@ -395,8 +391,10 @@ my_posts(eid, sid, pid).then((response) => {
                         `;
                         }
                     });
-
+                    
                     $('.post-assessment').html(item_div);
+
+
 
                     questions.forEach((item, index) => {
                         if (item.assessment_type == 1 || item.assessment_type == 4) {
@@ -1012,194 +1010,6 @@ $(document).on('click', '#add-option-checkbox', function() {
         `
     ));
 });
-
-$(document).on('click', '#remove-option-checkbox', function() {
-    const item = $('.option-group #item').length;
-    if(item > 1) {
-        $('.option-group div:last-child').remove();
-        choice_count -= 1;
-    }
-});
-
-$('#create-assessment').on('submit', function(e) {
-    e.preventDefault();
-    const total_question = $('.q-item').length;
-    const title = DOMPurify.sanitize(($('#a-title').val()));
-    const group = DOMPurify.sanitize($('#a-group').val());
-    const type = DOMPurify.sanitize($('#a-type').val());
-    const content = DOMPurify.sanitize(window.editor['aeditor'][0].getData());
-
-    let questions = [];
-    let types = [];
-    let answers = [];
-    let options = [];
-
-    console.log(group);
-
-
-    // Iterate through the questions and gather data
-    $('.q-item').each((index, qItem) => {
-        const questionInput = $(qItem).find('#question');
-        const typeInput = $(qItem).find('#answer-type');
-        const answerInput = typeInput.val() == 1 || typeInput.val() == 4 ? 
-        $(qItem).find('#answer:checked') : $(qItem).find('#answer');
-        const optionInputs = $(qItem).find('.option-group #option');
-
-        const question = questionInput.val();
-        const type = typeInput.val();
-        const qid = typeInput.data('id');
-        const answer = answerInput.val() ;
-        const typeValue = parseInt(type);
-
-
-        // Validate required fields
-        if (!question) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops..',
-                text: 'Question is required for item ' + (index + 1),
-            });
-            return;
-        }
-
-        if (typeValue !== 2 && !type) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops..',
-                text: 'Question type required for item ' + (index + 1),
-            });
-            return;
-        }
-
-        if (!answer) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops..',
-                text: 'Answer is required for question ' + (index + 1),
-            });
-            return;
-        }
-
-        if (typeValue === 1) {
-            if (optionInputs.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops..',
-                    text: 'For multiple-choice questions, at least one option is required for question ' + (index + 1),
-                });
-                return;
-            }
-
-            optionInputs.each((optionIndex, optionValue) => {
-                const option = $(optionValue).val();
-                if (!option) {
-                    Swal.fire({
-                    icon: 'error',
-                    title: 'Oops..',
-                    text: 'Option is required for question ' + (index + 1) + ', option ' + (optionIndex + 1)
-                });
-                    return;
-                }
-
-                options.push({
-                    qid: qid,
-                    id: optionIndex + 1,
-                    option: option
-                });
-            });
-
-            answers.push({
-                qid: qid,
-                answer: answer
-            });
-        } else if (typeValue === 2) {
-            answers.push({
-                qid: qid,
-                answer: answer
-            });
-        }
-
-        // Push data into respective arrays
-        questions.push({
-            id: index + 1,
-            question: question
-        });
-
-        types.push({
-            id: qid,
-            type: typeValue
-        });
-    });
-
-    // Combining the arrays
-    let data = [];
-
-    questions.forEach(question => {
-        const qid = question.id;
-        const type = types.find(type => type.id === qid);
-        const answer = answers.find(answer => answer.qid === qid);
-        const option = options.filter(option => option.qid === qid);
-
-        if (type) {
-            const dataItem = {
-                qid,
-                question: question.question,
-                type: type.type,
-                answer: answer.answer,
-            };
-
-            if (type.type === 1) {
-                dataItem.options = option;
-            }
-
-            data.push(dataItem);
-        }
-    });
-
-    $.ajax({
-        url: '/api/v1/create/assessment',
-        method: 'POST',
-        type: 'JSON',
-        data: {
-            eid: eid,
-            sid: sid,
-            title: title,
-            group: group,
-            type: type,
-            content: content,
-            data: data
-        }, beforeSend: function(xhr) {
-            // $(this).attr('disabled', true);
-            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
-            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
-        }, success: function(response) {
-            const pid = response.pid;
-            if(response.status == 200) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Yey..',
-                    text: response.message,
-                });
-                setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
-                }, 1000);
-            } else {
-                let err = response.message;
-                err = Object.values(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ooops..',
-                    text: err[0],
-                });
-            }
-        },
-    }).done(function() {
-        $(this).attr('disabled', false);
-        clearFields();
-        generateCSRFToken();
-    });
-});
-
 
 
 

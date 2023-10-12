@@ -13,6 +13,18 @@ use App\Models\SubmissionFilesModel;
 class ViewsController extends BaseController
 {
 
+    public function index() {
+        $allowed_segment = ['student', 'instructor'];
+        $segment = $this->request->uri->getSegments()[0];
+        if(in_array($segment, $allowed_segment)) {
+            if(session()->has('user_session')) {
+                return redirect()->to('/'.$segment.'/dashboard');
+            } else {
+                return redirect()->to('/'.$segment.'/login');
+            }
+        }
+    }
+
     public function login() {
         $page = [
             'view' => 'login',
@@ -106,13 +118,10 @@ class ViewsController extends BaseController
     }
 
     public function subjects_posts() {
-
-
-        
         $uid = $this->getCurrentUser()['id'];
         $eid = $this->request->getGet('eid');
         $sid = $this->request->getGet('sid');
-        $pid = $this->request->getGet('pid') ?? 1;
+        $pid = $this->request->getGet('pid');
 
         try {
             $model = new EnrolledModel;
@@ -128,7 +137,7 @@ class ViewsController extends BaseController
                         $model = new PostModel;
                         $model->where('enroll_id', $eid);
                         $model->where('subject_id', $sid);
-                        $pid = $model->first()['id'] ?? '';
+                        $pid = $model->first()['id'] ?? 1;
                     } else {
                         $model = new PostModel;
                         $model->where('enroll_id', $eid);
@@ -140,11 +149,9 @@ class ViewsController extends BaseController
                             $pid = $model->first()['id'];
                         } else {
                             $pid = $pid;
-                        }
-                        
+                        }                        
                     }
 
-    
                     $page = [
                         'view' => 'view-posts',
                         'dir' => 'Student',

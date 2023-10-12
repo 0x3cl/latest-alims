@@ -49,10 +49,9 @@
 <input type="hidden" name="sid" id="sid" value="<?= $requested_data['sid'] ?>">
 <input type="hidden" name="pid" id="pid" value="<?= $requested_data['pid'] ?>">
 
-
 <script type="module">
 import {generateCSRFToken, generateRandomCode, submissionStatus} from '/assets/js/instructor/modules/utils.js';
-import {getJWTtoken, all_posts, getSubmissionList} from '/assets/js/instructor/modules/dataUtils.js';
+import {getJWTtoken, all_posts, getSubmissionList, getResponseList} from '/assets/js/instructor/modules/dataUtils.js';
 import {deleteModal } from '/assets/js/instructor/modules/modal.js';
 
 const response = await getJWTtoken();
@@ -122,8 +121,89 @@ all_posts(eid, sid).then((response) => {
 
     }
 });
+const is_assessment = <?= $requested_data['is_assessment'] ?>;
+if(is_assessment == true) {
+    getResponseList(cid, sid, yid, secid).then((response) => {
+    console.log(response);
 
-getSubmissionList(cid, sid, yid, secid).then((response) => {
+    if(response.status == 200) {
+        const data = response.data;
+        let div = '';
+        if(data.length > 0) {
+            div = `
+            <h1 class="text-uppercase fw-bold m-0">${data[0].course_name}</h1>
+            <h5 class="text-uppercase fw-bold mb-4">${data[0].course_code}</h5>
+            <h5 class="text-uppercase fw-bold mb-0">${data[0].subject_name}</h5>
+            <h5 class="text-uppercase fw-bold mb-0">${data[0].subject_code}</h5>
+            <hr class="my-4">
+            <div class="table-responsive">
+                <table class="table table align-middle table-hover m-0 display nowrap" id="participants" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">Avatar</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Full Name</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            data.forEach((item) => {
+               div += `
+                    <tr>
+                        <td>
+                            <div class="ps-3 me-5">
+                                <img src="/uploads/avatar/${item.avatar}">  
+                            </div>
+                        </td>
+                        <td>
+                            <div class="inner">
+                            ${submissionStatus(item.has_response)}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="inner">
+                                ${item.firstname + ' ' + item.lastname}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="inner">
+                                ${item.username}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="inner">
+                                ${item.email}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="inner">
+                            ${item.has_response == 1 ? `<a href="/instructor/subjects/posts/response/answer?eid=${eid}&sid=${sid}&pid=${pid}" class="btn btn-outline-primary">View Response</a>` : '<a href="javascript:void(0)" class="btn btn-outline-danger">No Response</a>'
+}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            div += `
+                </tbody>
+            </table>
+            `;
+            $('#content').html(div);
+        } else {
+            div += `
+                <h5 class="text-uppercase text-muted fw-bold my-4">No students currently enrolled</h5>
+            `;
+            $('#content').html(div);
+        }
+    }
+})
+} else {
+    getSubmissionList(cid, sid, yid, secid).then((response) => {
+    console.log(response);
+
     if(response.status == 200) {
         const data = response.data;
         let div = '';
@@ -198,5 +278,8 @@ getSubmissionList(cid, sid, yid, secid).then((response) => {
         }
     }
 })
+}
+
+
 
 </script>

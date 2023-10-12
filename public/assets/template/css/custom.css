@@ -263,3 +263,10 @@ table img {
     border: 2px solid #3eb489;
     border-radius: 50%;
 }
+
+.line-clamp {
+    white-space: nowrap;
+    width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
