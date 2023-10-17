@@ -229,9 +229,6 @@
                             <hr>
                         </div>
                         <div class="col-12">
-                            <div class="d-flex justify-content-end my-5 me-4">
-                                <button type="button" class="btn btn-primary" id="add-q-item">Add Item</button>
-                            </div>
                             <div class="q-item-container">
                                 <div class="card shadow-lg mb-3 q-item" id="q-item-1" data-id="1">
                                     <div class="card-header">
@@ -274,6 +271,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="add-q-item">Add Item</button>
                     <button class="btn btn-primary d-flex align-items-center gap-2" id="btn-proceed">Proceed <i class="bi bi-arrow-right"></i></button>
                 </div>
             </div>
@@ -960,7 +958,6 @@ $(document).on('click', '#add-q-item', function() {
                             <option value="2">Identification</option>
                             <option value="3">Explanatory</option>
                             <option value="4">Multiple Select</option>
-                            <option value="5">File Upload</option>
                         </select>
                     </div>
                 </div>
