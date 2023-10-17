@@ -127,75 +127,30 @@ class ViewsController extends BaseController
             $model = new EnrolledModel;
             $model->join('subjects', 'subjects.id = '.$sid);
             $model->where('enroll.id', $eid);
-            // $model->where('user_id', $uid);
 
             $e_result = $model->find();
 
-            if($e_result) {
-                if(count($e_result) > 0) {
-                    if(empty($pid)) {
-                        $model = new PostModel;
-                        $model->where('enroll_id', $eid);
-                        $model->where('subject_id', $sid);
-                        $pid = $model->first()['id'] ?? 1;
-                    } else {
-                        $model = new PostModel;
-                        $model->where('enroll_id', $eid);
-                        $model->where('subject_id', $sid);
-                        $model->where('id', $pid);
-                        $result = $model->countAllResults();
-    
-                        if($result == 0) {
-                            $pid = $model->first()['id'];
-                        } else {
-                            $pid = $pid;
-                        }                        
-                    }
-
-                    $page = [
-                        'view' => 'view-posts',
-                        'dir' => 'Student',
-                        'isSubPage' => true,
-                        'data' => [
-                            'title' => 'Posts | Student',
-                            'active' => 'courses',
-                            'current_userdata' => $this->getCurrentUser(),
-                            'requested_data' => [
-                                'eid' => $eid,
-                                'sid' => $sid,
-                                'pid' => $pid,
-                                'cid' => $e_result[0]['course_id'],
-                                'yid' => $e_result[0]['year'],
-                                'secid' => $e_result[0]['section'],
-                            ]
-                        ]
-                    ];
-                            
-                    return $this->renderView($page);
+            if(count($e_result) > 0) {
+                if(empty($pid)) {
+                    $model = new PostModel;
+                    $model->where('enroll_id', $eid);
+                    $model->where('subject_id', $sid);
+                    $pid = $model->first()['id'];
                 } else {
-                    $page = [
-                        'view' => 'view-posts',
-                        'dir' => 'Student',
-                        'isSubPage' => true,
-                        'data' => [
-                            'title' => 'Posts | Student',
-                            'active' => 'courses',
-                            'current_userdata' => $this->getCurrentUser(),
-                            'requested_data' => [
-                                'eid' => $eid,
-                                'sid' => $sid,
-                                'pid' => $pid,
-                                'cid' => $e_result[0]['course_id'],
-                                'yid' => $e_result[0]['year'],
-                                'secid' => $e_result[0]['section'],
-                            ]
-                        ]
-                    ];
-                    
-                    return $this->renderView($page);
+                    $model = new PostModel;
+                    $model->where('enroll_id', $eid);
+                    $model->where('subject_id', $sid);
+                    $model->where('id', $pid);
+                    $result = $model->countAllResults();
+
+                    if($result == 0) {
+                        $pid = $model->first()['id'];
+                    } else {
+                        $pid = $pid;
+                    }                        
                 }
-                
-            } else {
+
+
                 $page = [
                     'view' => 'view-posts',
                     'dir' => 'Student',
@@ -216,7 +171,6 @@ class ViewsController extends BaseController
                 ];
                 
                 return $this->renderView($page);
-
             }
 
 

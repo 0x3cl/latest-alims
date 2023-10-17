@@ -1029,7 +1029,7 @@ $(document).on('change', '#answer-type', function() {
         <div class="option-group">
             <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
                 <input class="form-check-input" type="checkbox" value="1" class="answer" id="answer" name="answer-${id}">
-                <input type="text" name="option" id="option" class "form-control" placeholder="Option 1">
+                <input type="text" name="option" id="option" class="form-control" placeholder="Option 1">
             </div>
         </div>
         `;
@@ -1253,10 +1253,10 @@ $('#create-assessment').on('submit', function(e) {
                    title: 'Yey..',
                    text: response.message,
                });
-            //    setTimeout(() => {
-            //        window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
-            //    }, 1000);
-            //    clearFields();
+               setTimeout(() => {
+                   window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
+               }, 1000);
+               clearFields();
            } else {
                let err = response.message;
                if(typeof err == 'object') {

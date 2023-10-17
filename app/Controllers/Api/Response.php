@@ -25,9 +25,6 @@ class Response extends BaseController
                 $item['date_posted'] = get_timestamp();
             }
         }
-
-        print_r($data);
-
         
         try {
             $response_model = new ResponseModel;

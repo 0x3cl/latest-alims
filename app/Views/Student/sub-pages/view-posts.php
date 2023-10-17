@@ -401,15 +401,15 @@ $(document).on('click', '#submit-assessment', function() {
 
     console.log(data);
 
- $.ajax({
+    $.ajax({
         url: '/api/v1/submit/response',
         method: 'POST',
         data: {data},
         beforeSend: function(xhr) {
+            $(this).attr('disabled', true);
             xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
             xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
         }, success: function(response) {
-            console.log(response);
             if(response.status == 200) {
                 const message = response.message
                 Swal.fire({
@@ -430,6 +430,7 @@ $(document).on('click', '#submit-assessment', function() {
             }
         }
     }).done(function() {
+        $(this).attr('disabled', false);
         generateCSRFToken();
     })
 
