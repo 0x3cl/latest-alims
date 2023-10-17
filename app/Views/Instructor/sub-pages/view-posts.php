@@ -256,9 +256,8 @@
                                                         <option value="">Choose Answer Type</option>
                                                         <option value="1">Multiple Choice</option>
                                                         <option value="2">Identification</option>
-                                                        <!-- <option value="3">Explanatory</option> -->
-                                                        <!-- <option value="4">Multiple Select</option> -->
-                                                        <!-- <option value="5">File Upload</option> -->
+                                                        <option value="3">Explanatory</option>
+                                                        <option value="4">Multiple Select</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -350,11 +349,11 @@ my_posts(eid, sid, pid).then((response) => {
 
             if(data.is_assessment == 1) {
                 my_assessments(eid, sid, pid).then((response) => {
-                    console.log(response);
                     const data = response.data;
                     const questions = data.questions;
                     const answers = data.answers;
                     const choices = data.choices;
+                    console.log(data);
 
                     const item_count = questions.length;
 
@@ -363,7 +362,7 @@ my_posts(eid, sid, pid).then((response) => {
                     let choice_count;
                     
                     questions.forEach((item, index) => {
-                        if(item.assessment_type == 1 || item.assessment_type == 4 ) {
+                        if(item.assessment_type == 1) {
                             item_div += `
                             <div class="card mb-3">
                                 <div class="card-body p-4 mb-3">
@@ -379,7 +378,7 @@ my_posts(eid, sid, pid).then((response) => {
                                 </div>
                             </div>
                             `;
-                        } else {
+                        } else if(item.assessment_type == 2) {
                             item_div += `
                             <div class="card mb-3">
                                 <div class="card-body p-4 mb-3">
@@ -394,18 +393,49 @@ my_posts(eid, sid, pid).then((response) => {
                                 </div>
                             </div>
                         `;
+                        } else if(item.assessment_type == 3) {
+                            item_div += `
+                            <div class="card mb-3">
+                                <div class="card-body p-4 mb-3">
+                                    <div class="question">
+                                        <h5>${index + 1}. ${item.question}</h5>
+                                        <div class="answer mt-3">
+                                            <textarea class="form-control" placeholder="Students reponses goes here." readonly></textarea>
+                                            <hr class="mt-4 mb-3">
+                                            <p class="text-muted"><em>Correct answer varies in your thoughts.</e></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                        } else if(item.assessment_type == 4) {
+                            item_div += `
+                            <div class="card mb-3">
+                                <div class="card-body p-4 mb-3">
+                                    <div class="question">
+                                        <h5>${index + 1}. ${item.question}</h5>
+                                        <div class="choices mt-3" data-id="${index+1}">
+                                        
+                                        </div>
+                                    </div>
+                                    <div class="note mt-5">
+                                        <p class="text-muted"><em>Correct answer is the selected</em></p>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
                         }
                     });
 
                     $('.post-assessment').html(item_div);
 
                     questions.forEach((item, index) => {
-                        if (item.assessment_type == 1 || item.assessment_type == 4) {
+                        if (item.assessment_type == 1) {
                             item.choices.forEach((choice, choiceIndex) => {
                                 choice_div = `
                                     <div class="option-group">
                                         <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
-                                            <input class="form-check-input" type="radio" name="answer_${choice.qid}" value="${choiceIndex + 1}" ${(choiceIndex === parseInt(item.answers[0].name) - 1) ? 'checked' : ''}>
+                                            <input class="form-check-input" type="radio" name="answer_${choice.qid}" value="${choiceIndex + 1}" ${(choiceIndex === parseInt(item.answers[0].name) - 1) ? 'checked' : ''} disabled>
                                             <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
                                             <span class="text-success">${(choiceIndex === parseInt(item.answers[0].name) - 1) ? '<i class="bi bi-check-lg fw-bold fs-3"></i>' : ''}</span>
                                         </div>
@@ -413,6 +443,20 @@ my_posts(eid, sid, pid).then((response) => {
                                 `;
                                 $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
                             });
+                        } else if (item.assessment_type == 4) {
+                            item.choices.forEach((choice, choiceIndex) => {
+                                let isAnswer = item.answers.some(answer => parseInt(answer.name) - 1 == choiceIndex);
+                                choice_div = `
+                                    <div class="option-group">
+                                        <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                                            <input class="form-check-input" type="checkbox" name="answer_${choice.qid}" value="${choiceIndex + 1}" ${(isAnswer ? 'checked' : '')} disabled>
+                                            <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
+                                            <span class="text-success">${isAnswer ? '<i class="bi bi-check-lg fw-bold fs-3"></i>' : ''}</span>
+                                        </div>
+                                    </div>
+                                `;
+                                $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
+                            });     
                         }
                     });
                 });
@@ -436,44 +480,61 @@ my_posts(eid, sid, pid).then((response) => {
 });
 
 all_posts(eid, sid).then((response) => {
-    let div = '';
-    if(response.status == 200) {
+    if (response.status === 200) {
         const data = response.data;
-        let group = [];        
-        if(data.length > 0) {
+        console.log(data);
+        
+        // Define the desired order for groups
+        const groupOrder = [
+            "announcements",
+            "syllabus",
+            "prelim",
+            "midterm",
+            "semi-finals",
+            "finals"
+        ];
+        
+        let group = {};
+        
+        // Initialize group objects based on groupOrder
+        groupOrder.forEach((groupKey) => {
+            group[groupKey] = [];
+        });
+
+        if (data.length > 0) {
             data.forEach((item) => {
-                if (!group.hasOwnProperty(item.group)) {
-                    group[item.group] = [];
-                }
                 group[item.group].push({
                     'id': item.id,
                     'title': item.title,
                 });
             });
 
-            for(const key in group) {
-                div += `
-                    <li>
-                        <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
-                            ${key}
-                        </div>
-                    </li>
-                `;
-                group[key].forEach((item) => {
+            let div = '';
+            groupOrder.forEach((key) => {
+                if (group[key].length > 0) {
                     div += `
-                    <li class="${item.id == pid ? 'active current-page' : ''}">
-                        <a href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
-                            <i class="bi bi-card-heading"></i>
-                            <span class="menu-text">${item.title}</span>
-                        </a>
-                    </li>
+                        <li>
+                            <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
+                                ${key}
+                            </div>
+                        </li>
                     `;
-                });
-            }
+                    group[key].forEach((item) => {
+                        div += `
+                            <li class="${item.id == pid ? 'active current-page' : ''}">
+                                <a href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
+                                    <i class="bi bi-card-heading"></i>
+                                    <span class="menu-text">${item.title}</span>
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            });
 
             $('.sidebar-menu.post-group').html(div);
         } else {
-            div += `
+            div = `
                 <li class="active current-page">
                     <a href="#">
                         <i class="bi bi-info-square"></i>
@@ -483,9 +544,9 @@ all_posts(eid, sid).then((response) => {
             `;
             $('.sidebar-menu.post-group').html(div);
         }
-
     }
 });
+
 
 post_group().then((response) => {
     let div = '';
@@ -981,11 +1042,36 @@ $(document).on('change', '#answer-type', function() {
 $(document).on('click', '#add-option-radio', function() {
     choice_count += 1;
     const id = $(this).closest('.q-item').data('id');
-    const length = $(this).closest(`.q-item[data-id="${id}"]`).find('#item').length;
+    const length = $(`.q-item[data-id="${id}"] .option-group`).find('.form-check').length;
+    console.log(length);
     $(`.q-item[data-id="${id}"] .option-group`).append(DOMPurify.sanitize(
         `
         <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
-            <input class="form-check-input" type="radio" name="answer" id="answer" value="${length+1}">
+            <input class="form-check-input" type="radio" name="answer-${id}" id="answer" value="${length+1}">
+            <input type="text" name="option" id="option" class="form-control" placeholder="Option ${length+1}">
+        </div>
+        `
+    ));
+});
+
+$(document).on('click', '#remove-option-radio', function() {
+    const id = $(this).closest('.q-item').data('id');
+    const length = $(`.q-item[data-id="${id}"] .form-check`).length;
+    if (length > 1) {
+        $(`.q-item[data-id="${id}"] .option-group .form-check:last`).remove();
+        choice_count -= 1;
+    }
+});
+
+
+$(document).on('click', '#add-option-checkbox', function() {
+    choice_count += 1;
+    const id = $(this).closest('.q-item').data('id');
+    const length = $(`.q-item[data-id="${id}"] .option-group`).find('.form-check').length;    
+    $(`.q-item[data-id="${id}"] .option-group`).append(DOMPurify.sanitize(
+        `
+        <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+            <input class="form-check-input" type="checkbox" name="answer-${id}" id="answer" value="${length+1}">
             <input type="text" name="option" id="option" class="form-control" placeholder="Option ${length+1}">
         </div>
         `
@@ -993,39 +1079,20 @@ $(document).on('click', '#add-option-radio', function() {
    
 });
 
-$(document).on('click', '#remove-option-radio', function() {
-    const id = $(this).closest('.q-item').data('id');
-    const item = $(`#q-item-${q_item} .option-group #item`).length;
-    if(item > 1) {
-        $(`.q-item[data-id="${id}"] .option-group div:last-child`).remove();
-        choice_count -= 1;
-    }
-});
-
-$(document).on('click', '#add-option-checkbox', function() {
-    choice_count += 1;
-    $(`#q-item-${q_item} .option-group`).append(DOMPurify.sanitize(
-        `
-        <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
-            <input class="form-check-input" type="checkbox" value="${choice_count}" id="answer">
-            <input type="text" name="option" id="option" class="form-control" placeholder="Option 1">
-        </div>
-        `
-    ));
-});
 
 $(document).on('click', '#remove-option-checkbox', function() {
-    const item = $('.option-group #item').length;
-    if(item > 1) {
-        $('.option-group div:last-child').remove();
+    const item = $('.option-group .form-check').length;
+    if (item > 1) {
+        $('.option-group .form-check:last').remove();
         choice_count -= 1;
     }
 });
+
 
 $('#create-assessment').on('submit', function(e) {
     e.preventDefault();
     const total_question = $('.q-item').length;
-    const title = DOMPurify.sanitize(($('#a-title').val()));
+    const title = DOMPurify.sanitize($('#a-title').val());
     const group = DOMPurify.sanitize($('#a-group').val());
     const type = DOMPurify.sanitize($('#a-type').val());
     const content = DOMPurify.sanitize(window.editor['aeditor'][0].getData());
@@ -1035,23 +1102,58 @@ $('#create-assessment').on('submit', function(e) {
     let answers = [];
     let options = [];
 
-    console.log(group);
-
-
     // Iterate through the questions and gather data
     $('.q-item').each((index, qItem) => {
         const questionInput = $(qItem).find('#question');
         const typeInput = $(qItem).find('#answer-type');
-        const answerInput = typeInput.val() == 1 || typeInput.val() == 4 ? 
-        $(qItem).find('#answer:checked') : $(qItem).find('#answer');
-        const optionInputs = $(qItem).find('.option-group #option');
-
         const question = questionInput.val();
         const type = typeInput.val();
         const qid = typeInput.data('id');
-        const answer = answerInput.val() ;
         const typeValue = parseInt(type);
 
+        let answer;
+        let optionData = [];
+
+        switch (typeValue) {
+            case 1:
+                answer = $(qItem).find('.option-group input:checked').map(function() {
+                    return this.value;
+                }).get();
+                break;
+            case 2:
+                answer = $(qItem).find('#answer').val();
+                break;
+            case 3:
+                answer = null;
+                break;
+            case 4:
+                answer = $(qItem).find('.option-group input:checked').map(function() {
+                    return this.value;
+                }).get();
+                break;
+            case 5: // Handle file upload questions
+                answer = null; // Or whatever identifier you prefer
+                break;
+
+            default:
+                // Handle other cases here, if needed
+                break;
+        }
+
+        // Handle options for multiple-choice and multi-select questions
+        if (typeValue === 1 || typeValue === 4) {
+            const optionInputs = $(qItem).find('.option-group #option');
+            optionInputs.each((optionIndex, optionValue) => {
+                const option = $(optionValue).val();
+                if (option) {
+                    optionData.push({
+                        qid: qid,
+                        id: optionIndex + 1,
+                        option: option
+                    });
+                }
+            });
+        }
 
         // Validate required fields
         if (!question) {
@@ -1072,52 +1174,13 @@ $('#create-assessment').on('submit', function(e) {
             return;
         }
 
-        if (!answer) {
+        if (typeValue !== 3 && (answer === null || (Array.isArray(answer) && answer.length === 0))) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops..',
                 text: 'Answer is required for question ' + (index + 1),
             });
             return;
-        }
-
-        if (typeValue === 1) {
-            if (optionInputs.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops..',
-                    text: 'For multiple-choice questions, at least one option is required for question ' + (index + 1),
-                });
-                return;
-            }
-
-            optionInputs.each((optionIndex, optionValue) => {
-                const option = $(optionValue).val();
-                if (!option) {
-                    Swal.fire({
-                    icon: 'error',
-                    title: 'Oops..',
-                    text: 'Option is required for question ' + (index + 1) + ', option ' + (optionIndex + 1)
-                });
-                    return;
-                }
-
-                options.push({
-                    qid: qid,
-                    id: optionIndex + 1,
-                    option: option
-                });
-            });
-
-            answers.push({
-                qid: qid,
-                answer: answer
-            });
-        } else if (typeValue === 2) {
-            answers.push({
-                qid: qid,
-                answer: answer
-            });
         }
 
         // Push data into respective arrays
@@ -1130,6 +1193,15 @@ $('#create-assessment').on('submit', function(e) {
             id: qid,
             type: typeValue
         });
+
+        if (typeValue === 1 || typeValue === 4) {
+            options.push(...optionData);
+        }
+
+        answers.push({
+            qid: qid,
+            answer: answer
+        });
     });
 
     // Combining the arrays
@@ -1139,67 +1211,78 @@ $('#create-assessment').on('submit', function(e) {
         const qid = question.id;
         const type = types.find(type => type.id === qid);
         const answer = answers.find(answer => answer.qid === qid);
-        const option = options.filter(option => option.qid === qid);
 
-        if (type) {
-            const dataItem = {
-                qid,
-                question: question.question,
-                type: type.type,
-                answer: answer.answer,
-            };
+        const dataItem = {
+            qid,
+            question: question.question,
+            type: type.type,
+            answer: answer.answer,
+        };
 
-            if (type.type === 1) {
-                dataItem.options = option;
-            }
-
-            data.push(dataItem);
+        if (type.type === 1 || type.type === 4) {
+            // Find this question's options in the global options array
+            const questionOptions = options.filter(opt => opt.qid === qid);
+            dataItem.options = questionOptions ? questionOptions : [];
         }
+
+        data.push(dataItem);
     });
+
 
     $.ajax({
-        url: '/api/v1/create/assessment',
-        method: 'POST',
-        type: 'JSON',
-        data: {
-            eid: eid,
-            sid: sid,
-            title: title,
-            group: group,
-            type: type,
-            content: content,
-            data: data
-        }, beforeSend: function(xhr) {
-            // $(this).attr('disabled', true);
-            xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
-            xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
-        }, success: function(response) {
-            const pid = response.pid;
-            if(response.status == 200) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Yey..',
-                    text: response.message,
-                });
-                setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
-                }, 1000);
-            } else {
-                let err = response.message;
-                err = Object.values(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ooops..',
-                    text: err[0],
-                });
-            }
-        },
-    }).done(function() {
-        $(this).attr('disabled', false);
-        clearFields();
-        generateCSRFToken();
-    });
+       url: '/api/v1/create/assessment',
+       method: 'POST',
+       type: 'JSON',
+       data: {
+           eid: eid,
+           sid: sid,
+           title: title,
+           group: group,
+           type: type,
+           content: content,
+           data: data
+       }, beforeSend: function(xhr) {
+          $(this).attr('disabled', true);
+           xhr.setRequestHeader('Authorization', `Bearer ${jwt_token}`);
+           xhr.setRequestHeader('X-CSRF-TOKEN', csrf_token);
+       }, success: function(response) {
+           const pid = response.pid;
+           if (response.status == 200) {
+               Swal.fire({
+                   icon: 'success',
+                   title: 'Yey..',
+                   text: response.message,
+               });
+            //    setTimeout(() => {
+            //        window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
+            //    }, 1000);
+            //    clearFields();
+           } else {
+               let err = response.message;
+               if(typeof err == 'object') {
+                    err = Object.values(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ooops..',
+                        text: err[0],
+                    });
+               } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ooops..',
+                        text: err,
+                    });
+               }
+           }
+       },
+   }).done(function() {
+       $(this).attr('disabled', false);
+       generateCSRFToken();
+   });
 });
+
+
+
 
 
 

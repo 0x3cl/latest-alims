@@ -75,44 +75,61 @@ const csrf_token = DOMPurify.sanitize($('input[name="csrf_token"]').val().trim()
 
 
 all_posts(eid, sid).then((response) => {
-    let div = '';
-    if(response.status == 200) {
+    if (response.status === 200) {
         const data = response.data;
-        let group = [];        
-        if(data.length > 0) {
+        console.log(data);
+        
+        // Define the desired order for groups
+        const groupOrder = [
+            "announcements",
+            "syllabus",
+            "prelim",
+            "midterm",
+            "semi-finals",
+            "finals"
+        ];
+        
+        let group = {};
+        
+        // Initialize group objects based on groupOrder
+        groupOrder.forEach((groupKey) => {
+            group[groupKey] = [];
+        });
+
+        if (data.length > 0) {
             data.forEach((item) => {
-                if (!group.hasOwnProperty(item.group)) {
-                    group[item.group] = [];
-                }
                 group[item.group].push({
                     'id': item.id,
                     'title': item.title,
                 });
             });
 
-            for(const key in group) {
-                div += `
-                    <li>
-                        <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
-                            ${key}
-                        </div>
-                    </li>
-                `;
-                group[key].forEach((item) => {
+            let div = '';
+            groupOrder.forEach((key) => {
+                if (group[key].length > 0) {
                     div += `
-                    <li class="${item.id == pid ? 'active current-page' : ''}">
-                        <a href="/student/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
-                            <i class="bi bi-card-heading"></i>
-                            <span class="menu-text">${item.title}</span>
-                        </a>
-                    </li>
+                        <li>
+                            <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
+                                ${key}
+                            </div>
+                        </li>
                     `;
-                });
-            }
+                    group[key].forEach((item) => {
+                        div += `
+                            <li class="${item.id == pid ? 'active current-page' : ''}">
+                                <a href="/student/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
+                                    <i class="bi bi-card-heading"></i>
+                                    <span class="menu-text">${item.title}</span>
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            });
 
             $('.sidebar-menu.post-group').html(div);
         } else {
-            div += `
+            div = `
                 <li class="active current-page">
                     <a href="#">
                         <i class="bi bi-info-square"></i>
@@ -122,7 +139,6 @@ all_posts(eid, sid).then((response) => {
             `;
             $('.sidebar-menu.post-group').html(div);
         }
-
     }
 });
 

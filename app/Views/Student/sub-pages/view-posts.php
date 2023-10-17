@@ -132,7 +132,7 @@ my_posts(eid, sid, pid).then((response) => {
                             let choice_count;
                             
                             questions.forEach((item, index) => {
-                                if(item.assessment_type == 1 || item.assessment_type == 4 ) {
+                                if(item.assessment_type == 1) {
                                     item_div += `
                                     <div class="card mb-3">
                                         <div class="card-body p-4 mb-3">
@@ -145,38 +145,77 @@ my_posts(eid, sid, pid).then((response) => {
                                         </div>
                                     </div>
                                     `;
-                                } else {
+                                } else if(item.assessment_type == 2) {
                                     item_div += `
                                     <div class="card mb-3">
                                         <div class="card-body p-4 mb-3">
-                                            <div class="question q-item" data-id="${index + 1}" data-aid="${item.id}">
+                                            <div class="question q-item" data-id="${index+1}" data-aid="${item.id}">
                                                 <h5>${index + 1}. ${item.question}</h5>
                                                 <div class="answer mt-3">
-                                                    <input type="text" name="answer_${index+1}" id="answer_${index+1}" class="form-control" placeholder="Write Answer">
+                                                    <input type="text" name="answer" id="answer" class="form-control" placeholder="Your answer here...">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                `;
-                                }
+                                `;  
+                                } else if(item.assessment_type == 3) {
+                                    item_div += `
+                                    <div class="card mb-3">
+                                        <div class="card-body p-4 mb-3">
+                                            <div class="question q-item" data-id="${index+1}" data-aid="${item.id}">
+                                                <h5>${index + 1}. ${item.question}</h5>
+                                                <div class="answer mt-3">
+                                                    <textarea class="form-control" rows="5" placeholder="Explain your answer here..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `;
+                                } else if(item.assessment_type == 4) {
+                                    item_div += `
+                                    <div class="card mb-3">
+                                        <div class="card-body p-4 mb-3">
+                                            <div class="question q-item" data-id="${index+1}" data-aid="${item.id}">
+                                                <h5>${index + 1}. ${item.question}</h5>
+                                                <div class="choices mt-3" data-id="${index+1}">
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `;
+                                } 
                             });
 
                             $('.post-assessment').html(item_div);
                             $('.post-assessment').append('<button id="submit-assessment" class="btn btn-primary ms-auto d-flex justify-content-end mb-3">Submit</button>');
 
                             questions.forEach((item, index) => {
-                                if (item.assessment_type == 1 || item.assessment_type == 4) {
+                                if (item.assessment_type == 1) {
                                     item.choices.forEach((choice, choiceIndex) => {
                                         choice_div = `
                                             <div class="option-group">
                                                 <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
-                                                    <input class="form-check-input" type="radio" name="answer-${index}" id="answer" value="${choiceIndex + 1}">
+                                                    <input class="form-check-input" type="radio" name="answer_${choice.qid}" value="${choiceIndex + 1}">
                                                     <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
                                                 </div>
                                             </div>
                                         `;
                                         $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
                                     });
+                                } else if (item.assessment_type == 4) {
+                                    item.choices.forEach((choice, choiceIndex) => {
+                                        let isAnswer = item.answers.some(answer => parseInt(answer.name) - 1 == choiceIndex);
+                                        choice_div = `
+                                            <div class="option-group">
+                                                <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                                                    <input class="form-check-input" type="checkbox" name="answer_${choice.qid}" value="${choiceIndex + 1}">
+                                                    <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
+                                                </div>
+                                            </div>
+                                        `;
+                                        $(`.choices[data-id="${choice.qid}"]`).append(choice_div);
+                                    });     
                                 }
                             });
                         });
@@ -212,43 +251,61 @@ my_posts(eid, sid, pid).then((response) => {
 
 all_posts(eid, sid).then((response) => {
     let div = '';
-    if(response.status == 200) {
+    if (response.status === 200) {
         const data = response.data;
-        let group = [];        
-        if(data.length > 0) {
+        console.log(data);
+        
+        // Define the desired order for groups
+        const groupOrder = [
+            "announcements",
+            "syllabus",
+            "prelim",
+            "midterm",
+            "semi-finals",
+            "finals"
+        ];
+        
+        let group = {};
+        
+        // Initialize group objects based on groupOrder
+        groupOrder.forEach((groupKey) => {
+            group[groupKey] = [];
+        });
+
+        if (data.length > 0) {
             data.forEach((item) => {
-                if (!group.hasOwnProperty(item.group)) {
-                    group[item.group] = [];
-                }
                 group[item.group].push({
                     'id': item.id,
                     'title': item.title,
                 });
             });
 
-            for(const key in group) {
-                div += `
-                    <li>
-                        <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
-                            ${key}
-                        </div>
-                    </li>
-                `;
-                group[key].forEach((item) => {
+            let div = '';
+            groupOrder.forEach((key) => {
+                if (group[key].length > 0) {
                     div += `
-                    <li class="${item.id == pid ? 'active current-page' : ''}">
-                        <a href="/student/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
-                            <i class="bi bi-card-heading"></i>
-                            <span class="menu-text">${item.title}</span>
-                        </a>
-                    </li>
+                        <li>
+                            <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
+                                ${key}
+                            </div>
+                        </li>
                     `;
-                });
-            }
+                    group[key].forEach((item) => {
+                        div += `
+                            <li class="${item.id == pid ? 'active current-page' : ''}">
+                                <a href="/student/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
+                                    <i class="bi bi-card-heading"></i>
+                                    <span class="menu-text">${item.title}</span>
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            });
 
             $('.sidebar-menu.post-group').html(div);
         } else {
-            div += `
+            div = `
                 <li class="active current-page">
                     <a href="#">
                         <i class="bi bi-info-square"></i>
@@ -258,9 +315,9 @@ all_posts(eid, sid).then((response) => {
             `;
             $('.sidebar-menu.post-group').html(div);
         }
-
     }
 });
+
 
 post_attachments(eid, sid, pid).then((response) => {
     let div = '';
@@ -294,23 +351,57 @@ post_attachments(eid, sid, pid).then((response) => {
 $(document).on('click', '#submit-assessment', function() {
     const questions = $('.question.q-item');
     const post_id = <?= $requested_data['pid'] ?>;
-    const assessment_id = [];
-    const response = [];
     const data = [];
+
     questions.each(function() {
         const id = $(this).data('id');
-        const answerElement = $(this).find('input:checked, input[type="text"]');
         const aid = $(this).data('aid');
-        const response = $(answerElement).val();
-        data.push({
-            post_id: post_id,
-            assessment_id: aid,
-            response: response
-        });
+        
+        const checkboxes = $(this).find('input[type="checkbox"]:checked');
+        const radioChecked = $(this).find('input[type="radio"]:checked');
+        const textInput = $(this).find('input[type="text"]');
+        const textareaInput = $(this).find('textarea');
 
+        if (checkboxes.length > 0) {
+            // If checkboxes are checked, collect their values
+            const checkboxValues = checkboxes.map(function() {
+                return $(this).val();
+            }).get();
+            data.push({
+                post_id: post_id,
+                assessment_id: aid,
+                response: checkboxValues.join(', '), // Combine values into a string
+            });
+        } else if (radioChecked.length > 0) {
+            // If a radio button is checked, get its value
+            const radioValue = radioChecked.val();
+            data.push({
+                post_id: post_id,
+                assessment_id: aid,
+                response: radioValue,
+            });
+        } else if (textInput.length > 0) {
+            // If there are input fields, get the input value
+            const textValue = textInput.val();
+            data.push({
+                post_id: post_id,
+                assessment_id: aid,
+                response: textValue,
+            });
+        } else if (textareaInput.length > 0) {
+            // If there are textarea fields, get the textarea value
+            const textareaValue = textareaInput.val();
+            data.push({
+                post_id: post_id,
+                assessment_id: aid,
+                response: textareaValue,
+            });
+        }
     });
 
-    $.ajax({
+    console.log(data);
+
+ $.ajax({
         url: '/api/v1/submit/response',
         method: 'POST',
         data: {data},
@@ -341,7 +432,10 @@ $(document).on('click', '#submit-assessment', function() {
     }).done(function() {
         generateCSRFToken();
     })
+
 });
+
+
 
 
 

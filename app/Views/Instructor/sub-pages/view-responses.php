@@ -77,6 +77,75 @@ const csrf_token =  DOMPurify.sanitize($('input[name="csrf_token"]').val().trim(
 ckeditor('#a-editor', 'aeditor');
 ckeditor('#p-editor', 'peditor');
 
+all_posts(eid, sid).then((response) => {
+    if (response.status === 200) {
+        const data = response.data;
+        console.log(data);
+        
+        // Define the desired order for groups
+        const groupOrder = [
+            "announcements",
+            "syllabus",
+            "prelim",
+            "midterm",
+            "semi-finals",
+            "finals"
+        ];
+        
+        let group = {};
+        
+        // Initialize group objects based on groupOrder
+        groupOrder.forEach((groupKey) => {
+            group[groupKey] = [];
+        });
+
+        if (data.length > 0) {
+            data.forEach((item) => {
+                group[item.group].push({
+                    'id': item.id,
+                    'title': item.title,
+                });
+            });
+
+            let div = '';
+            groupOrder.forEach((key) => {
+                if (group[key].length > 0) {
+                    div += `
+                        <li>
+                            <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
+                                ${key}
+                            </div>
+                        </li>
+                    `;
+                    group[key].forEach((item) => {
+                        div += `
+                            <li class="${item.id == pid ? 'active current-page' : ''}">
+                                <a href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
+                                    <i class="bi bi-card-heading"></i>
+                                    <span class="menu-text">${item.title}</span>
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            });
+
+            $('.sidebar-menu.post-group').html(div);
+        } else {
+            div = `
+                <li class="active current-page">
+                    <a href="#">
+                        <i class="bi bi-info-square"></i>
+                        <span class="menu-text">No posts yet</span>
+                    </a>
+                </li>
+            `;
+            $('.sidebar-menu.post-group').html(div);
+        }
+    }
+});
+
+
 my_posts(eid, sid, pid).then((response) => {
     console.log(response);
     if(response.status == 200) {
@@ -107,14 +176,14 @@ my_posts(eid, sid, pid).then((response) => {
             if(data.accept_submission == 1) {
                 if(data.is_assessment == 0) {
                     $('.post-actions').append(DOMPurify.sanitize(`
-                    <a class="btn btn-primary d-flex gap-2 align-items-center" href="/instructor/subjects/posts/submission?eid=${eid}&sid=${sid}&pid=${pid}&is_assessment=false">
+                    <a class="btn btn-primary d-flex gap-2 align-items-center" href="/instructor/subjects/posts/submission?eid=${eid}&sid=${sid}&pid=${pid}&is_assessment=true">
                         <i class="bi bi-arrow-left me-1"></i>
                         Go Back
                     </a>
                 `));
                 } else if(data.is_assessment == 1) {
                     $('.post-actions').append(DOMPurify.sanitize(`
-                    <a class="btn btn-primary d-flex gap-2 align-items-center" href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}">
+                    <a class="btn btn-primary d-flex gap-2 align-items-center" href="/instructor/subjects/posts/submission?eid=${eid}&sid=${sid}&pid=${pid}&is_assessment=true">
                         <i class="bi bi-arrow-left me-1"></i>
                         Go Back
                     </a>
@@ -159,7 +228,7 @@ my_posts(eid, sid, pid).then((response) => {
                                 </div>
                             </div>
                             `;
-                        } else {
+                        } else if(item.assessment_type == 2) {
                             item_div += `
                             <div class="card mb-3">
                                 <div class="card-body p-4 mb-3">
@@ -175,7 +244,24 @@ my_posts(eid, sid, pid).then((response) => {
                                     </div>
                                 </div>
                             </div>
-                        `;
+                            `;
+                        } else if(item.assessment_type == 3) {
+                            item_div += `
+                            <div class="card mb-3">
+                                <div class="card-body p-4 mb-3">
+                                    <div class="question">
+                                        <h5>${index + 1}. ${item.question}</h5>
+                                        <div class="answer mt-3">
+                                            <textarea name="answer" id="answer_${index}" rows="5" class="form-control" placeholder="Student's answers go here" readonly disabled>${item.student_response}</textarea>
+                                            <hr class="mt-4 mb-3">
+                                            <div class="alert alert-info">
+                                                This answer is based on your thoughts.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
                         }
                     });
 
@@ -183,9 +269,8 @@ my_posts(eid, sid, pid).then((response) => {
 
                     questions.forEach((item, index) => {
                         console.log(item);
-                        if (item.assessment_type == 1 || item.assessment_type == 4) {
+                        if (item.assessment_type == 1) {
                             const isCorrectAnswer = item.student_response === item.correct_answers[0].name;
-
                             item.choices.forEach((choice, choiceIndex) => {
                                 const isChecked = choiceIndex === parseInt(item.student_response) - 1;
 
@@ -203,10 +288,45 @@ my_posts(eid, sid, pid).then((response) => {
                                 $(`.choices[data-id="${item.qid}"]`).append(choice_div);
                             });
                             $(`.choices[data-id="${item.qid}"]`).append(`
+                                <hr class="mt-4 mb-3">
                                 <div class="alert ${isCorrectAnswer ? 'alert-success' : 'alert-danger'} mt-4">
                                     ${isCorrectAnswer ? 'Correct answer is: ' : 'Correct answer is: '} ${item.choices[parseInt(item.correct_answers[0].name) - 1].name}
                                 </div>
                             `);
+                        } else if(item.assessment_type == 4) {
+                            if (item.assessment_type == 4) {
+                                const responseValues = item.student_response.split(',').map(value => parseInt(value));
+                                const correctAnswerValues = item.correct_answers.map(answer => parseInt(answer.name));
+                                
+                                item.choices.forEach((choice, choiceIndex) => {
+                                    const isChecked = responseValues.includes(choiceIndex + 1);
+                                    const isCorrect = correctAnswerValues.includes(choiceIndex + 1);
+
+                                    const choice_div = `
+                                        <div class="option-group">
+                                            <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
+                                                <input class="form-check-input" type="checkbox" value="${choiceIndex + 1}" ${(isChecked ? 'checked' : '')} disabled>
+                                                <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
+                                                <span class="${isChecked && isCorrect ? 'text-success' : 'text-danger'}">
+                                                    ${isChecked ? (isCorrect ? '<i class="bi bi-check-lg fw-bold fs-3"></i>' : '<i class="bi bi-x-lg fw-bold fs-3"></i>') : ''}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    `;
+                                    $(`.choices[data-id="${item.qid}"]`).append(choice_div);
+                                });
+
+                                const correctChoices = item.correct_answers.map(answer => parseInt(answer.name));
+                                const correctChoiceNames = correctChoices.map(index => item.choices[index - 1].name);
+                                const correctAnswerText = correctChoiceNames.join(', ');
+
+                                $(`.choices[data-id="${item.qid}"]`).append(`
+                                    <hr class="mt-4 mb-3">
+                                    <div class="alert ${correctChoices.length === responseValues.length && correctChoices.every(choice => responseValues.includes(choice)) ? 'alert-success' : 'alert-danger'} mt-4">
+                                        Correct answer is: ${correctAnswerText}
+                                    </div>
+                                `);
+                            }
                         }
                     });
                 });
@@ -226,57 +346,6 @@ my_posts(eid, sid, pid).then((response) => {
     }
 });
 
-all_posts(eid, sid).then((response) => {
-    let div = '';
-    if(response.status == 200) {
-        const data = response.data;
-        let group = [];        
-        if(data.length > 0) {
-            data.forEach((item) => {
-                if (!group.hasOwnProperty(item.group)) {
-                    group[item.group] = [];
-                }
-                group[item.group].push({
-                    'id': item.id,
-                    'title': item.title,
-                });
-            });
-
-            for(const key in group) {
-                div += `
-                    <li>
-                        <div class="post-group ms-4 mt-4 mb-2 text-uppercase" style="font-size: 12px; font-weight: 700">
-                            ${key}
-                        </div>
-                    </li>
-                `;
-                group[key].forEach((item) => {
-                    div += `
-                    <li class="${item.id == pid ? 'active current-page' : ''}">
-                        <a href="/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${item.id}">
-                            <i class="bi bi-card-heading"></i>
-                            <span class="menu-text">${item.title}</span>
-                        </a>
-                    </li>
-                    `;
-                });
-            }
-
-            $('.sidebar-menu.post-group').html(div);
-        } else {
-            div += `
-                <li class="active current-page">
-                    <a href="#">
-                        <i class="bi bi-info-square"></i>
-                        <span class="menu-text">No posts yet</span>
-                    </a>
-                </li>
-            `;
-            $('.sidebar-menu.post-group').html(div);
-        }
-
-    }
-});
 
 
 

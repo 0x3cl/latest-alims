@@ -100,7 +100,6 @@ class Post extends BaseController
         try {
            
             $model = new AssessmentModel;
-            $model = new AssessmentModel;
             $model->select('assessments.id, assessments.question, assessments.type as assessment_type, assessments.qid');
             $model->join('posts', 'posts.id = assessments.post_id');
             $model->where('posts.id', $pid);
@@ -501,20 +500,19 @@ class Post extends BaseController
             'group' => 'required',
             'type' => 'required',
         ];
-
-        if(!$this->validate($rules)) {
+    
+        if (!$this->validate($rules)) {
             return $this->respond([
                 'status' => 500,
-                'message' => $this->validator->getErrors()
+                'message' => $this->validator->getErrors(),
             ]);
         } else {
-
             $eid = $this->request->getPost('eid');
             $sid = $this->request->getPost('sid');
             $title = $this->request->getPost('title');
             $group = $this->request->getPost('group');
             $content = $this->request->getPost('content');
-
+    
             $data = [
                 'is_assessment' => 1,
                 'enroll_id' => $eid,
@@ -523,64 +521,93 @@ class Post extends BaseController
                 'post_group' => $group,
                 'content' => $content,
                 'accept_submission' => 1,
-                'date_posted' => get_timestamp()
+                'date_posted' => get_timestamp(),
             ];
-
+    
             $assessments_data = $this->request->getPost()['data'];
-
+    
             $assessments = [];
             $choices = [];
             $answers = [];
-
+    
             try {
                 $model = new PostModel;
-                // print_r($data);
-                if($model->insert($data)) {
+                if ($model->insert($data)) {
                     $inserted_id = $model->insertID();
-
-                    foreach($assessments_data as $item) {
+    
+                    foreach ($assessments_data as $item) {
                         $assessments[] = [
                             'post_id' => $inserted_id,
                             'qid' => $item['qid'],
                             'question' => $item['question'],
                             'type' => $item['type'],
                         ];
-
-                        $answers[] = [
-                            'post_id' => $inserted_id,
-                            'qid' => $item['qid'],
-                            'name' => $item['answer']
-                        ];
-
-                        if(array_key_exists('options', $item)) {
-                            foreach($item['options'] as $item) {
+    
+                        if($item['type'] == 1 && is_array($item['answer'])) {
+                            $answers[] = [
+                                'post_id' => $inserted_id,
+                                'qid' => $item['qid'],
+                                'name' => $item['answer'][0],
+                            ];
+                        } else if ($item['type'] == 2 || $item['type'] == 3 || $item['type'] == 5) {
+                            // Single answer
+                            $answers[] = [
+                                'post_id' => $inserted_id,
+                                'qid' => $item['qid'],
+                                'name' => $item['answer'],
+                            ];
+                        } else if ($item['type'] == 3 && is_array($item['answer'])) {
+                            // Multiple select with a single answer
+                            $answers[] = [
+                                'post_id' => $inserted_id,
+                                'qid' => $item['qid'],
+                                'name' => $item['answer'][0],
+                            ];
+                        } else if ($item['type'] == 4 && is_array($item['answer'])) {
+                            // Multiple select with multiple answers
+                            foreach ($item['answer'] as $answer) {
+                                $answers[] = [
+                                    'post_id' => $inserted_id,
+                                    'qid' => $item['qid'],
+                                    'name' => $answer,
+                                ];
+                            }
+                        }
+    
+                        if (array_key_exists('options', $item)) {
+                            foreach ($item['options'] as $option) {
                                 $choices[] = [
                                     'post_id' => $inserted_id,
                                     'qid' => $item['qid'],
-                                    'name' => $item['option']
+                                    'name' => $option['option'],
                                 ];
                             }
                         }
                     }
-
+    
+                    // Insert all the questions, answers, and choices
                     $amodel = new AssessmentModel;
                     $cmodel = new ChoiceModel;
                     $ansmodel = new AnswersModel;
-                    if($amodel->insertBatch($assessments) && $ansmodel->insertBatch($answers)) {
-                        if(!empty($choices)) {
+                    
+                    if ($amodel->insertBatch($assessments) && $ansmodel->insertBatch($answers)) {
+                        if (!empty($choices)) {
                             $cmodel->insertBatch($choices);
-                            return $this->respond([
-                                'status' => 200,
-                                'message' => 'assessment created',
-                                'pid' => $inserted_id
-                            ]);
                         }
+                        return $this->respond([
+                            'status' => 200,
+                            'message' => 'assessment created',
+                            'pid' => $inserted_id,
+                        ]);
                     }
-
                 }
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 print_r($e);
             }
         }
     }
+    
+    
+    
+
 }
