@@ -270,3 +270,11 @@ table img {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.form-check-input:disabled {
+    opacity: 1 !important;
+}
+
+.form-control:disabled {
+    background-color: #fff;
+}

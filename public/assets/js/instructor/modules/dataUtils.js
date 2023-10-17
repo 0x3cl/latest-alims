@@ -216,12 +216,12 @@ export async function getSubmission(eid, sid, pid, subid) {
     });
 }
 
-export async function getResponseList(cid, sid, yid, secid) {
+export async function getResponseList(cid, sid, yid, secid, pid) {
     const data = await getJWTtoken();
     const token = data.token
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: `/api/v1/users/subjects/response/list?course=${cid}&subject=${sid}&year=${yid}&section=${secid}`,
+            url: `/api/v1/users/subjects/response/list?course=${cid}&subject=${sid}&year=${yid}&section=${secid}&pid=${pid}`,
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', `Bearer ${token}`)
@@ -232,12 +232,12 @@ export async function getResponseList(cid, sid, yid, secid) {
     });
 }
 
-export async function getResponses(cid, sid, yid, secid) {
+export async function getResponses(eid, sid, pid, uid) {
     const data = await getJWTtoken();
     const token = data.token
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: `/api/v1/users/subjects/response/answer?course=${cid}&subject=${sid}&year=${yid}&section=${secid}`,
+            url: `/api/v1/users/subjects/response/answer?eid=${eid}&sid=${sid}&pid=${pid}&uid=${uid}`,
             method: 'GET',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('Authorization', `Bearer ${token}`)

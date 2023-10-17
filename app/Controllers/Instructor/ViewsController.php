@@ -390,7 +390,8 @@ class ViewsController extends BaseController
         $eid = $this->request->getGet('eid');
         $sid = $this->request->getGet('sid');
         $pid = $this->request->getGet('pid');
-        $subid = $this->request->getGet('submission');
+        $secid = $this->request->getGet('submission');
+        $tuid = $this->request->getGet('uid');
         $is_assessment = $this->request->getGet('is_assessment');
 
         if(empty($subid) || !($subid)) {
@@ -440,6 +441,7 @@ class ViewsController extends BaseController
                                 'cid' => $e_result[0]['course_id'],
                                 'yid' => $e_result[0]['year'],
                                 'secid' => $e_result[0]['section'],
+                                'uid' => $tuid,
                                 'is_assessment' => $is_assessment ?? 'false'
                                 ]
                         ]
@@ -462,6 +464,7 @@ class ViewsController extends BaseController
                                 'cid' => $e_result[0]['course_id'],
                                 'yid' => $e_result[0]['year'],
                                 'secid' => $e_result[0]['section'],
+                                'uid' => $tuid,
                                 'is_assessment' => $is_assessment ?? 'false'
                                 ]
                         ]

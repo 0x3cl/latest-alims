@@ -262,7 +262,7 @@ $(document).on('click', '#upload-submission', function() {
                     text: response.message,
                 });
                 setTimeout(() => {
-                    window.location = `/instructor/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
+                    window.location = `/student/subjects/posts?eid=${eid}&sid=${sid}&pid=${pid}`;
                 }, 1000);
                 clearFields();
             } else {

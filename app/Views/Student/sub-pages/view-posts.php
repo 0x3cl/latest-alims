@@ -170,7 +170,7 @@ my_posts(eid, sid, pid).then((response) => {
                                         choice_div = `
                                             <div class="option-group">
                                                 <div class="form-check d-flex align-items-center gap-3 mb-2" id="item">
-                                                    <input class="form-check-input" type="radio" name="answer" id="answer" value="${choiceIndex + 1}">
+                                                    <input class="form-check-input" type="radio" name="answer-${index}" id="answer" value="${choiceIndex + 1}">
                                                     <p style="margin: 3px 0 0 0;" class="choice-text">${choice.name}</p>
                                                 </div>
                                             </div>

@@ -10,6 +10,10 @@ use App\Models\InstructorModel;
 use App\Models\EnrolledModel;
 use App\Models\PostModel;
 use App\Models\SubmissionFilesModel;
+use App\Models\AssessmentModel;
+use App\Models\ChoiceModel;
+use App\Models\AnswersModel;
+use App\Models\AssessmentResponses;
 use CodeIgniter\API\ResponseTrait;
 
 class Users extends BaseController
@@ -346,7 +350,7 @@ class Users extends BaseController
         try {
             $model = new EnrolledModel;
             $model->select('
-                users.username, users.email, students.firstname, students.lastname,
+                users.id, users.username, users.email, students.firstname, students.lastname,
                 students.avatar, students.banner, courses.name as course_name,
                 courses.code as course_code, subjects.name as subject_name, 
                 subjects.code as subject_code,
@@ -433,31 +437,32 @@ class Users extends BaseController
         $cid = $this->request->getGet('course');
         $sid = $this->request->getGet('subject');
         $yid = $this->request->getGet('year');
-        $pid = $this->request->getPost('pid');
+        $pid = $this->request->getGet('pid');
         $secid = $this->request->getGet('section');
         
         try {
             $model = new EnrolledModel;
             $model->select('
-                users.username, users.email, students.firstname, students.lastname,
+                users.id, users.username, users.email, students.firstname, students.lastname,
                 students.avatar, students.banner, courses.name as course_name,
                 courses.code as course_code, subjects.name as subject_name, 
                 subjects.code as subject_code,
-                IF(assessments_responses.post_id IS NULL, 0, 1) AS has_response
+                CASE
+                    WHEN (SELECT COUNT(*) FROM assessments_responses WHERE user_id = users.id AND post_id = ' . $pid . ') > 0 THEN 1
+                    ELSE 0
+                END AS has_responses
             ');
-
+            
             $model->join('users', 'users.id = enroll.user_id');
             $model->join('courses', 'courses.id = enroll.course_id');
             $model->join('subjects', 'courses.id = subjects.course', 'left');
             $model->join('students', 'users.id = students.user_id', 'left');
-            $model->join('assessments_responses', 'assessments_responses.user_id = users.id', 'left');
             $model->where('users.role', 2);
             $model->where('enroll.course_id', $cid);
             $model->where('enroll.section', $secid);
             $model->where('enroll.year', $yid);
             $model->where('subjects.id', $sid);
-            $model->groupBy('assessments_responses.post_id', 'DESC');
-
+    
 
             $result = $model->find();
 
@@ -474,79 +479,121 @@ class Users extends BaseController
     }
 
     public function getResponses() {
-        $uid = $this->getCurrentUser()['id'];
-        $cid = $this->request->getGet('course');
-        $sid = $this->request->getGet('subject');
-        $yid = $this->request->getGet('year');
-        $pid = $this->request->getPost('pid');
-        $secid = $this->request->getGet('section');
         
+        
+        $eid = $this->request->getGet('eid');
+        $sid = $this->request->getGet('sid');
+        $pid = $this->request->getGet('pid');
+        $uid = $this->request->getGet('uid');
+        
+        $questions = [];
+        $answers = [];
+        $choices = [];
+
+        $data = [];
+
         try {
 
-           
-
-
-            $model = new EnrolledModel;
-            // $model->select('
-            // users.username, users.email, students.firstname, students.lastname,
-            //     students.avatar, students.banner, courses.name as course_name,
-            //     courses.code as course_code, subjects.name as subject_name, 
-            //     subjects.code as subject_code,
-            //     IF(assessments_responses.post_id IS NULL, 0, 1) AS has_response,
-            //     assessments_responses.assessment_id, assessments.question, assessments.type
-            // ');
-            // $model->join('users', 'users.id = enroll.user_id');
-            // $model->join('courses', 'courses.id = enroll.course_id');
-            // $model->join('subjects', 'courses.id = subjects.course', 'left');
-            // $model->join('students', 'users.id = students.user_id', 'left');
-            // $model->join('assessments_responses', 'assessments_responses.user_id = users.id');
-            // $model->join('assessments', 'assessments.post_id = assessments_responses.post_id');
-            // $model->where('users.role', 2);
-            // $model->where('enroll.course_id', $cid);
-            // $model->where('enroll.section', $secid);
-            // $model->where('enroll.year', $yid);
-            // $model->where('subjects.id', $sid);
-            // $model->groupBy('assessments.qid', 'DESC');
-
-            // $result = $model->find();
-
+            $model = new UserModel;
             $model->select('
-                assessments_responses.response as student_respomse,
-                assessments_responses.assessment_id as question_id
+                users.username, users.email,
+                students.firstname, students.lastname, students.avatar,
+                courses.code as course_code, courses.name as course_name,
+                sections.name as section_name, years.name as year_name
             ');
-
-            $model->join('users', 'users.id = enroll.user_id');
+            $model->join('students', 'users.id = students.user_id');
+            $model->join('enroll', 'enroll.user_id = users.id');
             $model->join('courses', 'courses.id = enroll.course_id');
-            $model->join('subjects', 'courses.id = subjects.course', 'left');
-            $model->join('students', 'users.id = students.user_id', 'left');
-            $model->join('assessments_responses', 'assessments_responses.user_id = users.id');
-            $model->join('assessments', 'assessments.post_id = assessments_responses.post_id');
+            $model->join('sections', 'sections.id = enroll.section');
+            $model->join('years', 'years.id = enroll.year');
             $model->where('users.role', 2);
-            $model->where('enroll.course_id', $cid);
-            $model->where('enroll.section', $secid);
-            $model->where('enroll.year', $yid);
-            $model->where('subjects.id', $sid);
-            $model->groupBy('assessments_responses.assessment_id', 'DESC');
+            $model->where('users.id', $uid);
 
-            $result = $model->find();
+            $data['user_info'] = $model->find()[0];
 
-            return $this->respond([
-                'status' => 200,
-                'message' => 'ok',
-                'data' => $result
-            ]);
-
-            return $this->respond([
-                'status' => 200,
-                'message' => 'ok',
-                'data' => $result
-            ]);
-
+            $model = new AssessmentModel;
+            $model->select('assessments.id, assessments.question, assessments.type as assessment_type, assessments.qid');
+            $model->join('posts', 'posts.id = assessments.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('posts.subject_id', $sid);
+            
+            $data['questions'] = $model->find();
+            
+            $model = new ChoiceModel;
+            $model->select('choices.name, choices.qid');
+            $model->join('posts', 'posts.id = choices.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('posts.subject_id', $sid);
+            
+            $choices = $model->find();
+            
+            $model = new AnswersModel;
+            $model->select('answers.name, answers.qid');
+            $model->join('posts', 'posts.id = answers.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('posts.subject_id', $sid);
+            
+            $answers = $model->find();
         
-
+            $model = new AssessmentResponses;
+            $model->select('assessment_id, response');
+            $model->join('posts', 'posts.id = assessments_responses.post_id');
+            $model->where('posts.id', $pid);
+            $model->where('posts.enroll_id', $eid);
+            $model->where('assessments_responses.user_id', $uid);
+        
+            $student_responses = $model->find();
+            
+            $questionToResponse = [];
+            foreach ($data['questions'] as $index => $question) {
+                $questionToResponse[$question['id']] = $student_responses[$index]['response'] ?? null;
+            }
+        
+            $choicesAndAnswersByQid = [];
+            
+            foreach ($choices as $choice) {
+                $qid = $choice['qid'];
+                if (!isset($choicesAndAnswersByQid[$qid])) {
+                    $choicesAndAnswersByQid[$qid] = [
+                        'choices' => [],
+                        'answers' => [],
+                    ];
+                }
+                $choicesAndAnswersByQid[$qid]['choices'][] = $choice;
+            }
+            
+            foreach ($answers as $answer) {
+                $qid = $answer['qid'];
+                if (!isset($choicesAndAnswersByQid[$qid])) {
+                    $choicesAndAnswersByQid[$qid] = [
+                        'choices' => [],
+                        'answers' => [],
+                    ];
+                }
+                $choicesAndAnswersByQid[$qid]['answers'][] = $answer;
+            }
+            
+            foreach ($data['questions'] as &$question) {
+                $qid = $question['qid'];
+                if (isset($choicesAndAnswersByQid[$qid])) {
+                    $question['choices'] = $choicesAndAnswersByQid[$qid]['choices'];
+                    $question['student_response'] = $questionToResponse[$question['id']] ?? null;
+                    $question['correct_answers'] = $choicesAndAnswersByQid[$qid]['answers'];
+                }
+            }
+            
+            return $this->respond([
+                'status' => 200,
+                'data' => $data
+            ]);
         } catch(\Exception $e) {
-            print_r($e);
+            print_r($e->getMessage());
         }
+        
+        
     }
 
     public function getCurrentUser() {

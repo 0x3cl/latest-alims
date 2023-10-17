@@ -350,6 +350,7 @@ my_posts(eid, sid, pid).then((response) => {
 
             if(data.is_assessment == 1) {
                 my_assessments(eid, sid, pid).then((response) => {
+                    console.log(response);
                     const data = response.data;
                     const questions = data.questions;
                     const answers = data.answers;

@@ -123,7 +123,7 @@ all_posts(eid, sid).then((response) => {
 });
 const is_assessment = <?= $requested_data['is_assessment'] ?>;
 if(is_assessment == true) {
-    getResponseList(cid, sid, yid, secid).then((response) => {
+    getResponseList(cid, sid, yid, secid, pid).then((response) => {
     console.log(response);
 
     if(response.status == 200) {
@@ -160,7 +160,7 @@ if(is_assessment == true) {
                         </td>
                         <td>
                             <div class="inner">
-                            ${submissionStatus(item.has_response)}
+                            ${submissionStatus(item.has_responses)}
                             </div>
                         </td>
                         <td>
@@ -180,7 +180,7 @@ if(is_assessment == true) {
                         </td>
                         <td>
                             <div class="inner">
-                            ${item.has_response == 1 ? `<a href="/instructor/subjects/posts/response/answer?eid=${eid}&sid=${sid}&pid=${pid}" class="btn btn-outline-primary">View Response</a>` : '<a href="javascript:void(0)" class="btn btn-outline-danger">No Response</a>'
+                            ${item.has_responses == 1 ? `<a href="/instructor/subjects/posts/response/answer?eid=${eid}&sid=${sid}&pid=${pid}&uid=${item.id}" class="btn btn-outline-primary">View Response</a>` : '<a href="javascript:void(0)" class="btn btn-outline-danger">No Response</a>'
 }
                             </div>
                         </td>
